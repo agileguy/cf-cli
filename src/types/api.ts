@@ -263,3 +263,353 @@ export interface DurableObject {
   id: string;
   hasStoredData: boolean;
 }
+
+// ─── R2 Types ──────────────────────────────────────────────────────────────
+
+/** R2 Bucket */
+export interface R2Bucket {
+  name: string;
+  creation_date: string;
+  location?: string | undefined;
+  storage_class?: string | undefined;
+}
+
+/** R2 CORS Rule */
+export interface R2CorsRule {
+  allowed_origins: string[];
+  allowed_methods: string[];
+  allowed_headers?: string[] | undefined;
+  expose_headers?: string[] | undefined;
+  max_age_seconds?: number | undefined;
+}
+
+/** R2 Lifecycle Rule */
+export interface R2LifecycleRule {
+  id: string;
+  enabled: boolean;
+  conditions?: {
+    prefix?: string | undefined;
+    max_age_days?: number | undefined;
+  } | undefined;
+  action: {
+    type: string;
+    storage_class?: string | undefined;
+  };
+}
+
+/** R2 Custom Domain */
+export interface R2CustomDomain {
+  domain: string;
+  bucket_name: string;
+  zone_id?: string | undefined;
+  zone_name?: string | undefined;
+  status: string;
+  min_tls?: string | undefined;
+  enabled: boolean;
+  created_at?: string | undefined;
+}
+
+/** R2 Event Notification Rule */
+export interface R2EventNotificationRule {
+  queue_id: string;
+  queue_name?: string | undefined;
+  event_types: string[];
+  prefix?: string | undefined;
+  suffix?: string | undefined;
+  created_at?: string | undefined;
+}
+
+/** R2 Event Notification Config (response wrapper) */
+export interface R2EventNotificationConfig {
+  bucketName: string;
+  rules: R2EventNotificationRule[];
+}
+
+/** R2 Bucket Metrics */
+export interface R2Metrics {
+  object_count: number;
+  payload_size: number;
+  metadata_size: number;
+  upload_count: number;
+  operations: {
+    class_a: number;
+    class_b: number;
+  };
+}
+
+// ─── D1 Types ──────────────────────────────────────────────────────────────
+
+/** D1 Database */
+export interface D1Database {
+  uuid: string;
+  name: string;
+  version: string;
+  num_tables?: number | undefined;
+  file_size?: number | undefined;
+  running_in_region?: string | undefined;
+  created_at: string;
+}
+
+/** D1 Query Result */
+export interface D1QueryResult {
+  results: Record<string, unknown>[];
+  success: boolean;
+  meta: {
+    served_by: string;
+    duration: number;
+    changes: number;
+    last_row_id: number;
+    changed_db: boolean;
+    size_after: number;
+    rows_read: number;
+    rows_written: number;
+  };
+}
+
+// ─── Pages Types ───────────────────────────────────────────────────────────
+
+/** Pages Project */
+export interface PagesProject {
+  id: string;
+  name: string;
+  subdomain: string;
+  domains: string[];
+  source?: {
+    type: string;
+    config?: {
+      owner: string;
+      repo_name: string;
+      production_branch: string;
+      pr_comments_enabled?: boolean | undefined;
+      deployments_enabled?: boolean | undefined;
+    } | undefined;
+  } | undefined;
+  build_config?: {
+    build_command?: string | undefined;
+    destination_dir?: string | undefined;
+    root_dir?: string | undefined;
+    web_analytics_tag?: string | undefined;
+    web_analytics_token?: string | undefined;
+  } | undefined;
+  deployment_configs?: {
+    production?: PagesDeploymentConfig | undefined;
+    preview?: PagesDeploymentConfig | undefined;
+  } | undefined;
+  latest_deployment?: PagesDeployment | undefined;
+  canonical_deployment?: PagesDeployment | undefined;
+  production_branch: string;
+  created_on: string;
+  production_script_name?: string | undefined;
+}
+
+/** Pages Deployment Config */
+export interface PagesDeploymentConfig {
+  env_vars?: Record<string, { value: string; type?: string }> | undefined;
+  compatibility_date?: string | undefined;
+  compatibility_flags?: string[] | undefined;
+}
+
+/** Pages Deployment */
+export interface PagesDeployment {
+  id: string;
+  short_id: string;
+  project_id: string;
+  project_name: string;
+  environment: string;
+  url: string;
+  created_on: string;
+  modified_on: string;
+  aliases?: string[] | undefined;
+  latest_stage: {
+    name: string;
+    started_on: string | null;
+    ended_on: string | null;
+    status: string;
+  };
+  deployment_trigger?: {
+    type: string;
+    metadata?: {
+      branch: string;
+      commit_hash: string;
+      commit_message: string;
+    } | undefined;
+  } | undefined;
+  stages: {
+    name: string;
+    started_on: string | null;
+    ended_on: string | null;
+    status: string;
+  }[];
+  build_config?: {
+    build_command?: string | undefined;
+    destination_dir?: string | undefined;
+    root_dir?: string | undefined;
+  } | undefined;
+  source?: {
+    type: string;
+    config?: {
+      owner: string;
+      repo_name: string;
+      production_branch: string;
+    } | undefined;
+  } | undefined;
+  production_branch?: string | undefined;
+}
+
+/** Pages Custom Domain */
+export interface PagesDomain {
+  id: string;
+  name: string;
+  status: string;
+  verification_type?: string | undefined;
+  verification_data?: {
+    status: string;
+  } | undefined;
+  ssl?: {
+    status: string;
+  } | undefined;
+  created_on: string;
+}
+
+// ─── Queues Types ──────────────────────────────────────────────────────────
+
+/** Queue */
+export interface Queue {
+  queue_id: string;
+  queue_name: string;
+  created_on: string;
+  modified_on: string;
+  producers_total_count: number;
+  consumers_total_count: number;
+  producers?: QueueProducer[] | undefined;
+  consumers?: QueueConsumer[] | undefined;
+}
+
+/** Queue Producer (worker binding) */
+export interface QueueProducer {
+  service: string;
+  environment?: string | undefined;
+  namespace?: string | undefined;
+}
+
+/** Queue Consumer */
+export interface QueueConsumer {
+  service: string;
+  environment?: string | undefined;
+  queue_name: string;
+  created_on: string;
+  dead_letter_queue?: string | undefined;
+  settings?: QueueConsumerSettings | undefined;
+}
+
+/** Queue Consumer Settings */
+export interface QueueConsumerSettings {
+  batch_size?: number | undefined;
+  max_retries?: number | undefined;
+  max_wait_time_ms?: number | undefined;
+  max_concurrency?: number | undefined;
+  visibility_timeout_ms?: number | undefined;
+  retry_delay?: number | undefined;
+}
+
+/** Queue Message send result */
+export interface QueueMessageSendResult {
+  message_id: string;
+}
+
+// ─── Hyperdrive Types ──────────────────────────────────────────────────────
+
+/** Hyperdrive configuration */
+export interface HyperdriveConfig {
+  id: string;
+  name: string;
+  origin: HyperdriveOrigin;
+  caching?: HyperdriveCaching | undefined;
+  created_on?: string | undefined;
+  modified_on?: string | undefined;
+}
+
+/** Hyperdrive origin database connection */
+export interface HyperdriveOrigin {
+  host: string;
+  port: number;
+  database: string;
+  scheme: string;
+  user?: string | undefined;
+}
+
+/** Hyperdrive caching settings */
+export interface HyperdriveCaching {
+  disabled?: boolean | undefined;
+  max_age?: number | undefined;
+  stale_while_revalidate?: number | undefined;
+}
+
+// ─── Pipelines Types ───────────────────────────────────────────────────────
+
+/** Pipeline */
+export interface Pipeline {
+  id: string;
+  name: string;
+  endpoint: string;
+  created_on?: string | undefined;
+  modified_on?: string | undefined;
+  source?: PipelineSource[] | undefined;
+  destination?: PipelineDestination | undefined;
+}
+
+/** Pipeline source */
+export interface PipelineSource {
+  type: string;
+  format?: string | undefined;
+  service?: string | undefined;
+}
+
+/** Pipeline destination */
+export interface PipelineDestination {
+  type: string;
+  format?: string | undefined;
+  path?: PipelineDestinationPath | undefined;
+  batch?: PipelineDestinationBatch | undefined;
+  compression?: PipelineDestinationCompression | undefined;
+  credentials?: Record<string, unknown> | undefined;
+}
+
+/** Pipeline destination path configuration */
+export interface PipelineDestinationPath {
+  bucket: string;
+  prefix?: string | undefined;
+}
+
+/** Pipeline destination batch configuration */
+export interface PipelineDestinationBatch {
+  max_bytes?: number | undefined;
+  max_duration_s?: number | undefined;
+  max_rows?: number | undefined;
+}
+
+/** Pipeline destination compression */
+export interface PipelineDestinationCompression {
+  type: string;
+}
+
+// ─── Secrets Store Types ───────────────────────────────────────────────────
+
+/** Secrets Store */
+export interface SecretsStore {
+  id: string;
+  name: string;
+  created_on?: string | undefined;
+  modified_on?: string | undefined;
+  status?: string | undefined;
+}
+
+/** Secrets Store Secret */
+export interface SecretsStoreSecret {
+  name: string;
+  value?: string | undefined;
+  comment?: string | undefined;
+  created_on?: string | undefined;
+  modified_on?: string | undefined;
+  status?: string | undefined;
+}

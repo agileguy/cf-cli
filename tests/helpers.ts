@@ -347,3 +347,263 @@ export function sampleDurableObject(overrides: Partial<Record<string, unknown>> 
     ...overrides,
   };
 }
+
+/** Sample R2 bucket for tests */
+export function sampleR2Bucket(overrides: Partial<Record<string, unknown>> = {}): Record<string, unknown> {
+  return {
+    name: "my-bucket",
+    creation_date: "2024-06-01T12:00:00.000Z",
+    location: "WNAM",
+    storage_class: "Standard",
+    ...overrides,
+  };
+}
+
+/** Sample R2 CORS rule for tests */
+export function sampleR2CorsRule(overrides: Partial<Record<string, unknown>> = {}): Record<string, unknown> {
+  return {
+    allowed_origins: ["https://example.com"],
+    allowed_methods: ["GET", "PUT"],
+    allowed_headers: ["Content-Type"],
+    max_age_seconds: 3600,
+    ...overrides,
+  };
+}
+
+/** Sample R2 lifecycle rule for tests */
+export function sampleR2LifecycleRule(overrides: Partial<Record<string, unknown>> = {}): Record<string, unknown> {
+  return {
+    id: "rule-1",
+    enabled: true,
+    conditions: { prefix: "logs/", max_age_days: 30 },
+    action: { type: "Delete" },
+    ...overrides,
+  };
+}
+
+/** Sample R2 custom domain for tests */
+export function sampleR2CustomDomain(overrides: Partial<Record<string, unknown>> = {}): Record<string, unknown> {
+  return {
+    domain: "cdn.example.com",
+    bucket_name: "my-bucket",
+    zone_id: "zone-123",
+    zone_name: "example.com",
+    status: "active",
+    enabled: true,
+    ...overrides,
+  };
+}
+
+/** Sample R2 event notification config for tests */
+export function sampleR2EventNotificationConfig(overrides: Partial<Record<string, unknown>> = {}): Record<string, unknown> {
+  return {
+    bucketName: "my-bucket",
+    rules: [
+      {
+        queue_id: "queue-uuid-123",
+        event_types: ["object-create", "object-delete"],
+        prefix: "uploads/",
+        suffix: ".jpg",
+      },
+    ],
+    ...overrides,
+  };
+}
+
+/** Sample R2 metrics for tests */
+export function sampleR2Metrics(overrides: Partial<Record<string, unknown>> = {}): Record<string, unknown> {
+  return {
+    object_count: 1500,
+    payload_size: 1073741824,
+    metadata_size: 524288,
+    upload_count: 250,
+    operations: { class_a: 5000, class_b: 15000 },
+    ...overrides,
+  };
+}
+
+/** Sample D1 database for tests */
+export function sampleD1Database(overrides: Partial<Record<string, unknown>> = {}): Record<string, unknown> {
+  return {
+    uuid: "d1-uuid-123",
+    name: "my-database",
+    version: "production",
+    num_tables: 5,
+    file_size: 1048576,
+    running_in_region: "WNAM",
+    created_at: "2024-06-01T12:00:00.000Z",
+    ...overrides,
+  };
+}
+
+/** Sample D1 query result for tests */
+export function sampleD1QueryResult(overrides: Partial<Record<string, unknown>> = {}): Record<string, unknown> {
+  return {
+    results: [
+      { id: 1, name: "Alice", email: "alice@example.com" },
+      { id: 2, name: "Bob", email: "bob@example.com" },
+    ],
+    success: true,
+    meta: {
+      served_by: "miniflare",
+      duration: 0.5,
+      changes: 0,
+      last_row_id: 0,
+      changed_db: false,
+      size_after: 1048576,
+      rows_read: 2,
+      rows_written: 0,
+    },
+    ...overrides,
+  };
+}
+
+/** Sample Pages project for tests */
+export function samplePagesProject(overrides: Partial<Record<string, unknown>> = {}): Record<string, unknown> {
+  return {
+    id: "pages-proj-uuid-123",
+    name: "my-site",
+    subdomain: "my-site.pages.dev",
+    domains: ["www.example.com"],
+    production_branch: "main",
+    created_on: "2024-06-01T12:00:00.000Z",
+    latest_deployment: {
+      id: "deploy-uuid-123",
+      url: "https://abc123.my-site.pages.dev",
+    },
+    ...overrides,
+  };
+}
+
+/** Sample Pages deployment for tests */
+export function samplePagesDeployment(overrides: Partial<Record<string, unknown>> = {}): Record<string, unknown> {
+  return {
+    id: "deploy-uuid-123",
+    short_id: "abc123",
+    project_id: "pages-proj-uuid-123",
+    project_name: "my-site",
+    environment: "production",
+    url: "https://abc123.my-site.pages.dev",
+    created_on: "2024-06-01T12:00:00.000Z",
+    modified_on: "2024-06-01T12:05:00.000Z",
+    latest_stage: {
+      name: "deploy",
+      started_on: "2024-06-01T12:00:00.000Z",
+      ended_on: "2024-06-01T12:05:00.000Z",
+      status: "success",
+    },
+    deployment_trigger: {
+      type: "push",
+      metadata: {
+        branch: "main",
+        commit_hash: "abc123def456",
+        commit_message: "Update homepage",
+      },
+    },
+    stages: [
+      { name: "queued", started_on: "2024-06-01T12:00:00.000Z", ended_on: "2024-06-01T12:00:01.000Z", status: "success" },
+      { name: "build", started_on: "2024-06-01T12:00:01.000Z", ended_on: "2024-06-01T12:04:00.000Z", status: "success" },
+      { name: "deploy", started_on: "2024-06-01T12:04:00.000Z", ended_on: "2024-06-01T12:05:00.000Z", status: "success" },
+    ],
+    ...overrides,
+  };
+}
+
+/** Sample Pages domain for tests */
+export function samplePagesDomain(overrides: Partial<Record<string, unknown>> = {}): Record<string, unknown> {
+  return {
+    id: "pages-domain-uuid-123",
+    name: "www.example.com",
+    status: "active",
+    verification_data: { status: "verified" },
+    ssl: { status: "active" },
+    created_on: "2024-06-01T12:00:00.000Z",
+    ...overrides,
+  };
+}
+
+/** Sample Queue for tests */
+export function sampleQueue(overrides: Partial<Record<string, unknown>> = {}): Record<string, unknown> {
+  return {
+    queue_id: "queue-uuid-123",
+    queue_name: "my-queue",
+    created_on: "2024-01-01T00:00:00.000Z",
+    modified_on: "2024-06-01T12:00:00.000Z",
+    producers_total_count: 1,
+    consumers_total_count: 2,
+    ...overrides,
+  };
+}
+
+/** Sample Queue Consumer for tests */
+export function sampleQueueConsumer(overrides: Partial<Record<string, unknown>> = {}): Record<string, unknown> {
+  return {
+    service: "my-consumer-worker",
+    queue_name: "my-queue",
+    created_on: "2024-01-01T00:00:00.000Z",
+    dead_letter_queue: null,
+    settings: {
+      batch_size: 10,
+      max_retries: 3,
+    },
+    ...overrides,
+  };
+}
+
+/** Sample Hyperdrive Config for tests */
+export function sampleHyperdriveConfig(overrides: Partial<Record<string, unknown>> = {}): Record<string, unknown> {
+  return {
+    id: "hd-uuid-123",
+    name: "my-hyperdrive",
+    origin: {
+      host: "db.example.com",
+      port: 5432,
+      database: "mydb",
+      scheme: "postgres",
+      user: "dbuser",
+    },
+    caching: {
+      disabled: false,
+    },
+    created_on: "2024-01-01T00:00:00.000Z",
+    modified_on: "2024-06-01T12:00:00.000Z",
+    ...overrides,
+  };
+}
+
+/** Sample Pipeline for tests */
+export function samplePipeline(overrides: Partial<Record<string, unknown>> = {}): Record<string, unknown> {
+  return {
+    id: "pipeline-uuid-123",
+    name: "my-pipeline",
+    endpoint: "https://pipeline.example.com/ingest",
+    created_on: "2024-01-01T00:00:00.000Z",
+    modified_on: "2024-06-01T12:00:00.000Z",
+    ...overrides,
+  };
+}
+
+/** Sample Secrets Store for tests */
+export function sampleSecretsStore(overrides: Partial<Record<string, unknown>> = {}): Record<string, unknown> {
+  return {
+    id: "store-uuid-123",
+    name: "my-store",
+    status: "active",
+    created_on: "2024-01-01T00:00:00.000Z",
+    modified_on: "2024-06-01T12:00:00.000Z",
+    ...overrides,
+  };
+}
+
+/** Sample Secrets Store Secret for tests */
+export function sampleSecretsStoreSecret(overrides: Partial<Record<string, unknown>> = {}): Record<string, unknown> {
+  return {
+    name: "MY_SECRET",
+    value: "super-secret-value",
+    comment: "API key for service",
+    status: "active",
+    created_on: "2024-01-01T00:00:00.000Z",
+    modified_on: "2024-06-01T12:00:00.000Z",
+    ...overrides,
+  };
+}
