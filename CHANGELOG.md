@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.8.0] - 2026-02-24
+
+### Added
+- Stream: videos CRUD, live inputs, captions, audio tracks, signing keys, watermarks, webhooks
+- Images: CRUD, variants, signing keys, direct upload, stats
+- Calls/WebRTC: apps CRUD, TURN keys management
+- Workers AI: inference run, models list/get, fine-tuning CRUD
+- AI Gateway: CRUD, logs, datasets, evaluations
+- Vectorize: index CRUD, insert/upsert/query, vectors get/delete, metadata indexes
+- 263 new unit tests (1508 total)
+
 ## [0.7.0] - 2026-02-23
 
 ### Added
