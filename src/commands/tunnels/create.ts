@@ -17,7 +17,7 @@ export async function run(args: string[], ctx: Context): Promise<void> {
 
   const tunnel = await ctx.client.post<CfdTunnel>(
     `/accounts/${encodeURIComponent(accountId)}/cfd_tunnel`,
-    { name, tunnel_secret: crypto.randomUUID().replace(/-/g, "") },
+    { name, tunnel_secret: btoa(String.fromCharCode(...crypto.getRandomValues(new Uint8Array(32)))) },
   );
 
   ctx.output.success(`Tunnel "${tunnel.name}" created.`);

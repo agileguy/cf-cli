@@ -15,6 +15,7 @@ export async function run(args: string[], ctx: Context): Promise<void> {
   );
 
   ctx.output.success(`Service token created: ${token.id}`);
+  ctx.output.warn("Save this secret now - it cannot be retrieved later.");
   ctx.output.detail({
     "ID": token.id,
     "Name": token.name,

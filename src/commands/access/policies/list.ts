@@ -1,5 +1,5 @@
 import type { Context, AccessPolicy, ColumnDef } from "../../../types/index.js";
-import { parseArgs, getStringFlag } from "../../../utils/args.js";
+import { getStringFlag } from "../../../utils/args.js";
 import { resolveAccountScope } from "../scope.js";
 import { UsageError } from "../../../utils/errors.js";
 

@@ -22,10 +22,16 @@ export async function run(args: string[], ctx: Context): Promise<void> {
     `/accounts/${encodeURIComponent(accountId)}/devices/policy/exclude`,
   );
 
+  const existing = Array.isArray(current) ? current : [];
+  if (existing.some((e) => e.address === address)) {
+    ctx.output.warn(`Split tunnel entry "${address}" already exists.`);
+    return;
+  }
+
   const entry: SplitTunnelEntry = { address };
   if (description) entry.description = description;
 
-  const updated = [...(Array.isArray(current) ? current : []), entry];
+  const updated = [...existing, entry];
 
   await ctx.client.put<SplitTunnelEntry[]>(
     `/accounts/${encodeURIComponent(accountId)}/devices/policy/exclude`,

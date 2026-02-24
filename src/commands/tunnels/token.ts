@@ -19,8 +19,5 @@ export async function run(args: string[], ctx: Context): Promise<void> {
     `/accounts/${encodeURIComponent(accountId)}/cfd_tunnel/${encodeURIComponent(id)}/token`,
   );
 
-  ctx.output.detail({
-    "Tunnel ID": id,
-    "Token": result,
-  });
+  ctx.output.raw(result);
 }

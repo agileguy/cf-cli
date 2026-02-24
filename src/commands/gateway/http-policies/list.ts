@@ -4,6 +4,8 @@ import { resolveGatewayScope } from "../scope.js";
 export async function run(args: string[], ctx: Context): Promise<void> {
   const { basePath } = await resolveGatewayScope(args, ctx);
 
+  // Note: the Gateway rules API does not support server-side filter or pagination
+  // query parameters. All rules are fetched and filtered client-side.
   const policies = await ctx.client.get<GatewayPolicy[]>(
     `${basePath}/rules`,
   );

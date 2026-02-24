@@ -41,8 +41,9 @@ export async function resolveScope(
     basePath = `/zones/${encodeURIComponent(zoneId)}/access`;
     return { basePath, flags };
   } else {
-    basePath = `/accounts/${encodeURIComponent(accountId!)}/access`;
-    return { basePath, accountId, flags };
+    const resolvedAccountId = accountId!;
+    basePath = `/accounts/${encodeURIComponent(resolvedAccountId)}/access`;
+    return { basePath, accountId: resolvedAccountId, flags };
   }
 }
 

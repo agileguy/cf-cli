@@ -277,9 +277,8 @@ describe("tunnels token", () => {
 
     await tokenRun(["--id", TUNNEL_ID, "--account-id", ACCOUNT_ID], ctx);
 
-    expect(output.captured.details).toHaveLength(1);
-    expect(output.captured.details[0]!["Tunnel ID"]).toBe(TUNNEL_ID);
-    expect(output.captured.details[0]!["Token"]).toContain("test-token");
+    expect(output.captured.raws.length).toBeGreaterThanOrEqual(1);
+    expect(String(output.captured.raws[0])).toContain("test-token");
   });
 
   test("throws when --id is missing", async () => {

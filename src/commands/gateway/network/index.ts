@@ -6,7 +6,7 @@ import * as policies from "../network-policies/index.js";
 const USAGE = `Usage: cf gateway network <command>
 
 Commands:
-  policies    Manage gateway network policies
+  policies    List gateway network policies
 
 Run 'cf gateway network <command> --help' for more information.`;
 
