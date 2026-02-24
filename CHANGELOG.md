@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.9.0] - 2026-02-24
+
+### Added
+- Magic Transit: GRE tunnels, IPsec tunnels (+ PSK generation), sites (LANs/WANs), routes, ACLs, PCAPs (+ download)
+- Magic Network Monitoring: config get/update, rules CRUD
+- Addressing: address maps CRUD, prefixes (+ BGP/delegations), regional hostnames (zone-scoped with get)
+- Spectrum: apps CRUD, analytics (summary + bytes)
+- 207 new unit tests (1715 total)
+
 ## [0.8.0] - 2026-02-24
 
 ### Added
