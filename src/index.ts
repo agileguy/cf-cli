@@ -36,6 +36,9 @@ RESOURCES:
   turnstile      Manage Turnstile widgets (CAPTCHA)
   api-gateway    Manage API Gateway (settings, schemas)
   rate-limits    Manage Rate Limiting rules (legacy)
+  tunnels        Manage Cloudflare Tunnels (CRUD, config, connections, token)
+  devices        Manage Zero Trust devices (list, get, revoke, registrations, posture)
+  warp           Manage WARP client (settings, split-tunnels, fleet-status)
   accounts       List accounts
   user           Show current user information
   cache          Purge cached content
@@ -295,6 +298,20 @@ async function routeCommand(
     case "rate-limits":
     case "rate-limit": {
       const { run } = await import("./commands/rate-limits/index.js");
+      return run(subArgs, ctx);
+    }
+    case "tunnels":
+    case "tunnel": {
+      const { run } = await import("./commands/tunnels/index.js");
+      return run(subArgs, ctx);
+    }
+    case "devices":
+    case "device": {
+      const { run } = await import("./commands/devices/index.js");
+      return run(subArgs, ctx);
+    }
+    case "warp": {
+      const { run } = await import("./commands/warp/index.js");
       return run(subArgs, ctx);
     }
     case "completion":
