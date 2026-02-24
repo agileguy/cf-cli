@@ -19,7 +19,7 @@ export async function run(args: string[], ctx: Context): Promise<void> {
   );
 
   const version = await ctx.client.get<WorkerVersion>(
-    `/accounts/${accountId}/workers/scripts/${name}/versions/${id}`,
+    `/accounts/${accountId}/workers/scripts/${encodeURIComponent(name)}/versions/${id}`,
   );
 
   ctx.output.detail({

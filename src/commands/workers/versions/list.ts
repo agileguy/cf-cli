@@ -16,7 +16,7 @@ export async function run(args: string[], ctx: Context): Promise<void> {
   );
 
   const versions = await ctx.client.get<WorkerVersion[]>(
-    `/accounts/${accountId}/workers/scripts/${name}/versions`,
+    `/accounts/${accountId}/workers/scripts/${encodeURIComponent(name)}/versions`,
   );
 
   const columns: ColumnDef[] = [

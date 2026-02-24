@@ -49,6 +49,7 @@ export async function run(args: string[], ctx: Context): Promise<void> {
 
   await ctx.client.delete<void>(
     `/accounts/${accountId}/storage/kv/namespaces/${namespaceId}/bulk`,
+    keys,
   );
 
   ctx.output.success(`Bulk delete of ${keys.length} key(s) from namespace ${namespaceId} completed.`);

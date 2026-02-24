@@ -27,7 +27,7 @@ export async function run(args: string[], ctx: Context): Promise<void> {
   }
 
   await ctx.client.delete<void>(
-    `/accounts/${accountId}/workers/scripts/${name}`,
+    `/accounts/${accountId}/workers/scripts/${encodeURIComponent(name)}`,
   );
 
   ctx.output.success(`Worker "${name}" deleted.`);

@@ -34,7 +34,6 @@ export async function run(args: string[], ctx: Context): Promise<void> {
   // Build metadata for the worker
   const metadata: Record<string, unknown> = {
     main_module: "worker.js",
-    body_part: "worker.js",
   };
 
   if (compatDate) {
@@ -57,7 +56,7 @@ export async function run(args: string[], ctx: Context): Promise<void> {
   );
 
   const result = await ctx.client.uploadPut<WorkerScript>(
-    `/accounts/${accountId}/workers/scripts/${name}`,
+    `/accounts/${accountId}/workers/scripts/${encodeURIComponent(name)}`,
     formData,
   );
 

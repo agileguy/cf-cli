@@ -16,7 +16,7 @@ export async function run(args: string[], ctx: Context): Promise<void> {
   );
 
   const result = await ctx.client.get<WorkerCronSchedule>(
-    `/accounts/${accountId}/workers/scripts/${name}/schedules`,
+    `/accounts/${accountId}/workers/scripts/${encodeURIComponent(name)}/schedules`,
   );
 
   const schedules = result.schedules ?? [];

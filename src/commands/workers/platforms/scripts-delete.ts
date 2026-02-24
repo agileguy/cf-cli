@@ -30,7 +30,7 @@ export async function run(args: string[], ctx: Context): Promise<void> {
   }
 
   await ctx.client.delete<void>(
-    `/accounts/${accountId}/workers/dispatch/namespaces/${namespace}/scripts/${name}`,
+    `/accounts/${accountId}/workers/dispatch/namespaces/${encodeURIComponent(namespace)}/scripts/${encodeURIComponent(name)}`,
   );
 
   ctx.output.success(`Script "${name}" deleted from namespace "${namespace}".`);

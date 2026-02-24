@@ -38,14 +38,16 @@ export async function run(args: string[], ctx: Context): Promise<void> {
     body = value!;
   }
 
-  const params: Record<string, string> = {};
+  const queryParts: string[] = [];
   const ttl = getNumberFlag(flags, "ttl");
-  if (ttl) params["expiration_ttl"] = String(ttl);
+  if (ttl) queryParts.push(`expiration_ttl=${ttl}`);
   const metadata = getStringFlag(flags, "metadata");
-  if (metadata) params["metadata"] = metadata;
+  if (metadata) queryParts.push(`metadata=${encodeURIComponent(metadata)}`);
+
+  const qs = queryParts.length > 0 ? `?${queryParts.join("&")}` : "";
 
   await ctx.client.put<void>(
-    `/accounts/${accountId}/storage/kv/namespaces/${namespaceId}/values/${encodeURIComponent(key)}`,
+    `/accounts/${accountId}/storage/kv/namespaces/${namespaceId}/values/${encodeURIComponent(key)}${qs}`,
     body,
   );
 

@@ -199,8 +199,8 @@ export class CloudflareHttpClient implements ICloudflareClient {
     return response.result;
   }
 
-  async delete<T>(path: string): Promise<T> {
-    const response = await this.request<T>("DELETE", path);
+  async delete<T>(path: string, body?: unknown): Promise<T> {
+    const response = await this.request<T>("DELETE", path, body !== undefined ? { body } : undefined);
     return response.result;
   }
 

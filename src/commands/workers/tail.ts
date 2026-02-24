@@ -31,7 +31,7 @@ export async function run(args: string[], ctx: Context): Promise<void> {
   }
 
   const tail = await ctx.client.post<WorkerTail>(
-    `/accounts/${accountId}/workers/scripts/${name}/tails`,
+    `/accounts/${accountId}/workers/scripts/${encodeURIComponent(name)}/tails`,
     Object.keys(body).length > 0 ? body : undefined,
   );
 
@@ -73,19 +73,19 @@ export async function run(args: string[], ctx: Context): Promise<void> {
       // Delete the tail session
       ctx.client
         .delete<void>(
-          `/accounts/${accountId}/workers/scripts/${name}/tails/${tail.id}`,
+          `/accounts/${accountId}/workers/scripts/${encodeURIComponent(name)}/tails/${tail.id}`,
         )
         .catch(() => {
           // Best-effort cleanup
         });
     };
 
-    process.on("SIGINT", () => {
+    process.once("SIGINT", () => {
       cleanup();
       process.exit(0);
     });
 
-    process.on("SIGTERM", () => {
+    process.once("SIGTERM", () => {
       cleanup();
       process.exit(0);
     });

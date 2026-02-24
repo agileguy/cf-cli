@@ -34,7 +34,6 @@ export async function run(args: string[], ctx: Context): Promise<void> {
   // Build multipart form data
   const metadata = {
     main_module: "worker.js",
-    body_part: "worker.js",
   };
 
   const formData = new FormData();
@@ -49,7 +48,7 @@ export async function run(args: string[], ctx: Context): Promise<void> {
   );
 
   const result = await ctx.client.uploadPut<WorkerNamespaceScript>(
-    `/accounts/${accountId}/workers/dispatch/namespaces/${namespace}/scripts/${name}`,
+    `/accounts/${accountId}/workers/dispatch/namespaces/${encodeURIComponent(namespace)}/scripts/${encodeURIComponent(name)}`,
     formData,
   );
 

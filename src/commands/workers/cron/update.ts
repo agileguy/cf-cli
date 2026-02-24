@@ -23,7 +23,7 @@ export async function run(args: string[], ctx: Context): Promise<void> {
   const body = crons.map((cron) => ({ cron }));
 
   const result = await ctx.client.put<WorkerCronSchedule>(
-    `/accounts/${accountId}/workers/scripts/${name}/schedules`,
+    `/accounts/${accountId}/workers/scripts/${encodeURIComponent(name)}/schedules`,
     body,
   );
 

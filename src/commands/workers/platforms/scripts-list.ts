@@ -16,7 +16,7 @@ export async function run(args: string[], ctx: Context): Promise<void> {
   );
 
   const scripts = await ctx.client.get<WorkerNamespaceScript[]>(
-    `/accounts/${accountId}/workers/dispatch/namespaces/${namespace}/scripts`,
+    `/accounts/${accountId}/workers/dispatch/namespaces/${encodeURIComponent(namespace)}/scripts`,
   );
 
   const columns: ColumnDef[] = [

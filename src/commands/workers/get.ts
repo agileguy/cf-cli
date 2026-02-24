@@ -16,7 +16,7 @@ export async function run(args: string[], ctx: Context): Promise<void> {
   );
 
   const script = await ctx.client.get<WorkerScript>(
-    `/accounts/${accountId}/workers/scripts/${name}`,
+    `/accounts/${accountId}/workers/scripts/${encodeURIComponent(name)}`,
   );
 
   ctx.output.detail({
