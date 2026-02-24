@@ -372,7 +372,7 @@ describe("kv put", () => {
       "--key", "k",
       "--file", "/tmp/nonexistent-cf-cli-test-file.txt",
       "--account-id", ACCOUNT_ID,
-    ], ctx)).rejects.toThrow("Could not read file");
+    ], ctx)).rejects.toThrow("Cannot read file");
   });
 });
 
@@ -481,7 +481,7 @@ describe("kv bulk-write", () => {
       "--namespace-id", NS_ID,
       "--file", "/tmp/nonexistent-cf-cli-test.json",
       "--account-id", ACCOUNT_ID,
-    ], ctx)).rejects.toThrow("Could not read file");
+    ], ctx)).rejects.toThrow("Cannot read file");
   });
 
   test("throws when file contains invalid JSON", async () => {

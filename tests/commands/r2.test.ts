@@ -302,7 +302,7 @@ describe("r2 cors set", () => {
 
   test("throws when file does not exist", async () => {
     const { ctx } = r2Ctx();
-    expect(corsSetRun(["--bucket", "b", "--file", "/tmp/nonexistent-cf-test.json", "--account-id", ACCOUNT_ID], ctx)).rejects.toThrow("Could not read file");
+    expect(corsSetRun(["--bucket", "b", "--file", "/tmp/nonexistent-cf-test.json", "--account-id", ACCOUNT_ID], ctx)).rejects.toThrow("Cannot read file");
   });
 
   test("throws when file has invalid JSON", async () => {

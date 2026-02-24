@@ -28,9 +28,7 @@ export async function run(args: string[], ctx: Context): Promise<void> {
     try {
       content = readFileSync(file, "utf-8");
     } catch (err) {
-      throw new UsageError(
-        `Cannot read file: ${file}. ${(err as Error).message}`,
-      );
+      throw new UsageError(`Cannot read file: "${file}".`);
     }
   }
 

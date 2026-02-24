@@ -142,7 +142,7 @@ describe("workers deploy", () => {
     const { ctx } = workersCtx();
     expect(
       deployRun(["nonexistent-file.js", "--name", "my-worker", "--account-id", ACCOUNT_ID], ctx),
-    ).rejects.toThrow("Could not read file");
+    ).rejects.toThrow("Cannot read file");
   });
 
   test("deploys a worker script from file", async () => {

@@ -23,8 +23,8 @@ export async function run(args: string[], ctx: Context): Promise<void> {
   let content: string;
   try {
     content = await Bun.file(file).text();
-  } catch (err: unknown) {
-    throw new UsageError(`Could not read file "${file}": ${err instanceof Error ? err.message : String(err)}`);
+  } catch {
+    throw new UsageError(`Cannot read file: "${file}".`);
   }
   try {
     configData = JSON.parse(content);
