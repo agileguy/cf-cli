@@ -61,6 +61,13 @@ RESOURCES:
   mnm            Manage Magic Network Monitoring (config, rules)
   addressing     Manage IP addressing (address-maps, prefixes, regional-hostnames)
   spectrum       Manage Spectrum apps and analytics
+  radar          Cloudflare Radar (HTTP, DNS, BGP, attacks, bots, email)
+  intel          Threat intelligence (domain, IP, ASN, DNS, WHOIS)
+  url-scanner    URL Scanner (scan, search, HAR, screenshot, DOM)
+  cf1            Cloudforce One (requests, threat-events, PIRs, scans)
+  logpush        Manage Logpush jobs (zone or account scoped)
+  web-analytics  Manage Web Analytics (RUM sites, rules)
+  zaraz          Manage Zaraz (config, publish, history, export)
   cache          Purge cached content
   config         Manage CLI configuration and profiles
   completion     Generate shell completions (bash, zsh, fish)
@@ -420,12 +427,42 @@ async function routeCommand(
       const { run } = await import("./commands/spectrum/index.js");
       return run(subArgs, ctx);
     }
+    case "radar": {
+      const { run } = await import("./commands/radar/index.js");
+      return run(subArgs, ctx);
+    }
+    case "intel": {
+      const { run } = await import("./commands/intel/index.js");
+      return run(subArgs, ctx);
+    }
+    case "url-scanner": {
+      const { run } = await import("./commands/url-scanner/index.js");
+      return run(subArgs, ctx);
+    }
+    case "cf1":
+    case "cloudforce-one": {
+      const { run } = await import("./commands/cf1/index.js");
+      return run(subArgs, ctx);
+    }
     case "magic-transit": {
       const { run } = await import("./commands/magic-transit/index.js");
       return run(subArgs, ctx);
     }
     case "mnm": {
       const { run } = await import("./commands/mnm/index.js");
+      return run(subArgs, ctx);
+    }
+    case "logpush": {
+      const { run } = await import("./commands/logpush/index.js");
+      return run(subArgs, ctx);
+    }
+    case "web-analytics":
+    case "rum": {
+      const { run } = await import("./commands/web-analytics/index.js");
+      return run(subArgs, ctx);
+    }
+    case "zaraz": {
+      const { run } = await import("./commands/zaraz/index.js");
       return run(subArgs, ctx);
     }
     default:

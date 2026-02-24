@@ -2144,3 +2144,327 @@ export interface SpectrumAnalytics {
   totals?: Record<string, unknown> | undefined;
   time_intervals?: string[][] | undefined;
 }
+
+// ─── Radar Types ──────────────────────────────────────────────────────────
+
+/** Radar HTTP/DNS/BGP/Attacks summary (generic envelope) */
+export interface RadarSummary {
+  summary_0?: Record<string, unknown> | undefined;
+  meta?: Record<string, unknown> | undefined;
+  [key: string]: unknown;
+}
+
+/** Radar Verified Bot entry */
+export interface RadarBot {
+  name: string;
+  category?: string | undefined;
+  owner?: string | undefined;
+  [key: string]: unknown;
+}
+
+/** Radar ASN entity */
+export interface RadarASN {
+  asn: number;
+  name: string;
+  country?: string | undefined;
+  country_code?: string | undefined;
+  website?: string | undefined;
+  org?: string | undefined;
+  aka?: string | undefined;
+  [key: string]: unknown;
+}
+
+/** Radar location entity */
+export interface RadarLocation {
+  code: string;
+  name: string;
+  region?: string | undefined;
+  subregion?: string | undefined;
+  [key: string]: unknown;
+}
+
+/** Radar dataset entry */
+export interface RadarDataset {
+  id: string;
+  title?: string | undefined;
+  description?: string | undefined;
+  type?: string | undefined;
+  tags?: string[] | undefined;
+  [key: string]: unknown;
+}
+
+/** Radar annotation */
+export interface RadarAnnotation {
+  id: string;
+  description?: string | undefined;
+  data_source?: string | undefined;
+  start_date?: string | undefined;
+  end_date?: string | undefined;
+  event_type?: string | undefined;
+  asns?: number[] | undefined;
+  locations?: string[] | undefined;
+  [key: string]: unknown;
+}
+
+// ─── Intel Types ──────────────────────────────────────────────────────────
+
+/** Intel domain lookup result */
+export interface IntelDomain {
+  domain?: string | undefined;
+  risk_score?: number | undefined;
+  risk_types?: Record<string, unknown>[] | undefined;
+  content_categories?: Record<string, unknown>[] | undefined;
+  additional_information?: Record<string, unknown> | undefined;
+  application?: Record<string, unknown> | undefined;
+  inherited?: Record<string, unknown> | undefined;
+  resolves_to_refs?: Record<string, unknown>[] | undefined;
+  [key: string]: unknown;
+}
+
+/** Intel IP lookup result */
+export interface IntelIP {
+  ip?: string | undefined;
+  risk_score?: number | undefined;
+  risk_types?: Record<string, unknown>[] | undefined;
+  belongs_to_ref?: Record<string, unknown> | undefined;
+  ip_lists?: Record<string, unknown>[] | undefined;
+  [key: string]: unknown;
+}
+
+/** Intel ASN lookup result */
+export interface IntelASN {
+  asn: number;
+  description?: string | undefined;
+  country?: string | undefined;
+  type?: string | undefined;
+  risk_score?: number | undefined;
+  [key: string]: unknown;
+}
+
+/** Intel passive DNS result */
+export interface IntelDNS {
+  reverse_records?: Record<string, unknown>[] | undefined;
+  [key: string]: unknown;
+}
+
+/** Intel WHOIS result */
+export interface IntelWHOIS {
+  domain?: string | undefined;
+  registrar?: string | undefined;
+  registrant_org?: string | undefined;
+  registrant_country?: string | undefined;
+  created_date?: string | undefined;
+  updated_date?: string | undefined;
+  expires_date?: string | undefined;
+  nameservers?: string[] | undefined;
+  [key: string]: unknown;
+}
+
+/** Intel IP list entry */
+export interface IntelIPList {
+  id?: number | undefined;
+  name?: string | undefined;
+  description?: string | undefined;
+  [key: string]: unknown;
+}
+
+/** Intel attack surface report */
+export interface IntelAttackSurface {
+  type?: string | undefined;
+  data?: Record<string, unknown>[] | undefined;
+  [key: string]: unknown;
+}
+
+// ─── URL Scanner Types ────────────────────────────────────────────────────
+
+/** URL Scanner scan result */
+export interface URLScanResult {
+  uuid: string;
+  url?: string | undefined;
+  visibility?: string | undefined;
+  status?: string | undefined;
+  created_at?: string | undefined;
+  finished_at?: string | undefined;
+  country?: string | undefined;
+  verdicts?: Record<string, unknown> | undefined;
+  certificates?: Record<string, unknown>[] | undefined;
+  geo?: Record<string, unknown> | undefined;
+  performance?: Record<string, unknown> | undefined;
+  technologies?: Record<string, unknown>[] | undefined;
+  [key: string]: unknown;
+}
+
+/** URL Scanner search result list */
+export interface URLScanSearch {
+  tasks?: URLScanResult[] | undefined;
+  [key: string]: unknown;
+}
+
+/** URL Scanner HAR archive */
+export interface URLScanHAR {
+  log?: Record<string, unknown> | undefined;
+  [key: string]: unknown;
+}
+
+/** URL Scanner DOM result */
+export interface URLScanDOM {
+  content?: string | undefined;
+  [key: string]: unknown;
+}
+
+// ─── Cloudforce One (CF1) Types ───────────────────────────────────────────
+
+/** CF1 request entry */
+export interface CF1Request {
+  id: string;
+  title?: string | undefined;
+  status?: string | undefined;
+  priority?: string | undefined;
+  created_at?: string | undefined;
+  updated_at?: string | undefined;
+  content?: string | undefined;
+  tlp?: string | undefined;
+  request_type?: string | undefined;
+  summary?: string | undefined;
+  [key: string]: unknown;
+}
+
+/** CF1 threat event */
+export interface CF1ThreatEvent {
+  id: string;
+  title?: string | undefined;
+  description?: string | undefined;
+  event_type?: string | undefined;
+  created_at?: string | undefined;
+  [key: string]: unknown;
+}
+
+/** CF1 Priority Intelligence Requirement */
+export interface CF1PIR {
+  id: string;
+  title?: string | undefined;
+  description?: string | undefined;
+  priority?: string | undefined;
+  status?: string | undefined;
+  created_at?: string | undefined;
+  [key: string]: unknown;
+}
+
+/** CF1 scan entry */
+export interface CF1Scan {
+  id: string;
+  status?: string | undefined;
+  target?: string | undefined;
+  scan_type?: string | undefined;
+  created_at?: string | undefined;
+  [key: string]: unknown;
+}
+
+// ─── Logpush Types ────────────────────────────────────────────────────────
+
+/** Logpush Job */
+export interface LogpushJob {
+  id: number;
+  name?: string | undefined;
+  enabled: boolean;
+  dataset: string;
+  logpull_options?: string | undefined;
+  destination_conf: string;
+  frequency?: string | undefined;
+  kind?: string | undefined;
+  last_complete?: string | undefined;
+  last_error?: string | undefined;
+  error_message?: string | undefined;
+  max_upload_bytes?: number | undefined;
+  max_upload_records?: number | undefined;
+  max_upload_interval_seconds?: number | undefined;
+  output_options?: Record<string, unknown> | undefined;
+  filter?: Record<string, unknown> | undefined;
+}
+
+/** Logpush Dataset */
+export interface LogpushDataset {
+  id: string;
+  name?: string | undefined;
+  description?: string | undefined;
+}
+
+/** Logpush Ownership Validation */
+export interface LogpushOwnershipValidation {
+  valid: boolean;
+  filename?: string | undefined;
+  message?: string | undefined;
+}
+
+/** Logpush Instant Logs session */
+export interface LogpushInstantLogs {
+  session_id?: string | undefined;
+  destination_conf?: string | undefined;
+  fields?: string | undefined;
+  filter?: Record<string, unknown> | undefined;
+  sample?: number | undefined;
+}
+
+// ─── Web Analytics Types ──────────────────────────────────────────────────
+
+/** Web Analytics Site */
+export interface WebAnalyticsSite {
+  site_tag: string;
+  site_token?: string | undefined;
+  auto_install?: boolean | undefined;
+  host?: string | undefined;
+  zone_tag?: string | undefined;
+  snippet?: string | undefined;
+  created?: string | undefined;
+  rules?: WebAnalyticsRule[] | undefined;
+  ruleset?: {
+    id?: string | undefined;
+    zone_tag?: string | undefined;
+    zone_name?: string | undefined;
+    enabled?: boolean | undefined;
+  } | undefined;
+}
+
+/** Web Analytics Rule */
+export interface WebAnalyticsRule {
+  id: string;
+  host?: string | undefined;
+  paths?: string[] | undefined;
+  inclusive?: boolean | undefined;
+  is_paused?: boolean | undefined;
+  created?: string | undefined;
+  priority?: number | undefined;
+}
+
+// ─── Zaraz Types ──────────────────────────────────────────────────────────
+
+/** Zaraz Config (opaque config object) */
+export interface ZarazConfig {
+  tools?: Record<string, unknown> | undefined;
+  triggers?: Record<string, unknown> | undefined;
+  variables?: Record<string, unknown> | undefined;
+  consent?: Record<string, unknown> | undefined;
+  settings?: Record<string, unknown> | undefined;
+  [key: string]: unknown;
+}
+
+/** Zaraz Publish Result */
+export interface ZarazPublishResult {
+  success?: boolean | undefined;
+  message?: string | undefined;
+}
+
+/** Zaraz Workflow */
+export interface ZarazWorkflow {
+  workflow?: string | undefined;
+  [key: string]: unknown;
+}
+
+/** Zaraz History Entry */
+export interface ZarazHistoryEntry {
+  id: number;
+  description?: string | undefined;
+  created_at?: string | undefined;
+  updated_at?: string | undefined;
+  user_id?: string | undefined;
+}
