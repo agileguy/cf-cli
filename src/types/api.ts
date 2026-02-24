@@ -1887,3 +1887,260 @@ export interface VectorizeMutationResult {
   mutation_id?: string | undefined;
   count: number;
 }
+
+/** Magic Transit GRE Tunnel */
+export interface MagicGRETunnel {
+  id: string;
+  name: string;
+  customer_gre_endpoint: string;
+  cloudflare_gre_endpoint: string;
+  interface_address: string;
+  description?: string | undefined;
+  ttl?: number | undefined;
+  mtu?: number | undefined;
+  health_check?: {
+    enabled?: boolean | undefined;
+    target?: string | undefined;
+    type?: string | undefined;
+  } | undefined;
+  created_on?: string | undefined;
+  modified_on?: string | undefined;
+}
+
+/** Magic Transit IPsec Tunnel */
+export interface MagicIPsecTunnel {
+  id: string;
+  name: string;
+  customer_endpoint: string;
+  cloudflare_endpoint: string;
+  interface_address: string;
+  description?: string | undefined;
+  health_check?: {
+    enabled?: boolean | undefined;
+    target?: string | undefined;
+    type?: string | undefined;
+  } | undefined;
+  allow_null_cipher?: boolean | undefined;
+  psk_metadata?: {
+    last_generated_on?: string | undefined;
+  } | undefined;
+  replay_protection?: boolean | undefined;
+  created_on?: string | undefined;
+  modified_on?: string | undefined;
+}
+
+/** Magic Transit IPsec PSK */
+export interface MagicIPsecPSK {
+  psk: string;
+  psk_metadata: {
+    last_generated_on: string;
+  };
+}
+
+/** Magic Transit Site */
+export interface MagicSite {
+  id: string;
+  name: string;
+  description?: string | undefined;
+  connector_id?: string | undefined;
+  ha_mode?: boolean | undefined;
+  location?: {
+    lat?: string | undefined;
+    lon?: string | undefined;
+  } | undefined;
+  created_on?: string | undefined;
+  modified_on?: string | undefined;
+}
+
+/** Magic Transit Route */
+export interface MagicRoute {
+  id: string;
+  prefix: string;
+  priority: number;
+  description?: string | undefined;
+  nexthop?: string | undefined;
+  scope?: {
+    colo_names?: string[] | undefined;
+    colo_regions?: string[] | undefined;
+  } | undefined;
+  weight?: number | undefined;
+  created_on?: string | undefined;
+  modified_on?: string | undefined;
+}
+
+/** Magic Transit ACL */
+export interface MagicACL {
+  id: string;
+  name: string;
+  description?: string | undefined;
+  forward_locally?: boolean | undefined;
+  lan_1?: {
+    lan_id: string;
+    lan_name?: string | undefined;
+    ports?: number[] | undefined;
+    subnets?: string[] | undefined;
+  } | undefined;
+  lan_2?: {
+    lan_id: string;
+    lan_name?: string | undefined;
+    ports?: number[] | undefined;
+    subnets?: string[] | undefined;
+  } | undefined;
+  protocols?: string[] | undefined;
+  created_on?: string | undefined;
+  modified_on?: string | undefined;
+}
+
+/** Magic Transit PCAP */
+export interface MagicPCAP {
+  id: string;
+  type: string;
+  system: string;
+  status: string;
+  filter_v1?: {
+    source_address?: string | undefined;
+    destination_address?: string | undefined;
+    source_port?: number | undefined;
+    destination_port?: number | undefined;
+    protocol?: number | undefined;
+  } | undefined;
+  time_limit?: number | undefined;
+  byte_limit?: number | undefined;
+  packet_limit?: number | undefined;
+  colo_name?: string | undefined;
+  error_message?: string | undefined;
+  created_on?: string | undefined;
+  modified_on?: string | undefined;
+}
+
+/** Magic Network Monitoring Config */
+export interface MNMConfig {
+  name?: string | undefined;
+  default_sampling?: number | undefined;
+  router_sampling?: Record<string, number> | undefined;
+}
+
+/** Magic Network Monitoring Rule */
+export interface MNMRule {
+  id: string;
+  name: string;
+  description?: string | undefined;
+  prefixes?: string[] | undefined;
+  automatic_advertisement?: boolean | undefined;
+  duration?: string | undefined;
+  bandwidth_threshold?: number | undefined;
+  packet_threshold?: number | undefined;
+  created_on?: string | undefined;
+  modified_on?: string | undefined;
+}
+
+/** Address Map */
+export interface AddressMap {
+  id: string;
+  description?: string | undefined;
+  default_sni?: string | undefined;
+  enabled?: boolean | undefined;
+  can_delete?: boolean | undefined;
+  can_modify_ips?: boolean | undefined;
+  ips?: { type: string; ip: string }[] | undefined;
+  memberships?: { kind: string; identifier: string }[] | undefined;
+  created_at?: string | undefined;
+  modified_at?: string | undefined;
+}
+
+/** Address Prefix */
+export interface AddressPrefix {
+  id: string;
+  cidr: string;
+  asn?: number | undefined;
+  loa_document_id?: string | undefined;
+  description?: string | undefined;
+  account_id?: string | undefined;
+  approved?: string | undefined;
+  on_demand_enabled?: boolean | undefined;
+  on_demand_locked?: boolean | undefined;
+  advertised?: boolean | undefined;
+  advertised_modified_at?: string | undefined;
+  created_at?: string | undefined;
+  modified_at?: string | undefined;
+}
+
+/** BGP Prefix */
+export interface BGPPrefix {
+  id: string;
+  cidr: string;
+  signaling?: {
+    status?: string | undefined;
+    modified_at?: string | undefined;
+  } | undefined;
+  on_demand?: {
+    advertised?: boolean | undefined;
+    advertised_modified_at?: string | undefined;
+  } | undefined;
+  bgp_signal_opts?: {
+    learned?: {
+      asn_prepend_count?: number | undefined;
+      communities?: string[] | undefined;
+    } | undefined;
+  } | undefined;
+  created_at?: string | undefined;
+  modified_at?: string | undefined;
+}
+
+/** Prefix Delegation */
+export interface PrefixDelegation {
+  id: string;
+  cidr: string;
+  delegated_account_id: string;
+  parent_prefix_id?: string | undefined;
+  description?: string | undefined;
+  created_at?: string | undefined;
+  modified_at?: string | undefined;
+}
+
+/** Regional Hostname */
+export interface RegionalHostname {
+  hostname: string;
+  region_key: string;
+  created_on?: string | undefined;
+  modified_on?: string | undefined;
+}
+
+/** Spectrum App */
+export interface SpectrumApp {
+  id: string;
+  protocol: string;
+  dns: {
+    type: string;
+    name: string;
+  };
+  origin_direct?: string[] | undefined;
+  origin_port?: number | string | undefined;
+  origin_dns?: {
+    name: string;
+  } | undefined;
+  ip_firewall?: boolean | undefined;
+  proxy_protocol?: string | undefined;
+  tls?: string | undefined;
+  edge_ips?: {
+    type?: string | undefined;
+    connectivity?: string | undefined;
+  } | undefined;
+  argo_smart_routing?: boolean | undefined;
+  created_on?: string | undefined;
+  modified_on?: string | undefined;
+}
+
+/** Spectrum Analytics (summary / bytes) */
+export interface SpectrumAnalytics {
+  dimensions?: Record<string, unknown>[] | undefined;
+  metrics?: Record<string, unknown> | undefined;
+  data?: Record<string, unknown>[] | undefined;
+  data_lag?: number | undefined;
+  min?: Record<string, unknown> | undefined;
+  max?: Record<string, unknown> | undefined;
+  query?: Record<string, unknown> | undefined;
+  rows?: number | undefined;
+  totals?: Record<string, unknown> | undefined;
+  time_intervals?: string[][] | undefined;
+}
