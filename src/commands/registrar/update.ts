@@ -20,6 +20,10 @@ export async function run(args: string[], ctx: Context): Promise<void> {
   if (flags["locked"] !== undefined) body.locked = getBoolFlag(flags, "locked");
   if (flags["privacy"] !== undefined) body.privacy = getBoolFlag(flags, "privacy");
 
+  if (Object.keys(body).length === 0) {
+    throw new UsageError("At least one of --auto-renew, --locked, or --privacy is required.");
+  }
+
   const reg = await ctx.client.put<RegistrarDomain>(
     `/accounts/${encodeURIComponent(accountId)}/registrar/domains/${encodeURIComponent(domain)}`,
     body,

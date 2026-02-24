@@ -107,6 +107,10 @@ async function updateCmd(args: string[], ctx: Context): Promise<void> {
   if (name) body.name = name;
   if (url) body.url = url;
 
+  if (Object.keys(body).length === 0) {
+    throw new UsageError("At least one of --name or --url is required.");
+  }
+
   const webhook = await ctx.client.put<AlertWebhook>(
     `/accounts/${encodeURIComponent(accountId)}/alerting/v3/destinations/webhooks/${encodeURIComponent(id)}`,
     body,
