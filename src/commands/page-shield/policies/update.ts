@@ -20,7 +20,7 @@ export async function run(args: string[], ctx: Context): Promise<void> {
   try {
     content = await Bun.file(file).text();
   } catch {
-    throw new UsageError(`Could not read file: ${file}`);
+    throw new UsageError(`Cannot read file: "${file}".`);
   }
 
   let body: unknown;

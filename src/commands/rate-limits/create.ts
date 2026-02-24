@@ -2,8 +2,6 @@ import type { Context, RateLimitRule } from "../../types/index.js";
 import { parseArgs, getStringFlag } from "../../utils/args.js";
 import { resolveZoneId } from "../../utils/zone-resolver.js";
 import { UsageError } from "../../utils/errors.js";
-import { readFileSync } from "node:fs";
-
 export async function run(args: string[], ctx: Context): Promise<void> {
   const { flags } = parseArgs(args);
 
@@ -17,7 +15,7 @@ export async function run(args: string[], ctx: Context): Promise<void> {
 
   let content: string;
   try {
-    content = readFileSync(file, "utf-8");
+    content = await Bun.file(file).text();
   } catch {
     throw new UsageError(`Cannot read file: "${file}".`);
   }

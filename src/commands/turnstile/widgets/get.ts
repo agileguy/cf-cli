@@ -21,7 +21,6 @@ export async function run(args: string[], ctx: Context): Promise<void> {
 
   ctx.output.detail({
     "Sitekey": widget.sitekey,
-    "Secret": widget.secret,
     "Name": widget.name,
     "Mode": widget.mode,
     "Domains": widget.domains.join(", "),

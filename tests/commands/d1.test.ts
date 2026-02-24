@@ -328,7 +328,7 @@ describe("d1 import", () => {
 
   test("throws when file does not exist", async () => {
     const { ctx } = d1Ctx();
-    expect(d1ImportRun(["--database", DB_ID, "--file", "/tmp/nonexistent-cf-d1-test.sql", "--account-id", ACCOUNT_ID], ctx)).rejects.toThrow("Could not read file");
+    expect(d1ImportRun(["--database", DB_ID, "--file", "/tmp/nonexistent-cf-d1-test.sql", "--account-id", ACCOUNT_ID], ctx)).rejects.toThrow("Cannot read file");
   });
 });
 

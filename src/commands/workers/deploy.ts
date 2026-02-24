@@ -25,10 +25,8 @@ export async function run(args: string[], ctx: Context): Promise<void> {
   let scriptContent: string;
   try {
     scriptContent = readFileSync(file, "utf-8");
-  } catch (err) {
-    throw new UsageError(
-      `Could not read file "${file}": ${err instanceof Error ? err.message : String(err)}`,
-    );
+  } catch {
+    throw new UsageError(`Cannot read file: "${file}".`);
   }
 
   // Build metadata for the worker

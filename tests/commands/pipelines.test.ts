@@ -151,7 +151,7 @@ describe("pipelines create", () => {
       "--name", "x",
       "--file", "/tmp/nonexistent-cf-cli-pipeline-test.json",
       "--account-id", ACCOUNT_ID,
-    ], ctx)).rejects.toThrow("Could not read file");
+    ], ctx)).rejects.toThrow("Cannot read file");
   });
 
   test("throws when file contains invalid JSON", async () => {

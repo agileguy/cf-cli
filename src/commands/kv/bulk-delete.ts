@@ -22,7 +22,7 @@ export async function run(args: string[], ctx: Context): Promise<void> {
   const file = Bun.file(filePath);
   const exists = await file.exists();
   if (!exists) {
-    throw new UsageError(`Could not read file: ${filePath}`);
+    throw new UsageError(`Cannot read file: "${filePath}".`);
   }
 
   const content = await file.text();

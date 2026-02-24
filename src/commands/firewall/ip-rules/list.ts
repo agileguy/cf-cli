@@ -15,6 +15,8 @@ export async function run(args: string[], ctx: Context): Promise<void> {
     `/zones/${encodeURIComponent(zoneId)}/firewall/access_rules/rules`,
   );
 
+  // Both "Target" and "Value" columns use the key "configuration" intentionally:
+  // each extracts a different property from the same configuration object via transform.
   const columns: ColumnDef[] = [
     { key: "id", header: "ID", width: 34 },
     { key: "mode", header: "Mode", width: 14 },

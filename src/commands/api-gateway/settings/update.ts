@@ -9,18 +9,23 @@ export async function run(args: string[], ctx: Context): Promise<void> {
   const zone = getStringFlag(flags, "zone");
   if (!zone) throw new UsageError("--zone <zone> is required.");
 
-  const enabled = getBoolFlag(flags, "enabled");
-
   const zoneId = await resolveZoneId(zone, ctx.client);
 
-  const body: Record<string, unknown> = {
-    enabled,
-  };
+  const body: Record<string, unknown> = {};
+
+  if (flags["enabled"] !== undefined) {
+    body["enabled"] = getBoolFlag(flags, "enabled");
+  }
+
+  if (Object.keys(body).length === 0) {
+    throw new UsageError("At least one setting flag is required (--enabled).");
+  }
 
   await ctx.client.put<APIGatewaySettings>(
     `/zones/${encodeURIComponent(zoneId)}/api_gateway/settings`,
     body,
   );
 
+  const enabled = body["enabled"] as boolean;
   ctx.output.success(`API Gateway ${enabled ? "enabled" : "disabled"} for zone "${zone}".`);
 }

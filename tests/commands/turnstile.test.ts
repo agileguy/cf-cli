@@ -93,6 +93,21 @@ describe("turnstile widgets get", () => {
     expect(output.captured.details[0]!["Mode"]).toBe("managed");
   });
 
+  test("does not expose secret in output", async () => {
+    const widget = sampleTurnstileWidget();
+    const { ctx, output } = tsCtx({
+      get: async (path: string) => {
+        if (path === "/accounts") return [{ id: ACCOUNT_ID }];
+        return widget;
+      },
+    });
+
+    await getRun(["--sitekey", SITEKEY, "--account-id", ACCOUNT_ID], ctx);
+
+    expect(output.captured.details).toHaveLength(1);
+    expect(output.captured.details[0]!["Secret"]).toBeUndefined();
+  });
+
   test("throws when --sitekey is missing", async () => {
     const { ctx } = tsCtx();
     expect(getRun([], ctx)).rejects.toThrow("--sitekey");

@@ -20,7 +20,7 @@ export async function run(args: string[], ctx: Context): Promise<void> {
   const body: Record<string, unknown> = {
     urls: [url],
     configurations: ips.map((ip) => ({
-      target: ip.includes("/") ? "ip_range" : "ip",
+      target: ip.includes("/") || ip.includes(":") ? (ip.includes("/") ? "ip_range" : "ip6") : "ip",
       value: ip,
     })),
   };
