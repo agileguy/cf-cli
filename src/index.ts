@@ -23,6 +23,13 @@ RESOURCES:
   workers        Manage Workers (scripts, routes, cron, domains, versions, platforms, tail)
   kv             Manage Workers KV (namespaces, keys, bulk operations)
   durable-objects  Manage Durable Objects (namespaces, objects)
+  r2             Manage R2 storage (buckets, CORS, lifecycle, custom domains, events, metrics)
+  d1             Manage D1 databases (CRUD, query, import, export)
+  pages          Manage Pages projects (deployments, domains)
+  queues         Manage Queues (CRUD, consumers, messages)
+  hyperdrive     Manage Hyperdrive configurations (database connection pooling)
+  pipelines      Manage Pipelines (data ingestion)
+  secrets-store  Manage Secrets Store (stores, secrets)
   accounts       List accounts
   user           Show current user information
   cache          Purge cached content
@@ -224,6 +231,37 @@ async function routeCommand(
     }
     case "config": {
       const { run } = await import("./commands/config/index.js");
+      return run(subArgs, ctx);
+    }
+    case "r2": {
+      const { run } = await import("./commands/r2/index.js");
+      return run(subArgs, ctx);
+    }
+    case "d1": {
+      const { run } = await import("./commands/d1/index.js");
+      return run(subArgs, ctx);
+    }
+    case "pages":
+    case "page": {
+      const { run } = await import("./commands/pages/index.js");
+      return run(subArgs, ctx);
+    }
+    case "queues":
+    case "queue": {
+      const { run } = await import("./commands/queues/index.js");
+      return run(subArgs, ctx);
+    }
+    case "hyperdrive": {
+      const { run } = await import("./commands/hyperdrive/index.js");
+      return run(subArgs, ctx);
+    }
+    case "pipelines":
+    case "pipeline": {
+      const { run } = await import("./commands/pipelines/index.js");
+      return run(subArgs, ctx);
+    }
+    case "secrets-store": {
+      const { run } = await import("./commands/secrets-store/index.js");
       return run(subArgs, ctx);
     }
     case "completion":
