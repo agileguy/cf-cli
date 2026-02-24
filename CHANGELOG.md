@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.4.0] - 2026-02-23
+
+### Added
+- R2 buckets CRUD + cors, lifecycle, custom-domains, event-notifications, metrics
+- D1 databases: list, get, create, update, delete, query (table/json/csv), export, import
+- Pages projects CRUD + deployments (list/get/delete/retry/rollback) + domains
+- Queues CRUD + consumers management + message sending
+- Hyperdrive CRUD with connection string parsing
+- Pipelines: list, get, create from JSON config, delete
+- Secrets Store: stores CRUD + secrets CRUD
+- Shared formatBytes utility
+- 238 new unit tests (603 total)
+
 ## [0.3.0] - 2026-02-23
 
 ### Added
