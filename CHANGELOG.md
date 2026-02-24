@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.7.0] - 2026-02-23
+
+### Added
+- SSL: analyze, universal, advanced, custom certs, client certs, keyless, origin CA, mTLS, verification, DCV delegation, recommendations, post-quantum
+- Load Balancers: CRUD + pools (preview/health) + monitors (preview/references) + regions
+- Healthchecks: CRUD + preview
+- Cache Settings: cache-reserve, tiered-cache, argo smart routing
+- Waiting Rooms: CRUD + status + events CRUD + rules upsert
+- Observatory: pages list, speed tests CRUD, schedules CRUD
+- 251 new unit tests (1245 total)
+
 ## [0.6.0] - 2026-02-23
 
 ### Added
