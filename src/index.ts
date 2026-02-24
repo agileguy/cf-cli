@@ -39,6 +39,8 @@ RESOURCES:
   tunnels        Manage Cloudflare Tunnels (CRUD, config, connections, token)
   devices        Manage Zero Trust devices (list, get, revoke, registrations, posture)
   warp           Manage WARP client (settings, split-tunnels, fleet-status)
+  access         Manage Zero Trust Access (apps, policies, groups, IdPs, certs)
+  gateway        Manage Zero Trust Gateway (DNS/HTTP/network policies, DLP)
   accounts       List accounts
   user           Show current user information
   cache          Purge cached content
@@ -312,6 +314,15 @@ async function routeCommand(
     }
     case "warp": {
       const { run } = await import("./commands/warp/index.js");
+      return run(subArgs, ctx);
+    }
+    case "access": {
+      const { run } = await import("./commands/access/index.js");
+      return run(subArgs, ctx);
+    }
+    case "gateway":
+    case "gw": {
+      const { run } = await import("./commands/gateway/index.js");
       return run(subArgs, ctx);
     }
     case "completion":
