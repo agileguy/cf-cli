@@ -1,7 +1,7 @@
 import { describe, test, expect, beforeEach, afterEach } from "bun:test";
 import { mkdirSync, writeFileSync, readFileSync, rmSync, existsSync } from "fs";
 import { join } from "path";
-import { tmpdir } from "os";
+import { homedir } from "os";
 import {
   readConfig,
   writeConfig,
@@ -186,6 +186,88 @@ describe("config", () => {
       expect(restored.profiles["prod"]!.account_id).toBe("acc123");
       expect(restored.defaults.output).toBe("json");
       expect(restored.defaults.per_page).toBe(50);
+    });
+  });
+
+  describe("writeConfig / readConfig filesystem round-trip", () => {
+    const cfDir = join(homedir(), ".cf");
+    const cfFile = join(cfDir, "config.json");
+    const backupFile = join(cfDir, "config.json.test-backup");
+
+    // Save any existing config before tests run
+    beforeEach(() => {
+      if (existsSync(cfFile)) {
+        const existing = readFileSync(cfFile, "utf-8");
+        writeFileSync(backupFile, existing, { mode: 0o600 });
+      }
+    });
+
+    // Restore original config after each test
+    afterEach(() => {
+      if (existsSync(backupFile)) {
+        const backup = readFileSync(backupFile, "utf-8");
+        writeFileSync(cfFile, backup, { mode: 0o600 });
+        rmSync(backupFile);
+      } else if (existsSync(cfFile)) {
+        rmSync(cfFile);
+      }
+    });
+
+    test("writeConfig then readConfig returns the same data", () => {
+      const config = makeConfig({
+        default_profile: "roundtrip",
+        profiles: {
+          roundtrip: {
+            auth_method: "token",
+            token: "rt-tok-abc123",
+            account_id: "acct-rt",
+          },
+        },
+        defaults: {
+          output: "json",
+          no_color: true,
+          per_page: 100,
+        },
+      });
+
+      writeConfig(config);
+      const restored = readConfig();
+
+      expect(restored.version).toBe(1);
+      expect(restored.default_profile).toBe("roundtrip");
+      expect(restored.profiles["roundtrip"]!.token).toBe("rt-tok-abc123");
+      expect(restored.profiles["roundtrip"]!.account_id).toBe("acct-rt");
+      expect(restored.defaults.output).toBe("json");
+      expect(restored.defaults.no_color).toBe(true);
+      expect(restored.defaults.per_page).toBe(100);
+    });
+
+    test("writeConfig writes to same filesystem as config dir (no cross-device rename)", () => {
+      // This verifies Fix #1: temp file is in CONFIG_DIR not /tmp
+      const config = makeConfig({
+        profiles: {
+          xdev: { auth_method: "token", token: "xdev-tok" },
+        },
+      });
+
+      // Should not throw EXDEV on Linux when ~/.cf is on a separate filesystem
+      expect(() => writeConfig(config)).not.toThrow();
+
+      // Verify the file was written and is readable
+      expect(existsSync(cfFile)).toBe(true);
+      const content = readFileSync(cfFile, "utf-8");
+      const parsed = JSON.parse(content) as Config;
+      expect(parsed.profiles["xdev"]!.token).toBe("xdev-tok");
+    });
+
+    test("readConfig returns default config after writeConfig with corrupted file", () => {
+      // Simulate a corrupted config file
+      mkdirSync(cfDir, { recursive: true });
+      writeFileSync(cfFile, "not valid json", { mode: 0o600 });
+
+      const result = readConfig();
+      expect(result.version).toBe(1);
+      expect(result.profiles).toEqual({});
     });
   });
 });

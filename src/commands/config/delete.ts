@@ -31,12 +31,13 @@ export async function run(args: string[], ctx: Context): Promise<void> {
     return;
   }
 
-  const updated = deleteProfile(config, profileName);
+  const deletedConfig = deleteProfile(config, profileName);
 
-  // If we deleted the default profile, reset default
+  // If we deleted the default profile, reset default — spread to avoid mutating the return value
+  let updated = deletedConfig;
   if (profileName === config.default_profile) {
-    const remaining = Object.keys(updated.profiles);
-    updated.default_profile = remaining[0] ?? "default";
+    const remaining = Object.keys(deletedConfig.profiles);
+    updated = { ...deletedConfig, default_profile: remaining[0] ?? "default" };
   }
 
   writeConfig(updated);

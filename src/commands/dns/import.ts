@@ -40,10 +40,21 @@ export async function run(args: string[], ctx: Context): Promise<void> {
     formData.set("proxied", "true");
   }
 
-  const result = await ctx.client.upload(
+  const raw = await ctx.client.upload(
     `/zones/${zoneId}/dns_records/import`,
     formData,
-  ) as DnsImportResult;
+  );
+
+  // Validate shape before using — the upload() return type is unknown
+  if (
+    typeof raw !== "object" ||
+    raw === null ||
+    typeof (raw as Record<string, unknown>)["recs_added"] !== "number" ||
+    typeof (raw as Record<string, unknown>)["total_records_parsed"] !== "number"
+  ) {
+    throw new Error(`DNS import: unexpected API response shape: ${JSON.stringify(raw)}`);
+  }
+  const result = raw as DnsImportResult;
 
   ctx.output.success(
     `DNS import complete: ${result.recs_added} records added out of ${result.total_records_parsed} parsed.`,

@@ -19,6 +19,17 @@ export async function run(args: string[], ctx: Context): Promise<void> {
     throw new UsageError("--profile <name> is required.");
   }
 
+  // Validate profile name: alphanumeric + hyphens only, reject prototype-polluting keys
+  if (!/^[a-zA-Z0-9][a-zA-Z0-9-]*$/.test(profileName)) {
+    throw new UsageError(
+      `Invalid profile name: "${profileName}". Profile names must start with a letter or digit and contain only alphanumeric characters and hyphens.`,
+    );
+  }
+  const RESERVED_KEYS = new Set(["__proto__", "constructor", "prototype"]);
+  if (RESERVED_KEYS.has(profileName)) {
+    throw new UsageError(`Invalid profile name: "${profileName}". That name is reserved.`);
+  }
+
   // Determine auth method
   let authMethod: "token" | "key";
   if (token) {

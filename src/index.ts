@@ -113,12 +113,7 @@ async function main(): Promise<void> {
   const { flags, resource, action, rest: _rest } = parseGlobalFlags();
 
   // Handle --help or no args
-  if (getBoolFlag({ help: true }, "help") && resource === "") {
-    process.stdout.write(HELP_TEXT + "\n");
-    return;
-  }
-
-  if (resource === "" || resource === "help") {
+  if (resource === "" || resource === "help" || process.argv.includes("--help")) {
     process.stdout.write(HELP_TEXT + "\n");
     return;
   }
@@ -126,12 +121,6 @@ async function main(): Promise<void> {
   // Handle --version
   if (resource === "version" || resource === "--version") {
     process.stdout.write(`cf-cli v${VERSION}\n`);
-    return;
-  }
-
-  // Check for --help flag
-  if (flags.profile === undefined && process.argv.includes("--help")) {
-    process.stdout.write(HELP_TEXT + "\n");
     return;
   }
 

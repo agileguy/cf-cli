@@ -4,7 +4,7 @@ function shouldDisableColor(): boolean {
   // NO_COLOR spec: https://no-color.org/
   if (process.env["NO_COLOR"] !== undefined) return true;
   if (process.env["TERM"] === "dumb") return true;
-  if (!process.stdout.isTTY) return true;
+  if (!process.stdout.isTTY && !process.stderr.isTTY) return true;
   return false;
 }
 

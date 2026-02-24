@@ -1,6 +1,6 @@
-import { mkdirSync, readFileSync, writeFileSync, renameSync, existsSync } from "fs";
+import { mkdirSync, readFileSync, writeFileSync, renameSync, existsSync, chmodSync } from "fs";
 import { join } from "path";
-import { tmpdir, homedir } from "os";
+import { homedir } from "os";
 import type { Config, Profile } from "./types/index.js";
 
 const CONFIG_DIR = join(homedir(), ".cf");
@@ -24,6 +24,9 @@ function defaultConfig(): Config {
 function ensureConfigDir(): void {
   if (!existsSync(CONFIG_DIR)) {
     mkdirSync(CONFIG_DIR, { recursive: true, mode: 0o700 });
+  } else {
+    // Enforce permissions on existing directory too
+    chmodSync(CONFIG_DIR, 0o700);
   }
 }
 
@@ -50,8 +53,10 @@ export function readConfig(): Config {
 export function writeConfig(config: Config): void {
   ensureConfigDir();
   const content = JSON.stringify(config, null, 2) + "\n";
-  // Atomic write: write to temp file, then rename
-  const tmpFile = join(tmpdir(), `.cf-config-${Date.now()}.tmp`);
+  // Atomic write: write to temp file in the same directory, then rename.
+  // Using the same directory avoids cross-device rename errors (EXDEV) on Linux
+  // when ~/.cf/ and /tmp reside on different filesystems.
+  const tmpFile = join(CONFIG_DIR, `.config.json.tmp`);
   writeFileSync(tmpFile, content, { mode: 0o600 });
   renameSync(tmpFile, CONFIG_FILE);
 }

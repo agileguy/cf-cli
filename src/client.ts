@@ -100,10 +100,12 @@ export class CloudflareHttpClient implements ICloudflareClient {
 
     let lastError: Error | null = null;
 
+    let lastRetryReason = "network error";
+
     for (let attempt = 0; attempt <= MAX_RETRIES; attempt++) {
       if (attempt > 0) {
         const delay = RETRY_DELAYS[attempt - 1] ?? 4000;
-        this.logVerbose(`Rate limited, retrying in ${delay}ms (attempt ${attempt + 1}/${MAX_RETRIES + 1})`);
+        this.logVerbose(`Retrying after ${lastRetryReason} in ${delay}ms (attempt ${attempt + 1}/${MAX_RETRIES + 1})`);
         await sleep(delay);
       }
 
@@ -129,6 +131,7 @@ export class CloudflareHttpClient implements ICloudflareClient {
         // Handle rate limiting (429) with retry
         if (response.status === 429 && attempt < MAX_RETRIES) {
           lastError = new Error(`Rate limited (429)`);
+          lastRetryReason = "rate limit (429)";
           continue;
         }
 
@@ -161,6 +164,7 @@ export class CloudflareHttpClient implements ICloudflareClient {
         }
 
         lastError = error instanceof Error ? error : new Error(String(error));
+        lastRetryReason = `network error (${lastError.message})`;
 
         // Only retry on network errors, not on the last attempt
         if (attempt >= MAX_RETRIES) {
@@ -230,9 +234,9 @@ export class CloudflareHttpClient implements ICloudflareClient {
 
       const items = response.result;
       if (!Array.isArray(items)) {
-        // Single result, wrap and return
-        allResults.push(items as unknown as T);
-        break;
+        throw new Error(
+          `fetchAll: expected API to return an array for ${path}, got ${typeof items}. Use get() for single-result endpoints.`,
+        );
       }
 
       allResults.push(...items);

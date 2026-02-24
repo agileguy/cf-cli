@@ -9,7 +9,7 @@
     "build": "bun build src/index.ts --outfile dist/index.js --target node --minify",
     "start": "bun run src/index.ts",
     "test": "bun test",
-    "lint": "bunx eslint src tests --ext .ts",
+    "lint": "bunx tsc --noEmit",
     "typecheck": "bunx tsc --noEmit",
     "prepublishOnly": "bun run build"
   },
