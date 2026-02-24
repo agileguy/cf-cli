@@ -1,6 +1,6 @@
 {
   "name": "cf-cli",
-  "version": "0.9.0",
+  "version": "1.0.0",
   "description": "A fully-featured Cloudflare CLI wrapping the entire REST API",
   "bin": {
     "cf": "./dist/index.js"

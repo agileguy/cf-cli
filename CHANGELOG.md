@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.0.0] - 2026-02-24
+
+### Added
+- Radar: locations, datasets, AS, attacks, BGP, bots, DNS, email, HTTP, annotations
+- Intel: ASN, domain, IP, WHOIS, DNS, IP lists, attack surface
+- URL Scanner: scan, search, get, HAR, DOM, screenshot, bulk scanning
+- Cloudforce One: requests CRUD, PIRs, scans, threat events
+- Logpush: dual zone/account scope, jobs CRUD (enable/disable), datasets, instant logs, ownership
+- Web Analytics: sites CRUD, rules CRUD
+- Zaraz: config get/update, export, publish, workflow, history
+- 225 new unit tests (1940 total)
+
 ## [0.9.0] - 2026-02-24
 
 ### Added
