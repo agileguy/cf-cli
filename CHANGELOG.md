@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.5.0] - 2026-02-23
+
+### Added
+- Rulesets: CRUD with dual zone/account scope, rules management, version history, phase entrypoints
+- Firewall Legacy: IP access rules, User-Agent rules, zone lockdowns (with IPv6 support)
+- Page Shield: settings, scripts, connections, policies management
+- Turnstile widgets: CRUD + secret rotation (secrets hidden by default)
+- API Gateway: settings + schema management (OpenAPI JSON upload)
+- Rate Limits Legacy: CRUD from JSON files
+- 177 new unit tests (781 total)
+
 ## [0.4.0] - 2026-02-23
 
 ### Added
