@@ -2,6 +2,7 @@ import type { Context, R2Metrics } from "../../../types/index.js";
 import { parseArgs, getStringFlag } from "../../../utils/args.js";
 import { resolveAccountId } from "../../../utils/account-resolver.js";
 import { UsageError } from "../../../utils/errors.js";
+import { formatBytes } from "../../../utils/format.js";
 
 export async function run(args: string[], ctx: Context): Promise<void> {
   const { flags } = parseArgs(args);
@@ -35,12 +36,4 @@ export async function run(args: string[], ctx: Context): Promise<void> {
     "Class A Ops": metrics.operations?.class_a ?? 0,
     "Class B Ops": metrics.operations?.class_b ?? 0,
   });
-}
-
-function formatBytes(bytes: number): string {
-  if (bytes === 0) return "0 B";
-  const units = ["B", "KB", "MB", "GB", "TB"];
-  const i = Math.floor(Math.log(bytes) / Math.log(1024));
-  const value = bytes / Math.pow(1024, i);
-  return `${value.toFixed(2)} ${units[i]}`;
 }

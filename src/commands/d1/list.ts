@@ -1,6 +1,7 @@
 import type { Context, D1Database, ColumnDef } from "../../types/index.js";
 import { parseArgs, getStringFlag } from "../../utils/args.js";
 import { resolveAccountId } from "../../utils/account-resolver.js";
+import { formatBytes } from "../../utils/format.js";
 
 export async function run(args: string[], ctx: Context): Promise<void> {
   const { flags } = parseArgs(args);
@@ -25,12 +26,4 @@ export async function run(args: string[], ctx: Context): Promise<void> {
   ];
 
   ctx.output.table(databases as unknown as Record<string, unknown>[], columns);
-}
-
-function formatBytes(bytes: number): string {
-  if (bytes === 0) return "0 B";
-  const units = ["B", "KB", "MB", "GB", "TB"];
-  const i = Math.floor(Math.log(bytes) / Math.log(1024));
-  const value = bytes / Math.pow(1024, i);
-  return `${value.toFixed(2)} ${units[i]}`;
 }

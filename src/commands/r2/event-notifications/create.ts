@@ -23,18 +23,15 @@ export async function run(args: string[], ctx: Context): Promise<void> {
     ctx.config,
   );
 
-  const body: Record<string, unknown> = {
-    rules: [{
-      actions: eventTypes,
-      queue_id: queue,
-    }],
-  };
+  const rule: Record<string, unknown> = { actions: eventTypes, queue_id: queue };
 
   const prefix = getStringFlag(flags, "prefix");
-  if (prefix) (body["rules"] as Record<string, unknown>[])[0]!["prefix"] = prefix;
+  if (prefix) rule["prefix"] = prefix;
 
   const suffix = getStringFlag(flags, "suffix");
-  if (suffix) (body["rules"] as Record<string, unknown>[])[0]!["suffix"] = suffix;
+  if (suffix) rule["suffix"] = suffix;
+
+  const body = { rules: [rule] };
 
   await ctx.client.put<void>(
     `/accounts/${encodeURIComponent(accountId)}/event_notifications/r2/${encodeURIComponent(bucket)}/configuration/queues/${encodeURIComponent(queue)}`,
