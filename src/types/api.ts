@@ -2468,3 +2468,436 @@ export interface ZarazHistoryEntry {
   updated_at?: string | undefined;
   user_id?: string | undefined;
 }
+
+// ─── Email Routing Types ──────────────────────────────────────────────────
+
+/** Email Routing Settings */
+export interface EmailRoutingSettings {
+  tag: string;
+  name: string;
+  enabled: boolean;
+  created: string;
+  modified: string;
+  skip_wizard: boolean;
+  status: string;
+}
+
+/** Email Routing DNS record */
+export interface EmailRoutingDNS {
+  type: string;
+  name: string;
+  content: string;
+  ttl?: number | undefined;
+  priority?: number | undefined;
+}
+
+/** Email Routing Destination Address */
+export interface EmailRoutingAddress {
+  tag: string;
+  email: string;
+  verified?: string | undefined;
+  created: string;
+  modified: string;
+}
+
+/** Email Routing Rule */
+export interface EmailRoutingRule {
+  tag: string;
+  name?: string | undefined;
+  enabled?: boolean | undefined;
+  priority?: number | undefined;
+  matchers: { type: string; field?: string; value?: string }[];
+  actions: { type: string; value?: string[] }[];
+}
+
+/** Email Routing Catch-All Rule */
+export interface EmailRoutingCatchAll {
+  tag: string;
+  name?: string | undefined;
+  enabled: boolean;
+  matchers: { type: string }[];
+  actions: { type: string; value?: string[] }[];
+}
+
+// ─── Alerts and Notifications Types ─────────────────────────────────────
+
+/** Alert Notification Policy */
+export interface AlertPolicy {
+  id: string;
+  name: string;
+  description?: string | undefined;
+  enabled?: boolean | undefined;
+  alert_type: string;
+  mechanisms: Record<string, { id: string }[]>;
+  filters?: Record<string, string[]> | undefined;
+  conditions?: Record<string, unknown> | undefined;
+  created?: string | undefined;
+  modified?: string | undefined;
+}
+
+/** Alert Webhook Destination */
+export interface AlertWebhook {
+  id: string;
+  name: string;
+  url: string;
+  type?: string | undefined;
+  created_at?: string | undefined;
+  last_success?: string | undefined;
+  last_failure?: string | undefined;
+}
+
+/** Alert PagerDuty Destination */
+export interface AlertPagerDuty {
+  id: string;
+  name?: string | undefined;
+  service_id?: string | undefined;
+  service_name?: string | undefined;
+}
+
+/** Alert Silence */
+export interface AlertSilence {
+  id: string;
+  description?: string | undefined;
+  policies?: string[] | undefined;
+  filters?: Record<string, string[]> | undefined;
+  starts_on?: string | undefined;
+  ends_on?: string | undefined;
+  created?: string | undefined;
+  modified?: string | undefined;
+}
+
+/** Alert History Entry */
+export interface AlertHistoryEntry {
+  id: string;
+  name?: string | undefined;
+  description?: string | undefined;
+  alert_body?: string | undefined;
+  alert_type?: string | undefined;
+  mechanism?: string | undefined;
+  mechanism_type?: string | undefined;
+  sent?: string | undefined;
+  policy_id?: string | undefined;
+  policy_name?: string | undefined;
+}
+
+/** Alert Available Type */
+export interface AlertAvailable {
+  display_name: string;
+  type: string;
+  description?: string | undefined;
+  filter_options?: Record<string, unknown>[] | undefined;
+}
+
+// ─── Rules Lists Types ──────────────────────────────────────────────────
+
+/** Rules List */
+export interface RulesList {
+  id: string;
+  name: string;
+  kind: string;
+  description?: string | undefined;
+  num_items?: number | undefined;
+  num_referencing_filters?: number | undefined;
+  created_on?: string | undefined;
+  modified_on?: string | undefined;
+}
+
+/** Rules List Item */
+export interface RulesListItem {
+  id: string;
+  ip?: string | undefined;
+  asn?: number | undefined;
+  hostname?: { url_hostname: string } | undefined;
+  redirect?: {
+    source_url: string;
+    target_url: string;
+    status_code?: number | undefined;
+  } | undefined;
+  comment?: string | undefined;
+  created_on?: string | undefined;
+  modified_on?: string | undefined;
+}
+
+// ─── Snippets Types ──────────────────────────────────────────────────────
+
+/** Snippet */
+export interface Snippet {
+  snippet_name: string;
+  main_module: string;
+  created_on?: string | undefined;
+  modified_on?: string | undefined;
+}
+
+/** Snippet Rule */
+export interface SnippetRule {
+  snippet_name: string;
+  expression: string;
+  description?: string | undefined;
+  enabled?: boolean | undefined;
+}
+
+// ─── Registrar Types ──────────────────────────────────────────────────────
+
+/** Registrar Domain */
+export interface RegistrarDomain {
+  id: string;
+  name: string;
+  status: string;
+  current_registrar?: string | undefined;
+  previous_registrar?: string | undefined;
+  transfer_in?: {
+    unlock_domain?: string | undefined;
+    disable_privacy?: string | undefined;
+    enter_auth_code?: string | undefined;
+    approve_transfer?: string | undefined;
+    accept_foa?: string | undefined;
+    can_cancel_transfer?: boolean | undefined;
+  } | undefined;
+  name_servers?: string[] | undefined;
+  locked?: boolean | undefined;
+  auto_renew?: boolean | undefined;
+  privacy?: boolean | undefined;
+  expires_at?: string | undefined;
+  created_at?: string | undefined;
+  updated_at?: string | undefined;
+  registrant_contact?: Record<string, unknown> | undefined;
+  registry_statuses?: string | undefined;
+  fees?: {
+    icann_fee?: number | undefined;
+    redemption_fee?: number | undefined;
+    registration_fee?: number | undefined;
+    renewal_fee?: number | undefined;
+    transfer_fee?: number | undefined;
+  } | undefined;
+}
+
+// ─── Account Members & Roles Types ────────────────────────────────────────
+
+/** Account Member */
+export interface AccountMember {
+  id: string;
+  user: {
+    id: string;
+    email: string;
+    first_name?: string | undefined;
+    last_name?: string | undefined;
+    two_factor_authentication_enabled?: boolean | undefined;
+  };
+  status: string;
+  roles: AccountRole[];
+}
+
+/** Account Role */
+export interface AccountRole {
+  id: string;
+  name: string;
+  description: string;
+  permissions: Record<string, { read: boolean; edit: boolean }>;
+}
+
+// ─── Account Subscriptions & Billing Types ──────────────────────────────────
+
+/** Account Subscription */
+export interface AccountSubscription {
+  id: string;
+  app?: {
+    install_id?: string | undefined;
+  } | undefined;
+  created_on?: string | undefined;
+  currency?: string | undefined;
+  current_period_end?: string | undefined;
+  current_period_start?: string | undefined;
+  frequency?: string | undefined;
+  price?: number | undefined;
+  rate_plan?: {
+    id?: string | undefined;
+    public_name?: string | undefined;
+    currency?: string | undefined;
+    scope?: string | undefined;
+    externally_managed?: boolean | undefined;
+    sets?: string[] | undefined;
+  } | undefined;
+  state?: string | undefined;
+  zone?: {
+    id?: string | undefined;
+    name?: string | undefined;
+  } | undefined;
+  component_values?: {
+    name?: string | undefined;
+    value?: number | undefined;
+    default?: number | undefined;
+    price?: number | undefined;
+  }[] | undefined;
+}
+
+/** Billing Profile */
+export interface BillingProfile {
+  id?: string | undefined;
+  first_name?: string | undefined;
+  last_name?: string | undefined;
+  address?: string | undefined;
+  address2?: string | undefined;
+  company?: string | undefined;
+  city?: string | undefined;
+  state?: string | undefined;
+  zipcode?: string | undefined;
+  country?: string | undefined;
+  telephone?: string | undefined;
+  card_number?: string | undefined;
+  card_expiry_year?: number | undefined;
+  card_expiry_month?: number | undefined;
+  vat?: string | undefined;
+  payment_email?: string | undefined;
+  payment_gateway?: string | undefined;
+  type?: string | undefined;
+  created_on?: string | undefined;
+  edited_on?: string | undefined;
+}
+
+/** Billing History Entry */
+export interface BillingHistoryEntry {
+  id: string;
+  type?: string | undefined;
+  action?: string | undefined;
+  description?: string | undefined;
+  occurred_at?: string | undefined;
+  amount?: number | undefined;
+  currency?: string | undefined;
+  zone?: {
+    id?: string | undefined;
+    name?: string | undefined;
+  } | undefined;
+}
+
+// ─── Audit Log Types ────────────────────────────────────────────────────────
+
+/** Audit Log Entry */
+export interface AuditLogEntry {
+  id: string;
+  action?: AuditLogAction | undefined;
+  actor?: AuditLogActor | undefined;
+  newValue?: string | undefined;
+  oldValue?: string | undefined;
+  owner?: {
+    id?: string | undefined;
+  } | undefined;
+  resource?: AuditLogResource | undefined;
+  when?: string | undefined;
+  metadata?: Record<string, unknown> | undefined;
+}
+
+/** Audit Log Actor */
+export interface AuditLogActor {
+  id?: string | undefined;
+  email?: string | undefined;
+  ip?: string | undefined;
+  type?: string | undefined;
+}
+
+/** Audit Log Action */
+export interface AuditLogAction {
+  type?: string | undefined;
+  result?: boolean | undefined;
+}
+
+/** Audit Log Resource */
+export interface AuditLogResource {
+  id?: string | undefined;
+  type?: string | undefined;
+}
+
+// ─── User Token Types ───────────────────────────────────────────────────────
+
+/** User API Token */
+export interface UserToken {
+  id: string;
+  name: string;
+  status?: string | undefined;
+  issued_on?: string | undefined;
+  modified_on?: string | undefined;
+  not_before?: string | undefined;
+  expires_on?: string | undefined;
+  policies?: UserTokenPolicy[] | undefined;
+  condition?: {
+    request_ip?: {
+      in?: string[] | undefined;
+      not_in?: string[] | undefined;
+    } | undefined;
+  } | undefined;
+  value?: string | undefined;
+}
+
+/** User Token Policy */
+export interface UserTokenPolicy {
+  id?: string | undefined;
+  effect: string;
+  resources: Record<string, string>;
+  permission_groups: { id: string; name?: string }[];
+}
+
+// ─── Page Rules Types ───────────────────────────────────────────────────────
+
+/** Page Rule */
+export interface PageRule {
+  id: string;
+  targets: PageRuleTarget[];
+  actions: PageRuleAction[];
+  priority?: number | undefined;
+  status?: string | undefined;
+  created_on?: string | undefined;
+  modified_on?: string | undefined;
+}
+
+/** Page Rule Target */
+export interface PageRuleTarget {
+  target: string;
+  constraint: {
+    operator: string;
+    value: string;
+  };
+}
+
+/** Page Rule Action */
+export interface PageRuleAction {
+  id: string;
+  value?: unknown | undefined;
+}
+
+// ─── Zone Analytics Types ───────────────────────────────────────────────────
+
+/** Zone Analytics Dashboard */
+export interface ZoneAnalyticsDashboard {
+  totals?: Record<string, unknown> | undefined;
+  timeseries?: Record<string, unknown>[] | undefined;
+  since?: string | undefined;
+  until?: string | undefined;
+  query?: Record<string, unknown> | undefined;
+}
+
+/** Zone Analytics Colo */
+export interface ZoneAnalyticsColo {
+  colo_id?: string | undefined;
+  timeseries?: Record<string, unknown>[] | undefined;
+  [key: string]: unknown;
+}
+
+/** Zone DNS Analytics */
+export interface ZoneDNSAnalytics {
+  data?: Record<string, unknown>[] | undefined;
+  totals?: Record<string, unknown> | undefined;
+  min?: Record<string, unknown> | undefined;
+  max?: Record<string, unknown> | undefined;
+  query?: Record<string, unknown> | undefined;
+  rows?: number | undefined;
+  data_lag?: number | undefined;
+}
+
+// ─── Zone Settings Types ────────────────────────────────────────────────────
+
+/** Zone Setting */
+export interface ZoneSetting {
+  id: string;
+  value: unknown;
+  editable?: boolean | undefined;
+  modified_on?: string | undefined;
+}
