@@ -30,6 +30,9 @@ RESOURCES:
   hyperdrive     Manage Hyperdrive configurations (database connection pooling)
   pipelines      Manage Pipelines (data ingestion)
   secrets-store  Manage Secrets Store (stores, secrets)
+  rulesets       Manage Rulesets (rules, versions, phases)
+  firewall       Manage Firewall legacy rules (IP, UA, zone lockdowns)
+  page-shield    Manage Page Shield (settings, scripts, connections, policies)
   turnstile      Manage Turnstile widgets (CAPTCHA)
   api-gateway    Manage API Gateway (settings, schemas)
   rate-limits    Manage Rate Limiting rules (legacy)
@@ -265,6 +268,20 @@ async function routeCommand(
     }
     case "secrets-store": {
       const { run } = await import("./commands/secrets-store/index.js");
+      return run(subArgs, ctx);
+    }
+    case "rulesets":
+    case "ruleset": {
+      const { run } = await import("./commands/rulesets/index.js");
+      return run(subArgs, ctx);
+    }
+    case "firewall":
+    case "fw": {
+      const { run } = await import("./commands/firewall/index.js");
+      return run(subArgs, ctx);
+    }
+    case "page-shield": {
+      const { run } = await import("./commands/page-shield/index.js");
       return run(subArgs, ctx);
     }
     case "turnstile": {
