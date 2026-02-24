@@ -57,6 +57,10 @@ RESOURCES:
   ai             Workers AI (run inference, models, fine-tuning)
   ai-gateway     Manage AI Gateway (CRUD, logs, datasets, evaluations)
   vectorize      Manage Vectorize indexes (CRUD, insert, query, metadata)
+  magic-transit  Manage Magic Transit (GRE/IPsec tunnels, sites, routes, ACLs, PCAPs)
+  mnm            Manage Magic Network Monitoring (config, rules)
+  addressing     Manage IP addressing (address-maps, prefixes, regional-hostnames)
+  spectrum       Manage Spectrum apps and analytics
   cache          Purge cached content
   config         Manage CLI configuration and profiles
   completion     Generate shell completions (bash, zsh, fish)
@@ -406,6 +410,22 @@ async function routeCommand(
     case "images":
     case "image": {
       const { run } = await import("./commands/images/index.js");
+      return run(subArgs, ctx);
+    }
+    case "addressing": {
+      const { run } = await import("./commands/addressing/index.js");
+      return run(subArgs, ctx);
+    }
+    case "spectrum": {
+      const { run } = await import("./commands/spectrum/index.js");
+      return run(subArgs, ctx);
+    }
+    case "magic-transit": {
+      const { run } = await import("./commands/magic-transit/index.js");
+      return run(subArgs, ctx);
+    }
+    case "mnm": {
+      const { run } = await import("./commands/mnm/index.js");
       return run(subArgs, ctx);
     }
     default:
