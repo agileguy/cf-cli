@@ -1595,3 +1595,295 @@ export interface ObservatorySchedule {
   region?: string | undefined;
   frequency?: string | undefined;
 }
+
+// ─── Stream ────────────────────────────────────────────────────────────
+
+/** Stream Video */
+export interface StreamVideo {
+  uid: string;
+  thumbnail?: string | undefined;
+  thumbnailTimestampPct?: number | undefined;
+  readyToStream?: boolean | undefined;
+  status?: { state?: string | undefined; pctComplete?: string | undefined; errorReasonCode?: string | undefined; errorReasonText?: string | undefined } | undefined;
+  meta?: Record<string, unknown> | undefined;
+  created?: string | undefined;
+  modified?: string | undefined;
+  size?: number | undefined;
+  preview?: string | undefined;
+  allowedOrigins?: string[] | undefined;
+  requireSignedURLs?: boolean | undefined;
+  uploaded?: string | undefined;
+  uploadExpiry?: string | undefined;
+  maxSizeBytes?: number | undefined;
+  maxDurationSeconds?: number | undefined;
+  duration?: number | undefined;
+  input?: { width?: number | undefined; height?: number | undefined } | undefined;
+  playback?: { hls?: string | undefined; dash?: string | undefined } | undefined;
+  watermark?: { uid?: string | undefined } | undefined;
+  liveInput?: string | undefined;
+  clippedFrom?: string | undefined;
+  creator?: string | undefined;
+  scheduledDeletion?: string | undefined;
+}
+
+/** Stream Live Input */
+export interface StreamLiveInput {
+  uid: string;
+  meta?: Record<string, unknown> | undefined;
+  created?: string | undefined;
+  modified?: string | undefined;
+  rtmps?: { url?: string | undefined; streamKey?: string | undefined } | undefined;
+  rtmpsPlayback?: { url?: string | undefined; streamKey?: string | undefined } | undefined;
+  srt?: { url?: string | undefined; streamId?: string | undefined; passphrase?: string | undefined } | undefined;
+  srtPlayback?: { url?: string | undefined; streamId?: string | undefined; passphrase?: string | undefined } | undefined;
+  webRTC?: { url?: string | undefined } | undefined;
+  webRTCPlayback?: { url?: string | undefined } | undefined;
+  status?: { current?: { state?: string | undefined } | undefined } | undefined;
+  recording?: { mode?: string | undefined; timeoutSeconds?: number | undefined; requireSignedURLs?: boolean | undefined; allowedOrigins?: string[] | undefined } | undefined;
+  deleteRecordingAfterDays?: number | undefined;
+}
+
+/** Stream Caption/Subtitle */
+export interface StreamCaption {
+  language: string;
+  label?: string | undefined;
+  generated?: boolean | undefined;
+}
+
+/** Stream Audio Track */
+export interface StreamAudioTrack {
+  uid: string;
+  label?: string | undefined;
+  language?: string | undefined;
+  default?: boolean | undefined;
+  status?: string | undefined;
+}
+
+/** Stream Signing Key */
+export interface StreamSigningKey {
+  id: string;
+  pem?: string | undefined;
+  jwk?: string | undefined;
+  created?: string | undefined;
+}
+
+/** Stream Watermark Profile */
+export interface StreamWatermark {
+  uid: string;
+  size?: number | undefined;
+  height?: number | undefined;
+  width?: number | undefined;
+  created?: string | undefined;
+  downloadedFrom?: string | undefined;
+  name?: string | undefined;
+  opacity?: number | undefined;
+  padding?: number | undefined;
+  scale?: number | undefined;
+  position?: string | undefined;
+}
+
+/** Stream Webhook */
+export interface StreamWebhook {
+  notificationUrl?: string | undefined;
+  modified?: string | undefined;
+  secret?: string | undefined;
+}
+
+/** Stream Download URL */
+export interface StreamDownloadUrl {
+  default?: { url?: string | undefined; status?: string | undefined; percentComplete?: number | undefined } | undefined;
+}
+
+// ─── Images ────────────────────────────────────────────────────────────
+
+/** Cloudflare Image */
+export interface CFImage {
+  id: string;
+  filename?: string | undefined;
+  uploaded?: string | undefined;
+  requireSignedURLs?: boolean | undefined;
+  variants?: string[] | undefined;
+  meta?: Record<string, unknown> | undefined;
+}
+
+/** Cloudflare Image Variant */
+export interface CFImageVariant {
+  id: string;
+  options?: {
+    fit?: string | undefined;
+    metadata?: string | undefined;
+    width?: number | undefined;
+    height?: number | undefined;
+  } | undefined;
+  neverRequireSignedURLs?: boolean | undefined;
+}
+
+/** Cloudflare Images Signing Key */
+export interface CFImageSigningKey {
+  name: string;
+  value?: string | undefined;
+}
+
+/** Cloudflare Images Stats */
+export interface CFImageStats {
+  count?: { current?: number | undefined; allowed?: number | undefined } | undefined;
+}
+
+/** Cloudflare Images Direct Upload Result */
+export interface CFImageDirectUpload {
+  id: string;
+  uploadURL: string;
+}
+
+// ─── Calls / WebRTC Types ─────────────────────────────────────────────────
+
+/** Calls App (WebRTC) */
+export interface CallsApp {
+  uid: string;
+  name: string;
+  created?: string | undefined;
+  modified?: string | undefined;
+}
+
+/** Calls TURN Key */
+export interface CallsTurnKey {
+  key_id: string;
+  name: string;
+  created?: string | undefined;
+  modified?: string | undefined;
+}
+
+// ─── Workers AI Types ─────────────────────────────────────────────────────
+
+/** Workers AI Model */
+export interface AIModel {
+  id: string;
+  name: string;
+  description?: string | undefined;
+  task?: AIModelTask | undefined;
+  properties?: AIModelProperty[] | undefined;
+}
+
+/** AI Model Task Info */
+export interface AIModelTask {
+  id: string;
+  name: string;
+  description?: string | undefined;
+}
+
+/** AI Model Property */
+export interface AIModelProperty {
+  property_id: string;
+  value: string;
+}
+
+/** AI Fine-Tuning Job */
+export interface AIFineTune {
+  id: string;
+  model: string;
+  name?: string | undefined;
+  description?: string | undefined;
+  status?: string | undefined;
+  created_at?: string | undefined;
+  modified_at?: string | undefined;
+}
+
+// ─── AI Gateway Types ─────────────────────────────────────────────────────
+
+/** AI Gateway */
+export interface AIGateway {
+  id: string;
+  name: string;
+  slug?: string | undefined;
+  rate_limiting_interval?: number | undefined;
+  rate_limiting_limit?: number | undefined;
+  rate_limiting_technique?: string | undefined;
+  created_at?: string | undefined;
+  modified_at?: string | undefined;
+}
+
+/** AI Gateway Log Entry */
+export interface AIGatewayLog {
+  id: string;
+  model?: string | undefined;
+  provider?: string | undefined;
+  path?: string | undefined;
+  duration?: number | undefined;
+  status_code?: number | undefined;
+  tokens_in?: number | undefined;
+  tokens_out?: number | undefined;
+  cost?: number | undefined;
+  cached?: boolean | undefined;
+  created_at?: string | undefined;
+}
+
+/** AI Gateway Dataset */
+export interface AIGatewayDataset {
+  id: string;
+  name: string;
+  description?: string | undefined;
+  created_at?: string | undefined;
+  modified_at?: string | undefined;
+}
+
+/** AI Gateway Evaluation */
+export interface AIGatewayEvaluation {
+  id: string;
+  name?: string | undefined;
+  status?: string | undefined;
+  created_at?: string | undefined;
+  modified_at?: string | undefined;
+  total_count?: number | undefined;
+  processed_count?: number | undefined;
+}
+
+// ─── Vectorize Types ──────────────────────────────────────────────────────
+
+/** Vectorize Index */
+export interface VectorizeIndex {
+  name: string;
+  description?: string | undefined;
+  config: VectorizeConfig;
+  created_on?: string | undefined;
+  modified_on?: string | undefined;
+}
+
+/** Vectorize Index Configuration */
+export interface VectorizeConfig {
+  dimensions: number;
+  metric: "cosine" | "euclidean" | "dot-product";
+}
+
+/** Vectorize Query Result */
+export interface VectorizeQueryResult {
+  matches: VectorizeMatch[];
+  count: number;
+}
+
+/** Vectorize Match */
+export interface VectorizeMatch {
+  id: string;
+  score: number;
+  values?: number[] | undefined;
+  metadata?: Record<string, unknown> | undefined;
+}
+
+/** Vectorize Vector */
+export interface VectorizeVector {
+  id: string;
+  values?: number[] | undefined;
+  metadata?: Record<string, unknown> | undefined;
+  namespace?: string | undefined;
+}
+
+/** Vectorize Metadata Index */
+export interface VectorizeMetadataIndex {
+  property_name: string;
+  index_type: string;
+}
+
+/** Vectorize Insert/Upsert Result */
+export interface VectorizeMutationResult {
+  mutation_id?: string | undefined;
+  count: number;
+}
