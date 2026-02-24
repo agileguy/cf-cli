@@ -51,6 +51,12 @@ RESOURCES:
   argo           Manage Argo Smart Routing
   waiting-rooms  Manage Waiting Rooms (events, rules, status)
   observatory    Speed / Observatory (pages, tests, schedules)
+  stream         Manage Stream (videos, live, captions, audio, keys, watermarks, webhooks)
+  images         Manage Images (CRUD, variants, signing-keys, direct-upload)
+  calls          Manage Calls / WebRTC (apps, TURN keys)
+  ai             Workers AI (run inference, models, fine-tuning)
+  ai-gateway     Manage AI Gateway (CRUD, logs, datasets, evaluations)
+  vectorize      Manage Vectorize indexes (CRUD, insert, query, metadata)
   cache          Purge cached content
   config         Manage CLI configuration and profiles
   completion     Generate shell completions (bash, zsh, fish)
@@ -374,6 +380,32 @@ async function routeCommand(
     case "observatory":
     case "speed": {
       const { run } = await import("./commands/observatory/index.js");
+      return run(subArgs, ctx);
+    }
+    case "calls":
+    case "webrtc": {
+      const { run } = await import("./commands/calls/index.js");
+      return run(subArgs, ctx);
+    }
+    case "ai": {
+      const { run } = await import("./commands/ai/index.js");
+      return run(subArgs, ctx);
+    }
+    case "ai-gateway": {
+      const { run } = await import("./commands/ai-gateway/index.js");
+      return run(subArgs, ctx);
+    }
+    case "vectorize": {
+      const { run } = await import("./commands/vectorize/index.js");
+      return run(subArgs, ctx);
+    }
+    case "stream": {
+      const { run } = await import("./commands/stream/index.js");
+      return run(subArgs, ctx);
+    }
+    case "images":
+    case "image": {
+      const { run } = await import("./commands/images/index.js");
       return run(subArgs, ctx);
     }
     default:
