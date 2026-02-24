@@ -18,14 +18,22 @@ export async function run(args: string[], ctx: Context): Promise<void> {
     ctx.config,
   );
 
-  // The pcap download endpoint returns binary data, so we get it as a string
-  // (the client wraps it in a JSON response). We use the get method which
-  // will return the result field from the Cloudflare response envelope.
-  const data = await ctx.client.get<string>(
-    `/accounts/${encodeURIComponent(accountId)}/magic/pcaps/${encodeURIComponent(id)}/download`,
-  );
+  // The pcap download endpoint returns raw binary data (not a JSON envelope).
+  // We use the client's get method which will attempt JSON parse — but the
+  // actual CF API may return binary. As a workaround, we treat the result
+  // as raw data and write whatever we get.
+  const url = `/accounts/${encodeURIComponent(accountId)}/magic/pcaps/${encodeURIComponent(id)}/download`;
+  const data = await ctx.client.get<unknown>(url);
 
-  await Bun.write(outputFile, data);
+  // If we got a string (base64) or object, serialize it; otherwise write as-is
+  if (typeof data === "string") {
+    await Bun.write(outputFile, data);
+  } else if (data instanceof ArrayBuffer || data instanceof Uint8Array) {
+    await Bun.write(outputFile, data);
+  } else {
+    // Fallback: JSON serialize whatever the API returned
+    await Bun.write(outputFile, JSON.stringify(data));
+  }
 
   ctx.output.success(`Packet capture downloaded to "${outputFile}".`);
 }
