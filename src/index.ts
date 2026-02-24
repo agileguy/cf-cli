@@ -18,7 +18,7 @@ USAGE:
   cf <resource> <action> [options]
 
 RESOURCES:
-  zones          List, create, delete, and manage zones
+  zones          Manage zones (CRUD, analytics, settings)
   dns            Manage DNS records (list, create, update, delete, import, export)
   workers        Manage Workers (scripts, routes, cron, domains, versions, platforms, tail)
   kv             Manage Workers KV (namespaces, keys, bulk operations)
@@ -41,8 +41,8 @@ RESOURCES:
   warp           Manage WARP client (settings, split-tunnels, fleet-status)
   access         Manage Zero Trust Access (apps, policies, groups, IdPs, certs)
   gateway        Manage Zero Trust Gateway (DNS/HTTP/network policies, DLP)
-  accounts       List accounts
-  user           Show current user information
+  accounts       Manage accounts (list, members, roles, subscriptions)
+  user           User info, billing, and API tokens
   ssl            Manage SSL/TLS certificates and settings
   lb             Manage Load Balancers (pools, monitors, regions)
   healthchecks   Manage standalone Healthchecks
@@ -68,6 +68,13 @@ RESOURCES:
   logpush        Manage Logpush jobs (zone or account scoped)
   web-analytics  Manage Web Analytics (RUM sites, rules)
   zaraz          Manage Zaraz (config, publish, history, export)
+  email-routing  Manage Email Routing (settings, addresses, rules)
+  alerts         Manage Alerts and Notifications (policies, webhooks, PagerDuty, silences)
+  rules-lists    Manage Rules Lists (CRUD, items)
+  snippets       Manage Snippets (CRUD, rules)
+  registrar      Manage Registrar domains (list, get, update, transfer-in)
+  audit-logs     View Audit Logs
+  page-rules     Manage Page Rules (legacy)
   cache          Purge cached content
   config         Manage CLI configuration and profiles
   completion     Generate shell completions (bash, zsh, fish)
@@ -463,6 +470,38 @@ async function routeCommand(
     }
     case "zaraz": {
       const { run } = await import("./commands/zaraz/index.js");
+      return run(subArgs, ctx);
+    }
+    case "email-routing": {
+      const { run } = await import("./commands/email-routing/index.js");
+      return run(subArgs, ctx);
+    }
+    case "alerts":
+    case "alert": {
+      const { run } = await import("./commands/alerts/index.js");
+      return run(subArgs, ctx);
+    }
+    case "rules-lists":
+    case "rules-list": {
+      const { run } = await import("./commands/rules-lists/index.js");
+      return run(subArgs, ctx);
+    }
+    case "snippets":
+    case "snippet": {
+      const { run } = await import("./commands/snippets/index.js");
+      return run(subArgs, ctx);
+    }
+    case "registrar": {
+      const { run } = await import("./commands/registrar/index.js");
+      return run(subArgs, ctx);
+    }
+    case "audit-logs": {
+      const { run } = await import("./commands/audit-logs/index.js");
+      return run(subArgs, ctx);
+    }
+    case "page-rules":
+    case "page-rule": {
+      const { run } = await import("./commands/page-rules/index.js");
       return run(subArgs, ctx);
     }
     default:
