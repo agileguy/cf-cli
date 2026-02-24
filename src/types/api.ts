@@ -788,6 +788,186 @@ export interface APIGatewaySchema {
   validation_enabled?: boolean | undefined;
 }
 
+// ─── Access (Zero Trust) Types ──────────────────────────────────────────────
+
+/** Access Application */
+export interface AccessApplication {
+  id: string;
+  name: string;
+  domain: string;
+  type?: string | undefined;
+  session_duration?: string | undefined;
+  allowed_idps?: string[] | undefined;
+  auto_redirect_to_identity?: boolean | undefined;
+  enable_binding_cookie?: boolean | undefined;
+  custom_deny_message?: string | undefined;
+  custom_deny_url?: string | undefined;
+  cors_headers?: Record<string, unknown> | undefined;
+  skip_interstitial?: boolean | undefined;
+  app_launcher_visible?: boolean | undefined;
+  service_auth_401_redirect?: boolean | undefined;
+  logo_url?: string | undefined;
+  created_at?: string | undefined;
+  updated_at?: string | undefined;
+  aud?: string | undefined;
+}
+
+/** Access Policy */
+export interface AccessPolicy {
+  id: string;
+  name: string;
+  decision: string;
+  precedence: number;
+  include: AccessPolicyRule[];
+  exclude?: AccessPolicyRule[] | undefined;
+  require?: AccessPolicyRule[] | undefined;
+  purpose_justification_required?: boolean | undefined;
+  purpose_justification_prompt?: string | undefined;
+  approval_required?: boolean | undefined;
+  approval_groups?: { name: string; email_list_uuid?: string }[] | undefined;
+  isolation_required?: boolean | undefined;
+  session_duration?: string | undefined;
+  created_at?: string | undefined;
+  updated_at?: string | undefined;
+}
+
+/** Access Policy Rule (include/exclude/require element) */
+export interface AccessPolicyRule {
+  email?: { email: string } | undefined;
+  email_domain?: { domain: string } | undefined;
+  everyone?: Record<string, never> | undefined;
+  ip?: { ip: string } | undefined;
+  group?: { id: string } | undefined;
+  certificate?: Record<string, never> | undefined;
+  service_token?: { token_id: string } | undefined;
+  any_valid_service_token?: Record<string, never> | undefined;
+  external_evaluation?: { evaluate_url: string; keys_url: string } | undefined;
+  geo?: { country_code: string } | undefined;
+  login_method?: { id: string } | undefined;
+  common_name?: { common_name: string } | undefined;
+}
+
+/** Access Service Token */
+export interface AccessServiceToken {
+  id: string;
+  name: string;
+  client_id: string;
+  client_secret?: string | undefined;
+  created_at?: string | undefined;
+  updated_at?: string | undefined;
+  expires_at?: string | undefined;
+  duration?: string | undefined;
+}
+
+/** Access Group */
+export interface AccessGroup {
+  id: string;
+  name: string;
+  include: AccessPolicyRule[];
+  exclude?: AccessPolicyRule[] | undefined;
+  require?: AccessPolicyRule[] | undefined;
+  created_at?: string | undefined;
+  updated_at?: string | undefined;
+}
+
+/** Access User */
+export interface AccessUser {
+  id: string;
+  name?: string | undefined;
+  email?: string | undefined;
+  access_seat?: boolean | undefined;
+  gateway_seat?: boolean | undefined;
+  seat_uid?: string | undefined;
+  created_at?: string | undefined;
+  updated_at?: string | undefined;
+  last_successful_login?: string | undefined;
+}
+
+/** Access User Session */
+export interface AccessUserSession {
+  account_id?: string | undefined;
+  auth_status?: string | undefined;
+  common_name?: string | undefined;
+  devicePosture?: Record<string, unknown> | undefined;
+  email?: string | undefined;
+  geo?: Record<string, unknown> | undefined;
+  iat?: number | undefined;
+  idp?: { id: string; type: string } | undefined;
+  ip?: string | undefined;
+  is_gateway?: boolean | undefined;
+  is_warp?: boolean | undefined;
+  mtls_auth?: Record<string, unknown> | undefined;
+  service_token_id?: string | undefined;
+  service_token_status?: boolean | undefined;
+  user_uuid?: string | undefined;
+  version?: number | undefined;
+}
+
+/** Access Certificate (mTLS) */
+export interface AccessCertificate {
+  id: string;
+  name: string;
+  fingerprint?: string | undefined;
+  associated_hostnames?: string[] | undefined;
+  created_at?: string | undefined;
+  updated_at?: string | undefined;
+  expires_on?: string | undefined;
+}
+
+/** Access Identity Provider */
+export interface AccessIdentityProvider {
+  id: string;
+  name: string;
+  type: string;
+  config?: Record<string, unknown> | undefined;
+  scim_config?: Record<string, unknown> | undefined;
+  created_at?: string | undefined;
+  updated_at?: string | undefined;
+}
+
+// ─── Gateway (Zero Trust) Types ─────────────────────────────────────────────
+
+/** Gateway DNS/HTTP/Network Policy */
+export interface GatewayPolicy {
+  id: string;
+  name: string;
+  description?: string | undefined;
+  precedence?: number | undefined;
+  enabled?: boolean | undefined;
+  action: string;
+  filters?: string[] | undefined;
+  traffic?: string | undefined;
+  identity?: string | undefined;
+  device_posture?: string | undefined;
+  rule_settings?: Record<string, unknown> | undefined;
+  created_at?: string | undefined;
+  updated_at?: string | undefined;
+}
+
+/** Gateway DLP Profile */
+export interface GatewayDLPProfile {
+  id: string;
+  name: string;
+  type?: string | undefined;
+  description?: string | undefined;
+  entries?: GatewayDLPEntry[] | undefined;
+  allowed_match_count?: number | undefined;
+  created_at?: string | undefined;
+  updated_at?: string | undefined;
+}
+
+/** Gateway DLP Profile Entry */
+export interface GatewayDLPEntry {
+  id?: string | undefined;
+  name: string;
+  enabled?: boolean | undefined;
+  profile_id?: string | undefined;
+  pattern?: {
+    regex: string;
+    validation?: string | undefined;
+  } | undefined;
+}
+
 // ─── Rate Limits Types ──────────────────────────────────────────────────────
 
 /** Rate Limit Rule (Legacy) */
@@ -819,4 +999,154 @@ export interface RateLimitRule {
   };
   bypass?: { name: string; value: string }[] | undefined;
   correlate?: { by: string } | undefined;
+}
+
+// ─── Cloudflare Tunnel Types ───────────────────────────────────────────────
+
+/** Cloudflare Tunnel */
+export interface CfdTunnel {
+  id: string;
+  name: string;
+  status: string;
+  created_at: string;
+  deleted_at?: string | undefined;
+  account_tag?: string | undefined;
+  conns_active_at?: string | undefined;
+  conns_inactive_at?: string | undefined;
+  tun_type?: string | undefined;
+  remote_config?: boolean | undefined;
+  connections?: CfdTunnelConnection[] | undefined;
+}
+
+/** Cloudflare Tunnel Connection */
+export interface CfdTunnelConnection {
+  id: string;
+  colo_name: string;
+  is_pending_reconnect: boolean;
+  origin_ip?: string | undefined;
+  opened_at: string;
+  client_id?: string | undefined;
+  client_version?: string | undefined;
+}
+
+/** Cloudflare Tunnel Configuration */
+export interface CfdTunnelConfig {
+  config?: {
+    ingress?: CfdTunnelIngress[] | undefined;
+    warp_routing?: { enabled?: boolean | undefined } | undefined;
+    originRequest?: Record<string, unknown> | undefined;
+  } | undefined;
+}
+
+/** Cloudflare Tunnel Ingress Rule */
+export interface CfdTunnelIngress {
+  hostname?: string | undefined;
+  service: string;
+  path?: string | undefined;
+  originRequest?: Record<string, unknown> | undefined;
+}
+
+/** Cloudflare Tunnel Token */
+export interface CfdTunnelToken {
+  token: string;
+}
+
+// ─── Device Management Types ───────────────────────────────────────────────
+
+/** Zero Trust Device */
+export interface ZTDevice {
+  id: string;
+  name?: string | undefined;
+  device_type?: string | undefined;
+  version?: string | undefined;
+  ip?: string | undefined;
+  mac_address?: string | undefined;
+  os_version?: string | undefined;
+  os_distro_name?: string | undefined;
+  os_distro_revision?: string | undefined;
+  serial_number?: string | undefined;
+  user?: {
+    id: string;
+    name?: string | undefined;
+    email?: string | undefined;
+  } | undefined;
+  key?: string | undefined;
+  last_seen?: string | undefined;
+  created?: string | undefined;
+  updated?: string | undefined;
+  revoked_at?: string | undefined;
+  deleted_at?: string | undefined;
+}
+
+/** Device Registration */
+export interface DeviceRegistration {
+  id: string;
+  device_id?: string | undefined;
+  user?: {
+    id: string;
+    email?: string | undefined;
+  } | undefined;
+  created_at?: string | undefined;
+  status?: string | undefined;
+}
+
+/** Device Posture Rule */
+export interface DevicePostureRule {
+  id: string;
+  name: string;
+  type: string;
+  description?: string | undefined;
+  schedule?: string | undefined;
+  expiration?: string | undefined;
+  match?: DevicePostureMatch[] | undefined;
+  input?: Record<string, unknown> | undefined;
+}
+
+/** Device Posture Match criteria */
+export interface DevicePostureMatch {
+  platform?: string | undefined;
+}
+
+// ─── WARP Types ────────────────────────────────────────────────────────────
+
+/** WARP Settings (Device Settings Policy) */
+export interface WARPSettings {
+  disable_auto_fallback?: boolean | undefined;
+  captive_portal?: number | undefined;
+  allowed_to_leave?: boolean | undefined;
+  switch_locked?: boolean | undefined;
+  auto_connect?: number | undefined;
+  default?: boolean | undefined;
+  exclude_office_ips?: boolean | undefined;
+  service_mode_v2?: {
+    mode?: string | undefined;
+    port?: number | undefined;
+  } | undefined;
+  gateway_unique_id?: string | undefined;
+  support_url?: string | undefined;
+  precedence?: number | undefined;
+  name?: string | undefined;
+  match?: string | undefined;
+  enabled?: boolean | undefined;
+}
+
+/** Split Tunnel entry (include or exclude) */
+export interface SplitTunnelEntry {
+  address: string;
+  description?: string | undefined;
+  host?: string | undefined;
+}
+
+/** WARP Fleet Status device */
+export interface FleetStatusDevice {
+  device_id: string;
+  device_name?: string | undefined;
+  device_type?: string | undefined;
+  status?: string | undefined;
+  colo?: string | undefined;
+  mode?: string | undefined;
+  platform?: string | undefined;
+  version?: string | undefined;
+  ip?: string | undefined;
+  last_seen?: string | undefined;
 }
