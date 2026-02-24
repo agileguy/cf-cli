@@ -55,6 +55,7 @@ export interface CloudflareClient {
   delete<T>(path: string): Promise<T>;
   fetchAll<T>(path: string, params?: Record<string, string>): Promise<T[]>;
   upload(path: string, formData: FormData): Promise<unknown>;
+  uploadPut<T>(path: string, formData: FormData): Promise<T>;
 }
 
 export interface OutputFormatter {

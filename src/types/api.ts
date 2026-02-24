@@ -116,3 +116,96 @@ export interface DnsImportResult {
   recs_added: number;
   total_records_parsed: number;
 }
+
+// ─── Workers Types ──────────────────────────────────────────────────────────
+
+/** Workers Script */
+export interface WorkerScript {
+  id: string;
+  etag: string;
+  handlers: string[];
+  named_handlers?: { name: string; type: string }[] | undefined;
+  modified_on: string;
+  created_on: string;
+  usage_model?: string | undefined;
+  compatibility_date?: string | undefined;
+  compatibility_flags?: string[] | undefined;
+  last_deployed_from?: string | undefined;
+  logpush?: boolean | undefined;
+  placement_mode?: string | undefined;
+  tail_consumers?: { service: string; namespace?: string }[] | undefined;
+}
+
+/** Workers Route */
+export interface WorkerRoute {
+  id: string;
+  pattern: string;
+  script: string;
+}
+
+/** Workers Cron Trigger */
+export interface WorkerCronTrigger {
+  cron: string;
+  created_on: string;
+  modified_on: string;
+}
+
+/** Workers Cron Schedule response (wraps schedules array) */
+export interface WorkerCronSchedule {
+  schedules: WorkerCronTrigger[];
+}
+
+/** Workers Custom Domain */
+export interface WorkerDomain {
+  id: string;
+  zone_id: string;
+  zone_name: string;
+  hostname: string;
+  service: string;
+  environment: string;
+}
+
+/** Workers Script Version */
+export interface WorkerVersion {
+  id: string;
+  number: number;
+  metadata: Record<string, unknown>;
+  created_on: string;
+  annotations?: Record<string, string> | undefined;
+}
+
+/** Workers for Platforms - Dispatch Namespace */
+export interface WorkerNamespace {
+  namespace_id: string;
+  namespace_name: string;
+  created_on: string;
+  modified_on: string;
+  class?: string | undefined;
+  script_count?: number | undefined;
+}
+
+/** Workers for Platforms - Namespace Script */
+export interface WorkerNamespaceScript {
+  id: string;
+  created_on: string;
+  modified_on: string;
+  etag?: string | undefined;
+}
+
+/** Workers Tail */
+export interface WorkerTail {
+  id: string;
+  url: string;
+  expires_at: string;
+}
+
+/** Workers Tail Event (received via WebSocket) */
+export interface WorkerTailEvent {
+  scriptName?: string | undefined;
+  event?: Record<string, unknown> | undefined;
+  eventTimestamp?: number | undefined;
+  outcome: string;
+  logs: { level: string; message: string[]; timestamp: number }[];
+  exceptions: { name: string; message: string; timestamp: number }[];
+  diagnosticsChannelEvents?: unknown[] | undefined;
+}

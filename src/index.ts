@@ -20,6 +20,7 @@ USAGE:
 RESOURCES:
   zones          List, create, delete, and manage zones
   dns            Manage DNS records (list, create, update, delete, import, export)
+  workers        Manage Workers (scripts, routes, cron, domains, versions, platforms, tail)
   accounts       List accounts
   user           Show current user information
   cache          Purge cached content
@@ -189,6 +190,11 @@ async function routeCommand(
     }
     case "dns": {
       const { run } = await import("./commands/dns/index.js");
+      return run(subArgs, ctx);
+    }
+    case "workers":
+    case "worker": {
+      const { run } = await import("./commands/workers/index.js");
       return run(subArgs, ctx);
     }
     case "accounts":

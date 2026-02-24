@@ -14,6 +14,7 @@ export function mockClient(overrides: Partial<CloudflareClient> = {}): Cloudflar
     delete: overrides.delete ?? (async () => ({})),
     fetchAll: overrides.fetchAll ?? (async () => []),
     upload: overrides.upload ?? (async () => ({})),
+    uploadPut: overrides.uploadPut ?? (async () => ({})),
   };
 }
 
@@ -206,5 +207,103 @@ export function sampleUser(): Record<string, unknown> {
     modified_on: "2024-01-01T00:00:00.000Z",
     two_factor_authentication_enabled: true,
     suspended: false,
+  };
+}
+
+/** Sample worker script for tests */
+export function sampleWorkerScript(overrides: Partial<Record<string, unknown>> = {}): Record<string, unknown> {
+  return {
+    id: "my-worker",
+    etag: "abc123etag",
+    handlers: ["fetch"],
+    modified_on: "2024-06-01T12:00:00.000Z",
+    created_on: "2024-01-01T00:00:00.000Z",
+    usage_model: "standard",
+    compatibility_date: "2024-01-01",
+    compatibility_flags: [],
+    last_deployed_from: "wrangler",
+    logpush: false,
+    ...overrides,
+  };
+}
+
+/** Sample worker route for tests */
+export function sampleWorkerRoute(overrides: Partial<Record<string, unknown>> = {}): Record<string, unknown> {
+  return {
+    id: "route123abc",
+    pattern: "example.com/*",
+    script: "my-worker",
+    ...overrides,
+  };
+}
+
+/** Sample worker cron schedule for tests */
+export function sampleWorkerCronSchedule(overrides: Partial<Record<string, unknown>> = {}): Record<string, unknown> {
+  return {
+    schedules: [
+      {
+        cron: "*/5 * * * *",
+        created_on: "2024-01-01T00:00:00.000Z",
+        modified_on: "2024-06-01T12:00:00.000Z",
+      },
+    ],
+    ...overrides,
+  };
+}
+
+/** Sample worker domain for tests */
+export function sampleWorkerDomain(overrides: Partial<Record<string, unknown>> = {}): Record<string, unknown> {
+  return {
+    id: "domain123",
+    zone_id: "023e105f4ecef8ad9ca31a8372d0c353",
+    zone_name: "example.com",
+    hostname: "api.example.com",
+    service: "my-worker",
+    environment: "production",
+    ...overrides,
+  };
+}
+
+/** Sample worker version for tests */
+export function sampleWorkerVersion(overrides: Partial<Record<string, unknown>> = {}): Record<string, unknown> {
+  return {
+    id: "version-uuid-123",
+    number: 1,
+    metadata: {},
+    created_on: "2024-06-01T12:00:00.000Z",
+    annotations: {},
+    ...overrides,
+  };
+}
+
+/** Sample worker namespace for tests */
+export function sampleWorkerNamespace(overrides: Partial<Record<string, unknown>> = {}): Record<string, unknown> {
+  return {
+    namespace_id: "ns-uuid-123",
+    namespace_name: "my-namespace",
+    created_on: "2024-01-01T00:00:00.000Z",
+    modified_on: "2024-06-01T12:00:00.000Z",
+    script_count: 5,
+    ...overrides,
+  };
+}
+
+/** Sample worker namespace script for tests */
+export function sampleWorkerNamespaceScript(overrides: Partial<Record<string, unknown>> = {}): Record<string, unknown> {
+  return {
+    id: "ns-script-1",
+    created_on: "2024-01-01T00:00:00.000Z",
+    modified_on: "2024-06-01T12:00:00.000Z",
+    ...overrides,
+  };
+}
+
+/** Sample worker tail for tests */
+export function sampleWorkerTail(overrides: Partial<Record<string, unknown>> = {}): Record<string, unknown> {
+  return {
+    id: "tail-uuid-123",
+    url: "wss://tail.workers.dev/abc123",
+    expires_at: "2024-06-01T13:00:00.000Z",
+    ...overrides,
   };
 }

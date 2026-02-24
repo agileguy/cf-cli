@@ -209,6 +209,11 @@ export class CloudflareHttpClient implements ICloudflareClient {
     return response.result;
   }
 
+  async uploadPut<T>(path: string, formData: FormData): Promise<T> {
+    const response = await this.request<T>("PUT", path, { formData });
+    return response.result;
+  }
+
   /**
    * Auto-paginate through all pages and return combined results.
    * Supports both page-based and cursor-based pagination.
