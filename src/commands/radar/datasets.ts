@@ -1,8 +1,6 @@
 import type { Context, RadarDataset, ColumnDef } from "../../types/index.js";
-import { parseArgs } from "../../utils/args.js";
 
-export async function run(args: string[], ctx: Context): Promise<void> {
-  parseArgs(args);
+export async function run(_args: string[], ctx: Context): Promise<void> {
 
   const result = await ctx.client.get<RadarDataset[]>(
     "/radar/datasets",

@@ -22,7 +22,12 @@ export async function run(args: string[], ctx: Context): Promise<void> {
     throw new UsageError(`Cannot read file: "${file}".`);
   }
 
-  const body = JSON.parse(content) as Record<string, unknown>;
+  let body: unknown;
+  try {
+    body = JSON.parse(content);
+  } catch {
+    throw new UsageError("File must contain valid JSON.");
+  }
 
   const result = await ctx.client.post<CF1Request>(
     `/accounts/${encodeURIComponent(accountId)}/cloudforce-one/requests/new`,

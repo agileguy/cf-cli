@@ -15,10 +15,11 @@ export async function run(args: string[], ctx: Context): Promise<void> {
     ctx.config,
   );
 
-  const body: Record<string, unknown> = {};
-
   const host = getStringFlag(flags, "host");
-  if (host) body.host = host;
+  if (!host) throw new UsageError("At least --host is required for update.");
+
+  const body: Record<string, unknown> = {};
+  body.host = host;
 
   const site = await ctx.client.put<WebAnalyticsSite>(
     `/accounts/${encodeURIComponent(accountId)}/rum/site_info/${encodeURIComponent(id)}`,
