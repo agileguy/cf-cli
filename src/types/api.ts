@@ -593,6 +593,135 @@ export interface PipelineDestinationCompression {
   type: string;
 }
 
+// ─── Rulesets Types ─────────────────────────────────────────────────────────
+
+/** Ruleset */
+export interface Ruleset {
+  id: string;
+  name: string;
+  description?: string | undefined;
+  kind: string;
+  phase?: string | undefined;
+  version?: string | undefined;
+  last_updated?: string | undefined;
+  rules?: RulesetRule[] | undefined;
+}
+
+/** Ruleset Rule */
+export interface RulesetRule {
+  id?: string | undefined;
+  version?: string | undefined;
+  action: string;
+  expression: string;
+  description?: string | undefined;
+  enabled?: boolean | undefined;
+  ref?: string | undefined;
+  logging?: { enabled: boolean } | undefined;
+  action_parameters?: Record<string, unknown> | undefined;
+  last_updated?: string | undefined;
+}
+
+/** Ruleset Phase entrypoint */
+export interface RulesetPhase {
+  phase: string;
+  description?: string | undefined;
+}
+
+// ─── Firewall Legacy Types ──────────────────────────────────────────────────
+
+/** Firewall Access Rule (IP rule) */
+export interface FirewallIPRule {
+  id: string;
+  mode: string;
+  notes?: string | undefined;
+  configuration: {
+    target: string;
+    value: string;
+  };
+  scope?: {
+    id: string;
+    type: string;
+    email?: string | undefined;
+  } | undefined;
+  created_on?: string | undefined;
+  modified_on?: string | undefined;
+}
+
+/** Firewall User-Agent Rule */
+export interface FirewallUARule {
+  id: string;
+  description?: string | undefined;
+  mode: string;
+  paused: boolean;
+  configuration: {
+    target: string;
+    value: string;
+  };
+}
+
+/** Firewall Zone Lockdown */
+export interface FirewallZoneLockdown {
+  id: string;
+  description?: string | undefined;
+  paused: boolean;
+  urls: string[];
+  configurations: {
+    target: string;
+    value: string;
+  }[];
+  created_on?: string | undefined;
+  modified_on?: string | undefined;
+}
+
+// ─── Page Shield Types ──────────────────────────────────────────────────────
+
+/** Page Shield Settings */
+export interface PageShieldSettings {
+  enabled: boolean;
+  updated_at?: string | undefined;
+  use_cloudflare_reporting_endpoint?: boolean | undefined;
+  use_connection_url_path?: boolean | undefined;
+}
+
+/** Page Shield Script */
+export interface PageShieldScript {
+  id: string;
+  url: string;
+  added_at?: string | undefined;
+  first_seen_at?: string | undefined;
+  last_seen_at?: string | undefined;
+  host?: string | undefined;
+  domain_reported_malicious?: boolean | undefined;
+  fetched_at?: string | undefined;
+  hash?: string | undefined;
+  js_integrity_score?: number | undefined;
+  page_urls?: string[] | undefined;
+}
+
+/** Page Shield Connection */
+export interface PageShieldConnection {
+  id: string;
+  url: string;
+  added_at?: string | undefined;
+  first_seen_at?: string | undefined;
+  last_seen_at?: string | undefined;
+  host?: string | undefined;
+  domain_reported_malicious?: boolean | undefined;
+  page_urls?: string[] | undefined;
+}
+
+/** Page Shield Policy */
+export interface PageShieldPolicy {
+  id: string;
+  value: string;
+  action: string;
+  description?: string | undefined;
+  enabled?: boolean | undefined;
+  expression?: string | undefined;
+  created_at?: string | undefined;
+  updated_at?: string | undefined;
+}
+
 // ─── Secrets Store Types ───────────────────────────────────────────────────
 
 /** Secrets Store */
@@ -612,4 +741,82 @@ export interface SecretsStoreSecret {
   created_on?: string | undefined;
   modified_on?: string | undefined;
   status?: string | undefined;
+}
+
+// ─── Turnstile Types ────────────────────────────────────────────────────────
+
+/** Turnstile Widget */
+export interface TurnstileWidget {
+  sitekey: string;
+  secret: string;
+  name: string;
+  domains: string[];
+  mode: string;
+  bot_fight_mode: boolean;
+  region?: string | undefined;
+  created_on: string;
+  modified_on: string;
+  offlabel?: boolean | undefined;
+  clearance_level?: string | undefined;
+}
+
+/** Turnstile Widget Rotate Secret Result */
+export interface TurnstileRotateSecretResult {
+  sitekey: string;
+  secret: string;
+  name: string;
+  domains: string[];
+  mode: string;
+  created_on: string;
+  modified_on: string;
+}
+
+// ─── API Gateway Types ──────────────────────────────────────────────────────
+
+/** API Gateway Settings */
+export interface APIGatewaySettings {
+  enabled: boolean;
+}
+
+/** API Gateway Schema */
+export interface APIGatewaySchema {
+  schema_id: string;
+  name: string;
+  kind?: string | undefined;
+  source?: string | undefined;
+  created_at?: string | undefined;
+  validation_enabled?: boolean | undefined;
+}
+
+// ─── Rate Limits Types ──────────────────────────────────────────────────────
+
+/** Rate Limit Rule (Legacy) */
+export interface RateLimitRule {
+  id: string;
+  disabled?: boolean | undefined;
+  description?: string | undefined;
+  match: {
+    request: {
+      methods?: string[] | undefined;
+      schemes?: string[] | undefined;
+      url: string;
+    };
+    response?: {
+      status?: number[] | undefined;
+      origin_traffic?: boolean | undefined;
+      headers?: { name: string; op: string; value: string }[] | undefined;
+    } | undefined;
+  };
+  threshold: number;
+  period: number;
+  action: {
+    mode: string;
+    timeout?: number | undefined;
+    response?: {
+      content_type: string;
+      body: string;
+    } | undefined;
+  };
+  bypass?: { name: string; value: string }[] | undefined;
+  correlate?: { by: string } | undefined;
 }

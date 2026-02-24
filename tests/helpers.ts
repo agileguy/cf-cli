@@ -607,3 +607,63 @@ export function sampleSecretsStoreSecret(overrides: Partial<Record<string, unkno
     ...overrides,
   };
 }
+
+/** Sample Turnstile Widget for tests */
+export function sampleTurnstileWidget(overrides: Partial<Record<string, unknown>> = {}): Record<string, unknown> {
+  return {
+    sitekey: "0x4AAAAAAAB1cDE2fGH3IJkl",
+    secret: "0x4AAAAAAAB1cDE2fGH3IJkl_secret",
+    name: "my-widget",
+    domains: ["example.com"],
+    mode: "managed",
+    bot_fight_mode: false,
+    region: "world",
+    created_on: "2024-01-01T00:00:00.000Z",
+    modified_on: "2024-06-01T12:00:00.000Z",
+    ...overrides,
+  };
+}
+
+/** Sample API Gateway Settings for tests */
+export function sampleAPIGatewaySettings(overrides: Partial<Record<string, unknown>> = {}): Record<string, unknown> {
+  return {
+    enabled: true,
+    ...overrides,
+  };
+}
+
+/** Sample API Gateway Schema for tests */
+export function sampleAPIGatewaySchema(overrides: Partial<Record<string, unknown>> = {}): Record<string, unknown> {
+  return {
+    schema_id: "schema-uuid-123",
+    name: "my-api-schema",
+    kind: "openapi_v3",
+    source: "user",
+    validation_enabled: true,
+    created_at: "2024-01-01T00:00:00.000Z",
+    ...overrides,
+  };
+}
+
+/** Sample Rate Limit Rule for tests */
+export function sampleRateLimitRule(overrides: Partial<Record<string, unknown>> = {}): Record<string, unknown> {
+  return {
+    id: "rl-uuid-123",
+    disabled: false,
+    description: "Rate limit API endpoints",
+    match: {
+      request: {
+        methods: ["GET", "POST"],
+        schemes: ["HTTPS"],
+        url: "*.example.com/api/*",
+      },
+    },
+    threshold: 100,
+    period: 60,
+    action: {
+      mode: "simulate",
+      timeout: 60,
+    },
+    ...overrides,
+  };
+}

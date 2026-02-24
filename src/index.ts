@@ -30,6 +30,9 @@ RESOURCES:
   hyperdrive     Manage Hyperdrive configurations (database connection pooling)
   pipelines      Manage Pipelines (data ingestion)
   secrets-store  Manage Secrets Store (stores, secrets)
+  turnstile      Manage Turnstile widgets (CAPTCHA)
+  api-gateway    Manage API Gateway (settings, schemas)
+  rate-limits    Manage Rate Limiting rules (legacy)
   accounts       List accounts
   user           Show current user information
   cache          Purge cached content
@@ -262,6 +265,19 @@ async function routeCommand(
     }
     case "secrets-store": {
       const { run } = await import("./commands/secrets-store/index.js");
+      return run(subArgs, ctx);
+    }
+    case "turnstile": {
+      const { run } = await import("./commands/turnstile/index.js");
+      return run(subArgs, ctx);
+    }
+    case "api-gateway": {
+      const { run } = await import("./commands/api-gateway/index.js");
+      return run(subArgs, ctx);
+    }
+    case "rate-limits":
+    case "rate-limit": {
+      const { run } = await import("./commands/rate-limits/index.js");
       return run(subArgs, ctx);
     }
     case "completion":
