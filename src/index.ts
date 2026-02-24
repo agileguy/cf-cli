@@ -43,6 +43,14 @@ RESOURCES:
   gateway        Manage Zero Trust Gateway (DNS/HTTP/network policies, DLP)
   accounts       List accounts
   user           Show current user information
+  ssl            Manage SSL/TLS certificates and settings
+  lb             Manage Load Balancers (pools, monitors, regions)
+  healthchecks   Manage standalone Healthchecks
+  cache-reserve  Manage Cache Reserve settings
+  tiered-cache   Manage Tiered Cache settings
+  argo           Manage Argo Smart Routing
+  waiting-rooms  Manage Waiting Rooms (events, rules, status)
+  observatory    Speed / Observatory (pages, tests, schedules)
   cache          Purge cached content
   config         Manage CLI configuration and profiles
   completion     Generate shell completions (bash, zsh, fish)
@@ -328,6 +336,44 @@ async function routeCommand(
     case "completion":
     case "completions": {
       const { run } = await import("./commands/completion/index.js");
+      return run(subArgs, ctx);
+    }
+    case "ssl":
+    case "tls": {
+      const { run } = await import("./commands/ssl/index.js");
+      return run(subArgs, ctx);
+    }
+    case "lb":
+    case "load-balancer":
+    case "load-balancers": {
+      const { run } = await import("./commands/lb/index.js");
+      return run(subArgs, ctx);
+    }
+    case "healthchecks":
+    case "healthcheck": {
+      const { run } = await import("./commands/healthchecks/index.js");
+      return run(subArgs, ctx);
+    }
+    case "cache-reserve": {
+      const { run } = await import("./commands/cache-reserve/index.js");
+      return run(subArgs, ctx);
+    }
+    case "tiered-cache": {
+      const { run } = await import("./commands/tiered-cache/index.js");
+      return run(subArgs, ctx);
+    }
+    case "argo": {
+      const { run } = await import("./commands/argo/index.js");
+      return run(subArgs, ctx);
+    }
+    case "waiting-rooms":
+    case "waiting-room": {
+      const { run } = await import("./commands/waiting-rooms/index.js");
+      return run(subArgs, ctx);
+    }
+    case "observatory":
+    case "speed": {
+      const { run } = await import("./commands/observatory/index.js");
       return run(subArgs, ctx);
     }
     default:

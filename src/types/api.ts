@@ -1150,3 +1150,448 @@ export interface FleetStatusDevice {
   ip?: string | undefined;
   last_seen?: string | undefined;
 }
+
+// ─── SSL / TLS Types ───────────────────────────────────────────────────────
+
+/** SSL Analyze result */
+export interface SSLAnalyzeResult {
+  hostname: string;
+  certificate_status?: string | undefined;
+  certificate_authority?: string | undefined;
+  valid_from?: string | undefined;
+  valid_to?: string | undefined;
+  signature_algorithm?: string | undefined;
+  fingerprint_sha256?: string | undefined;
+  issuer?: string | undefined;
+  subject?: string | undefined;
+  sans?: string[] | undefined;
+}
+
+/** Universal SSL Settings */
+export interface UniversalSSLSettings {
+  enabled: boolean;
+}
+
+/** Universal SSL Verification entry */
+export interface SSLVerification {
+  certificate_status: string;
+  brand_check?: boolean | undefined;
+  verification_type?: string | undefined;
+  verification_info?: Record<string, unknown> | undefined;
+  cert_pack_uuid?: string | undefined;
+  validation_method?: string | undefined;
+  hostname?: string | undefined;
+}
+
+/** Advanced Certificate Pack */
+export interface AdvancedCertificatePack {
+  id: string;
+  type: string;
+  hosts: string[];
+  status: string;
+  validation_method?: string | undefined;
+  validity_days?: number | undefined;
+  certificate_authority?: string | undefined;
+  cloudflare_branding?: boolean | undefined;
+  created_on?: string | undefined;
+  primary_certificate?: string | undefined;
+  certificates?: SSLCertificateEntry[] | undefined;
+}
+
+/** SSL Certificate entry within a pack */
+export interface SSLCertificateEntry {
+  id?: string | undefined;
+  hosts?: string[] | undefined;
+  issuer?: string | undefined;
+  signature?: string | undefined;
+  status?: string | undefined;
+  bundle_method?: string | undefined;
+  uploaded_on?: string | undefined;
+  modified_on?: string | undefined;
+  expires_on?: string | undefined;
+}
+
+/** Custom SSL Certificate */
+export interface CustomSSLCertificate {
+  id: string;
+  hosts: string[];
+  issuer: string;
+  signature: string;
+  status: string;
+  bundle_method: string;
+  zone_id: string;
+  uploaded_on: string;
+  modified_on: string;
+  expires_on: string;
+  priority?: number | undefined;
+  geo_restrictions?: { label: string } | undefined;
+  keyless_server?: { id: string; name: string; host: string; port: number } | undefined;
+}
+
+/** Client Certificate (mTLS) */
+export interface ClientCertificate {
+  id: string;
+  certificate: string;
+  csr?: string | undefined;
+  ski?: string | undefined;
+  serial_number?: string | undefined;
+  fingerprint_sha256?: string | undefined;
+  status: string;
+  expires_on?: string | undefined;
+  issued_on?: string | undefined;
+  location?: string | undefined;
+  certificate_authority?: { id: string; name: string } | undefined;
+}
+
+/** Keyless SSL Server */
+export interface KeylessSSLServer {
+  id: string;
+  name: string;
+  host: string;
+  port: number;
+  status: string;
+  enabled: boolean;
+  permissions?: string[] | undefined;
+  created_on?: string | undefined;
+  modified_on?: string | undefined;
+}
+
+/** Origin CA Certificate */
+export interface OriginCACertificate {
+  id: string;
+  certificate: string;
+  hostnames: string[];
+  expires_on: string;
+  request_type: string;
+  requested_validity: number;
+  csr?: string | undefined;
+}
+
+/** mTLS Certificate Association (Account-level) */
+export interface MTLSCertificateAssociation {
+  id: string;
+  name?: string | undefined;
+  fingerprint?: string | undefined;
+  associated_hostnames?: string[] | undefined;
+  issuer?: string | undefined;
+  serial_number?: string | undefined;
+  not_before?: string | undefined;
+  not_after?: string | undefined;
+  uploaded_on?: string | undefined;
+  updated_at?: string | undefined;
+  expires_on?: string | undefined;
+}
+
+/** DCV Delegation UUID */
+export interface DCVDelegation {
+  uuid: string;
+}
+
+/** SSL Recommendations */
+export interface SSLRecommendation {
+  id?: string | undefined;
+  value?: string | undefined;
+  modified_on?: string | undefined;
+}
+
+/** Post-Quantum Encryption setting */
+export interface PostQuantumSetting {
+  value: string;
+  modified_on?: string | undefined;
+}
+
+// ─── Load Balancer Types ──────────────────────────────────────────────────
+
+/** Load Balancer */
+export interface LoadBalancer {
+  id: string;
+  name: string;
+  description?: string | undefined;
+  enabled?: boolean | undefined;
+  ttl?: number | undefined;
+  fallback_pool: string;
+  default_pools: string[];
+  proxied?: boolean | undefined;
+  steering_policy?: string | undefined;
+  session_affinity?: string | undefined;
+  session_affinity_ttl?: number | undefined;
+  session_affinity_attributes?: Record<string, unknown> | undefined;
+  rules?: LoadBalancerRule[] | undefined;
+  pop_pools?: Record<string, string[]> | undefined;
+  country_pools?: Record<string, string[]> | undefined;
+  region_pools?: Record<string, string[]> | undefined;
+  created_on?: string | undefined;
+  modified_on?: string | undefined;
+}
+
+/** Load Balancer Rule */
+export interface LoadBalancerRule {
+  name: string;
+  condition?: string | undefined;
+  disabled?: boolean | undefined;
+  fixed_response?: {
+    message_body?: string | undefined;
+    status_code?: number | undefined;
+    content_type?: string | undefined;
+    location?: string | undefined;
+  } | undefined;
+  overrides?: Record<string, unknown> | undefined;
+  priority?: number | undefined;
+  terminates?: boolean | undefined;
+}
+
+/** Load Balancer Pool */
+export interface LoadBalancerPool {
+  id: string;
+  name: string;
+  description?: string | undefined;
+  enabled: boolean;
+  minimum_origins?: number | undefined;
+  monitor?: string | undefined;
+  origins: LoadBalancerOrigin[];
+  notification_email?: string | undefined;
+  notification_filter?: Record<string, unknown> | undefined;
+  check_regions?: string[] | undefined;
+  latitude?: number | undefined;
+  longitude?: number | undefined;
+  load_shedding?: Record<string, unknown> | undefined;
+  origin_steering?: Record<string, unknown> | undefined;
+  healthy?: boolean | undefined;
+  created_on?: string | undefined;
+  modified_on?: string | undefined;
+}
+
+/** Load Balancer Origin */
+export interface LoadBalancerOrigin {
+  name: string;
+  address: string;
+  enabled: boolean;
+  weight?: number | undefined;
+  header?: Record<string, string[]> | undefined;
+  virtual_network_id?: string | undefined;
+}
+
+/** Load Balancer Monitor */
+export interface LoadBalancerMonitor {
+  id: string;
+  type: string;
+  description?: string | undefined;
+  method?: string | undefined;
+  path?: string | undefined;
+  header?: Record<string, string[]> | undefined;
+  port?: number | undefined;
+  timeout?: number | undefined;
+  retries?: number | undefined;
+  interval?: number | undefined;
+  expected_body?: string | undefined;
+  expected_codes?: string | undefined;
+  follow_redirects?: boolean | undefined;
+  allow_insecure?: boolean | undefined;
+  probe_zone?: string | undefined;
+  consecutive_up?: number | undefined;
+  consecutive_down?: number | undefined;
+  created_on?: string | undefined;
+  modified_on?: string | undefined;
+}
+
+/** Load Balancer Pool Health */
+export interface LoadBalancerPoolHealth {
+  pool_id?: string | undefined;
+  pop_health?: Record<string, unknown> | undefined;
+}
+
+/** Load Balancer Monitor Preview */
+export interface LoadBalancerMonitorPreview {
+  preview_id: string;
+  pools?: Record<string, unknown> | undefined;
+}
+
+/** Load Balancer Region */
+export interface LoadBalancerRegion {
+  region_code: string;
+  countries?: string[] | undefined;
+}
+
+// ─── Healthchecks Types ──────────────────────────────────────────────────
+
+/** Healthcheck */
+export interface Healthcheck {
+  id: string;
+  name: string;
+  description?: string | undefined;
+  suspended?: boolean | undefined;
+  address: string;
+  type?: string | undefined;
+  retries?: number | undefined;
+  timeout?: number | undefined;
+  interval?: number | undefined;
+  consecutive_successes?: number | undefined;
+  consecutive_fails?: number | undefined;
+  check_regions?: string[] | undefined;
+  tcp_config?: {
+    method?: string | undefined;
+    port?: number | undefined;
+  } | undefined;
+  http_config?: {
+    method?: string | undefined;
+    port?: number | undefined;
+    path?: string | undefined;
+    expected_body?: string | undefined;
+    expected_codes?: string[] | undefined;
+    follow_redirects?: boolean | undefined;
+    allow_insecure?: boolean | undefined;
+    header?: Record<string, string[]> | undefined;
+  } | undefined;
+  status?: string | undefined;
+  failure_reason?: string | undefined;
+  created_on?: string | undefined;
+  modified_on?: string | undefined;
+}
+
+/** Healthcheck Preview */
+export interface HealthcheckPreview {
+  id: string;
+  name?: string | undefined;
+  address?: string | undefined;
+  status?: string | undefined;
+}
+
+// ─── Cache Settings Types ──────────────────────────────────────────────────
+
+/** Cache Reserve setting */
+export interface CacheReserveSetting {
+  id: string;
+  value: string;
+  modified_on?: string | undefined;
+}
+
+/** Tiered Cache setting */
+export interface TieredCacheSetting {
+  id: string;
+  value: string;
+  modified_on?: string | undefined;
+}
+
+/** Argo Smart Routing setting */
+export interface ArgoSetting {
+  id: string;
+  value: string;
+  modified_on?: string | undefined;
+}
+
+// ─── Waiting Room Types ────────────────────────────────────────────────────
+
+/** Waiting Room */
+export interface WaitingRoom {
+  id: string;
+  name: string;
+  description?: string | undefined;
+  host: string;
+  path?: string | undefined;
+  queue_all?: boolean | undefined;
+  disable_session_renewal?: boolean | undefined;
+  suspended?: boolean | undefined;
+  json_response_enabled?: boolean | undefined;
+  new_users_per_minute: number;
+  total_active_users: number;
+  session_duration?: number | undefined;
+  custom_page_html?: string | undefined;
+  default_template_language?: string | undefined;
+  cookie_suffix?: string | undefined;
+  additional_routes?: { host: string; path?: string }[] | undefined;
+  cookie_attributes?: {
+    samesite?: string | undefined;
+    secure?: string | undefined;
+  } | undefined;
+  enabled_origin_commands?: string[] | undefined;
+  queueing_method?: string | undefined;
+  queueing_status_code?: number | undefined;
+  created_on?: string | undefined;
+  modified_on?: string | undefined;
+}
+
+/** Waiting Room Event */
+export interface WaitingRoomEvent {
+  id: string;
+  name: string;
+  description?: string | undefined;
+  event_start_time: string;
+  event_end_time: string;
+  prequeue_start_time?: string | undefined;
+  shuffle_at_event_start?: boolean | undefined;
+  suspended?: boolean | undefined;
+  new_users_per_minute?: number | undefined;
+  total_active_users?: number | undefined;
+  session_duration?: number | undefined;
+  disable_session_renewal?: boolean | undefined;
+  custom_page_html?: string | undefined;
+  queueing_method?: string | undefined;
+  created_on?: string | undefined;
+  modified_on?: string | undefined;
+}
+
+/** Waiting Room Rule */
+export interface WaitingRoomRule {
+  id?: string | undefined;
+  version?: string | undefined;
+  action: string;
+  expression: string;
+  description?: string | undefined;
+  enabled?: boolean | undefined;
+  last_updated?: string | undefined;
+}
+
+/** Waiting Room Status */
+export interface WaitingRoomStatus {
+  status: string;
+  event_id?: string | undefined;
+  estimated_queued_users?: number | undefined;
+  estimated_total_active_users?: number | undefined;
+  max_estimated_time_minutes?: number | undefined;
+  created_at?: string | undefined;
+}
+
+// ─── Observatory (Speed) Types ─────────────────────────────────────────────
+
+/** Observatory Page */
+export interface ObservatoryPage {
+  url: string;
+  region?: string | undefined;
+  schedule?: {
+    frequency?: string | undefined;
+    url?: string | undefined;
+    region?: string | undefined;
+  } | undefined;
+  tests?: ObservatoryTest[] | undefined;
+}
+
+/** Observatory Test */
+export interface ObservatoryTest {
+  id: string;
+  url: string;
+  region?: string | undefined;
+  date?: string | undefined;
+  schedule_frequency?: string | undefined;
+  mobile_report?: ObservatoryReport | undefined;
+  desktop_report?: ObservatoryReport | undefined;
+}
+
+/** Observatory Report (lighthouse) */
+export interface ObservatoryReport {
+  state?: string | undefined;
+  performance_score?: number | undefined;
+  ttfb?: number | undefined;
+  fcp?: number | undefined;
+  lcp?: number | undefined;
+  si?: number | undefined;
+  tbt?: number | undefined;
+  tti?: number | undefined;
+  cls?: number | undefined;
+}
+
+/** Observatory Schedule */
+export interface ObservatorySchedule {
+  url: string;
+  region?: string | undefined;
+  frequency?: string | undefined;
+}
