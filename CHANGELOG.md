@@ -1,5 +1,21 @@
 # Changelog
 
+## [0.3.0] - 2026-02-23
+
+### Added
+- Workers scripts management: list, get, deploy (multipart upload), delete
+- Workers routes CRUD per zone
+- Workers cron triggers: get, update
+- Workers custom domains management
+- Workers versions: list, get
+- Workers for Platforms: namespaces, scripts, bindings
+- Workers tail: real-time log streaming via WebSocket
+- KV namespaces CRUD: list, get, create, rename, delete
+- KV key operations: list, get, put (with TTL/metadata), delete, bulk-write, bulk-delete
+- Durable Objects: namespace list, objects list
+- Account ID auto-resolution utility (flag > config > API auto-detect)
+- 121 new unit tests (365 total)
+
 ## [0.2.0] - 2026-02-23
 
 ### Added
