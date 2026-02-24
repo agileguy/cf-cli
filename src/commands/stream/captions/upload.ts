@@ -17,16 +17,19 @@ export async function run(args: string[], ctx: Context): Promise<void> {
 
   const accountId = await resolveAccountId(getStringFlag(flags, "accountId"), ctx.client, ctx.config);
 
-  let content: string;
+  let content: ArrayBuffer;
   try {
-    content = await Bun.file(file).text();
+    content = await Bun.file(file).arrayBuffer();
   } catch {
     throw new UsageError(`Cannot read file: "${file}".`);
   }
 
-  const result = await ctx.client.put<StreamCaption>(
+  const formData = new FormData();
+  formData.set("file", new Blob([content]), file.split("/").pop() ?? "captions.vtt");
+
+  const result = await ctx.client.uploadPut<StreamCaption>(
     `/accounts/${encodeURIComponent(accountId)}/stream/${encodeURIComponent(video)}/captions/${encodeURIComponent(language)}`,
-    content,
+    formData,
   );
 
   ctx.output.success(`Captions uploaded for language: ${result.language ?? language}`);

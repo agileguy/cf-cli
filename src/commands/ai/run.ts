@@ -29,16 +29,13 @@ export async function run(args: string[], ctx: Context): Promise<void> {
 
   if (file) {
     // Read file and send as binary content
-    let content: string;
+    let bytes: ArrayBuffer;
     try {
-      content = await Bun.file(file).text();
+      bytes = await Bun.file(file).arrayBuffer();
     } catch {
       throw new UsageError(`Cannot read file: "${file}".`);
     }
-    // For file-based models, send the raw content as an array of bytes
-    const bytes = await Bun.file(file).arrayBuffer();
-    const arr = Array.from(new Uint8Array(bytes));
-    body = arr;
+    body = Array.from(new Uint8Array(bytes));
   } else if (prompt) {
     // Text-based inference
     body = { messages: [{ role: "user", content: prompt }] };
@@ -52,13 +49,16 @@ export async function run(args: string[], ctx: Context): Promise<void> {
     } catch {
       throw new UsageError(`Invalid JSON for --options: "${optionsJson}".`);
     }
-    if (typeof body === "object" && body !== null && !Array.isArray(body)) {
+    if (Array.isArray(body)) {
+      throw new UsageError("--options cannot be used with --file.");
+    }
+    if (typeof body === "object" && body !== null) {
       body = { ...(body as Record<string, unknown>), ...extraOptions };
     }
   }
 
   const result = await ctx.client.post<unknown>(
-    `/accounts/${encodeURIComponent(accountId)}/ai/run/${encodeURIComponent(model)}`,
+    `/accounts/${encodeURIComponent(accountId)}/ai/run/${model}`,
     body,
   );
 

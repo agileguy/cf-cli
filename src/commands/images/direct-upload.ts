@@ -8,13 +8,13 @@ export async function run(args: string[], ctx: Context): Promise<void> {
   const accountId = await resolveAccountId(getStringFlag(flags, "accountId"), ctx.client, ctx.config);
   const expiry = getStringFlag(flags, "expiry");
 
-  const body: Record<string, unknown> = {};
-  if (expiry) body["expiry"] = expiry;
+  const formData = new FormData();
+  if (expiry) formData.set("expiry", expiry);
 
-  const result = await ctx.client.post<CFImageDirectUpload>(
+  const result = await ctx.client.upload(
     `/accounts/${encodeURIComponent(accountId)}/images/v2/direct_upload`,
-    body,
-  );
+    formData,
+  ) as CFImageDirectUpload;
 
   ctx.output.detail({
     "ID": result.id,

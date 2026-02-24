@@ -234,23 +234,24 @@ describe("images stats", () => {
 describe("images direct-upload", () => {
   test("creates direct upload URL", async () => {
     const { ctx, output } = imgCtx({
-      post: async () => sampleDirectUpload(),
+      upload: async () => sampleDirectUpload(),
     });
     await directUploadRun(["--account-id", ACCOUNT_ID], ctx);
     expect(output.captured.details).toHaveLength(1);
     expect(output.captured.details[0]!["Upload URL"]).toContain("upload.example.com");
   });
 
-  test("passes expiry param", async () => {
-    let capturedBody: unknown;
+  test("passes expiry param via FormData", async () => {
+    let capturedFormData: FormData | undefined;
     const { ctx } = imgCtx({
-      post: async (_path: string, body: unknown) => {
-        capturedBody = body;
+      upload: async (_path: string, formData: FormData) => {
+        capturedFormData = formData;
         return sampleDirectUpload();
       },
     });
     await directUploadRun(["--account-id", ACCOUNT_ID, "--expiry", "2025-01-01T00:00:00Z"], ctx);
-    expect((capturedBody as Record<string, unknown>).expiry).toBe("2025-01-01T00:00:00Z");
+    expect(capturedFormData).toBeDefined();
+    expect(capturedFormData!.get("expiry")).toBe("2025-01-01T00:00:00Z");
   });
 });
 
@@ -453,7 +454,7 @@ describe("images router", () => {
 
   test("routes direct-upload command", async () => {
     const { ctx, output } = imgCtx({
-      post: async () => sampleDirectUpload(),
+      upload: async () => sampleDirectUpload(),
     });
     await imagesRouterRun(["direct-upload", "--account-id", ACCOUNT_ID], ctx);
     expect(output.captured.details).toHaveLength(1);

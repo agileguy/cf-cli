@@ -14,6 +14,10 @@ export async function run(args: string[], ctx: Context): Promise<void> {
 
   const accountId = await resolveAccountId(getStringFlag(flags, "accountId"), ctx.client, ctx.config);
 
+  if (!name && !metadata) {
+    throw new UsageError("At least one of --name or --metadata is required.");
+  }
+
   const body: Record<string, unknown> = {};
   if (metadata) {
     let parsed: unknown;

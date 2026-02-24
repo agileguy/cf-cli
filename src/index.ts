@@ -53,6 +53,10 @@ RESOURCES:
   observatory    Speed / Observatory (pages, tests, schedules)
   stream         Manage Stream (videos, live, captions, audio, keys, watermarks, webhooks)
   images         Manage Images (CRUD, variants, signing-keys, direct-upload)
+  calls          Manage Calls / WebRTC (apps, TURN keys)
+  ai             Workers AI (run inference, models, fine-tuning)
+  ai-gateway     Manage AI Gateway (CRUD, logs, datasets, evaluations)
+  vectorize      Manage Vectorize indexes (CRUD, insert, query, metadata)
   cache          Purge cached content
   config         Manage CLI configuration and profiles
   completion     Generate shell completions (bash, zsh, fish)
