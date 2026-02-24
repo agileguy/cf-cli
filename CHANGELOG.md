@@ -1,5 +1,22 @@
 # Changelog
 
+## [1.1.0] - 2026-02-24
+
+### Added
+- Email Routing: settings get/enable/disable, DNS, addresses CRUD, rules CRUD, catch-all
+- Alerts & Notifications: policies CRUD, webhooks, PagerDuty, silences, history, available alerts
+- Rules Lists: lists CRUD, items (add/replace/delete with cursor pagination)
+- Snippets: CRUD with multipart upload, rules list/upsert
+- Registrar: domain list, get, update (auto-renew/locked/privacy), transfer-in
+- Account Members & Roles: members CRUD (add/update/remove), roles list/get
+- Account Subscriptions & Billing: subscriptions list/get, billing profile/history
+- Audit Logs: list with filters (email, action, resource, date range, direction)
+- User Tokens: full lifecycle (list, get, create, update, delete, verify, roll)
+- Page Rules (legacy): CRUD from JSON files
+- Zone Analytics: dashboard, colo, DNS analytics with date ranges
+- Zone Settings: list all, get individual, update with JSON or string values
+- 206 new unit tests (2146 total)
+
 ## [1.0.0] - 2026-02-24
 
 ### Added
