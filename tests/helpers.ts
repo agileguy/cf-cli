@@ -307,3 +307,43 @@ export function sampleWorkerTail(overrides: Partial<Record<string, unknown>> = {
     ...overrides,
   };
 }
+
+/** Sample KV namespace for tests */
+export function sampleKVNamespace(overrides: Partial<Record<string, unknown>> = {}): Record<string, unknown> {
+  return {
+    id: "kv-ns-uuid-123",
+    title: "MY_KV_NAMESPACE",
+    supports_url_encoding: true,
+    ...overrides,
+  };
+}
+
+/** Sample KV key for tests */
+export function sampleKVKey(overrides: Partial<Record<string, unknown>> = {}): Record<string, unknown> {
+  return {
+    name: "my-key",
+    expiration: 1700000000,
+    metadata: { env: "production" },
+    ...overrides,
+  };
+}
+
+/** Sample Durable Object namespace for tests */
+export function sampleDurableObjectNamespace(overrides: Partial<Record<string, unknown>> = {}): Record<string, unknown> {
+  return {
+    id: "do-ns-uuid-123",
+    name: "MY_DURABLE_OBJECT",
+    script: "my-worker",
+    class: "MyDurableObject",
+    ...overrides,
+  };
+}
+
+/** Sample Durable Object for tests */
+export function sampleDurableObject(overrides: Partial<Record<string, unknown>> = {}): Record<string, unknown> {
+  return {
+    id: "do-obj-uuid-123",
+    hasStoredData: true,
+    ...overrides,
+  };
+}

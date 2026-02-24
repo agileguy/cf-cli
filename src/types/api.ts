@@ -209,3 +209,57 @@ export interface WorkerTailEvent {
   exceptions: { name: string; message: string; timestamp: number }[];
   diagnosticsChannelEvents?: unknown[] | undefined;
 }
+
+// ─── Workers KV Types ───────────────────────────────────────────────────────
+
+/** KV Namespace */
+export interface KVNamespace {
+  id: string;
+  title: string;
+  supports_url_encoding?: boolean | undefined;
+}
+
+/** KV Key (from list keys endpoint) */
+export interface KVKey {
+  name: string;
+  expiration?: number | undefined;
+  metadata?: Record<string, unknown> | undefined;
+}
+
+/** KV Key list result info (cursor-based pagination) */
+export interface KVKeyListResult {
+  keys: KVKey[];
+  list_complete: boolean;
+  cursor?: string | undefined;
+  result_info?: {
+    count: number;
+    cursor?: string | undefined;
+  } | undefined;
+}
+
+/** KV bulk write entry */
+export interface KVBulkWriteEntry {
+  key: string;
+  value: string;
+  expiration?: number | undefined;
+  expiration_ttl?: number | undefined;
+  metadata?: Record<string, unknown> | undefined;
+  base64?: boolean | undefined;
+}
+
+// ─── Durable Objects Types ──────────────────────────────────────────────────
+
+/** Durable Object Namespace */
+export interface DurableObjectNamespace {
+  id: string;
+  name: string;
+  script?: string | undefined;
+  class?: string | undefined;
+  environment?: string | undefined;
+}
+
+/** Durable Object instance */
+export interface DurableObject {
+  id: string;
+  hasStoredData: boolean;
+}

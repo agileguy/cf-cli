@@ -32,4 +32,10 @@ export type {
   WorkerNamespaceScript,
   WorkerTail,
   WorkerTailEvent,
+  KVNamespace,
+  KVKey,
+  KVKeyListResult,
+  KVBulkWriteEntry,
+  DurableObjectNamespace,
+  DurableObject,
 } from "./api.js";

@@ -21,6 +21,8 @@ RESOURCES:
   zones          List, create, delete, and manage zones
   dns            Manage DNS records (list, create, update, delete, import, export)
   workers        Manage Workers (scripts, routes, cron, domains, versions, platforms, tail)
+  kv             Manage Workers KV (namespaces, keys, bulk operations)
+  durable-objects  Manage Durable Objects (namespaces, objects)
   accounts       List accounts
   user           Show current user information
   cache          Purge cached content
@@ -195,6 +197,15 @@ async function routeCommand(
     case "workers":
     case "worker": {
       const { run } = await import("./commands/workers/index.js");
+      return run(subArgs, ctx);
+    }
+    case "kv": {
+      const { run } = await import("./commands/kv/index.js");
+      return run(subArgs, ctx);
+    }
+    case "durable-objects":
+    case "do": {
+      const { run } = await import("./commands/durable-objects/index.js");
       return run(subArgs, ctx);
     }
     case "accounts":
