@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.6.0] - 2026-02-23
+
+### Added
+- Access: apps (zone/account dual scope), policies, service-tokens, groups, users/sessions, certificates, identity providers
+- Gateway: DNS policies, HTTP policies, network policies, DLP profiles
+- Tunnels: CRUD, token retrieval, config management, connection management
+- Devices: list, get, revoke, registrations, posture rules CRUD
+- WARP: settings, split-tunnels (with duplicate guard), fleet-status
+- 213 new unit tests (994 total)
+
 ## [0.5.0] - 2026-02-23
 
 ### Added
