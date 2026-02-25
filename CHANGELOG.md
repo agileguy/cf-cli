@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.1.2] - 2026-02-25
+
+### Fixed
+- CLOUDFLARE_API_TOKEN environment variable not being read correctly
+- `--name` flag in `config set` command
+
 ## [1.1.0] - 2026-02-24
 
 ### Added
