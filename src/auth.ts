@@ -49,8 +49,8 @@ export function loadCredentials(
     return profileToCredentials(p, envProfile);
   }
 
-  // 3. CF_API_TOKEN env (direct)
-  const envToken = process.env["CF_API_TOKEN"];
+  // 3. CF_API_TOKEN / CLOUDFLARE_API_TOKEN env (direct)
+  const envToken = process.env["CF_API_TOKEN"] ?? process.env["CLOUDFLARE_API_TOKEN"];
   if (envToken) {
     return { method: "token", token: envToken };
   }

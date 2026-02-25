@@ -7,7 +7,7 @@ import { validateOutputFormat } from "../../utils/validators.js";
 export async function run(args: string[], ctx: Context): Promise<void> {
   const { flags } = parseArgs(args);
 
-  const profileName = getStringFlag(flags, "profile");
+  const profileName = getStringFlag(flags, "name") ?? getStringFlag(flags, "profile");
   const token = getStringFlag(flags, "token");
   const apiKey = getStringFlag(flags, "apiKey");
   const email = getStringFlag(flags, "email");
@@ -16,7 +16,7 @@ export async function run(args: string[], ctx: Context): Promise<void> {
   const output = getStringFlag(flags, "output");
 
   if (!profileName) {
-    throw new UsageError("--profile <name> is required.");
+    throw new UsageError("--name <profile> is required. Example: cf config set --name default --token <token>");
   }
 
   // Validate profile name: alphanumeric + hyphens only, reject prototype-polluting keys
