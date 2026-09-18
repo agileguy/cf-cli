@@ -1,6 +1,24 @@
 # @agileguy/cf-cli
 
-A fully-featured Cloudflare CLI wrapping the entire Cloudflare REST API. Zero dependencies, single binary, 50+ resource groups, 2100+ tests.
+A fully-featured Cloudflare CLI wrapping the entire Cloudflare REST API. Zero dependencies, single binary, 60 resource groups, 2100+ tests.
+
+## Documentation
+
+Comprehensive documentation is available in the [`docs/`](docs/README.md) directory:
+
+* **Getting Started**: [Installation](docs/getting-started/installation.md) • [Authentication & Profiles](docs/getting-started/authentication.md) • [Output Formats & Scripting](docs/getting-started/output-formats.md)
+* **Guides**: [API Token Permissions Matrix](docs/guides/permissions-matrix.md) • [CI/CD & Pipeline Automation](docs/guides/ci-cd-automation.md)
+* **Command References**:
+  * [Zones & Settings](docs/commands/zones.md)
+  * [DNS Records](docs/commands/dns.md)
+  * [Workers & Serverless](docs/commands/workers.md)
+  * [Workers KV](docs/commands/kv.md)
+  * [R2 Object Storage](docs/commands/r2.md)
+  * [D1 SQL Databases](docs/commands/d1.md)
+  * [Cloudflare Pages](docs/commands/pages.md)
+  * [Zero Trust Tunnels](docs/commands/tunnels.md)
+  * [Rulesets & WAF](docs/commands/rulesets.md)
+  * [CLI Configuration](docs/commands/config.md)
 
 ## Installation
 

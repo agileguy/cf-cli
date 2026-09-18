@@ -9,7 +9,7 @@ import { setNoColor } from "./utils/colors.js";
 import { CloudflareAPIError, UsageError, AuthError } from "./utils/errors.js";
 import { parseArgs, getBoolFlag, getStringFlag } from "./utils/args.js";
 
-const VERSION = "0.1.0";
+const VERSION = "1.1.2";
 
 const HELP_TEXT = `
 cf-cli v${VERSION} — Cloudflare CLI
@@ -163,17 +163,23 @@ function buildContext(flags: GlobalFlags): Context {
 }
 
 async function main(): Promise<void> {
-  const { flags, resource, action, rest: _rest } = parseGlobalFlags();
+  let { flags, resource, action, rest: _rest } = parseGlobalFlags();
 
-  // Handle --help or no args
-  if (resource === "" || resource === "help" || process.argv.includes("--help")) {
-    process.stdout.write(HELP_TEXT + "\n");
+  // Handle --version
+  if (process.argv.includes("--version") || process.argv.includes("-v") || resource === "version") {
+    process.stdout.write(`cf-cli v${VERSION}\n`);
     return;
   }
 
-  // Handle --version
-  if (resource === "version" || resource === "--version") {
-    process.stdout.write(`cf-cli v${VERSION}\n`);
+  // Handle "cf help <resource>" -> rewrite as "cf <resource> --help"
+  if (resource === "help" && action) {
+    resource = action;
+    action = "--help";
+  }
+
+  // Handle --help or no args at root level
+  if (resource === "" || (resource === "help" && !action)) {
+    process.stdout.write(HELP_TEXT + "\n");
     return;
   }
 
@@ -182,8 +188,16 @@ async function main(): Promise<void> {
   try {
     ctx = buildContext(flags);
   } catch (err: unknown) {
-    // Config command doesn't need auth
-    if (resource === "config") {
+    const isHelpOrNonAuth =
+      process.argv.includes("--help") ||
+      process.argv.includes("-h") ||
+      action === "" ||
+      action === "--help" ||
+      action === "-h" ||
+      resource === "config" ||
+      resource === "completion";
+
+    if (isHelpOrNonAuth) {
       const config = readConfig();
       const output = new OutputFormatterImpl(flags);
       if (flags.noColor) setNoColor(true);
