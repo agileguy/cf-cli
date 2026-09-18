@@ -1,0 +1,243 @@
+.TH CF-KV 1 "September 2026" "cf-cli v1.1.2" "Cloudflare CLI Manual"
+.SH NAME
+cf-kv.1 \- Manage Workers KV key-value storage namespaces and keys
+.PP
+Manage Cloudflare Workers KV namespaces and globally distributed key-value data with low-latency reads.
+.PP
+.PP
+.SH REQUIRED PERMISSIONS
+.PP
+.PP
+.RS 2
+.TP
+Read
+\fIScope Level:\fR Account | \fIMinimum API Token Permission:\fR \fBWorkers KV Storage:Read\fR
+.TP
+Write
+\fIScope Level:\fR Account | \fIMinimum API Token Permission:\fR \fBWorkers KV Storage:Edit\fR
+.RE
+.PP
+.PP
+.PP
+.SH SUBCOMMANDS OVERVIEW
+.PP
+.IP \(bu 2
+\fBcf kv namespaces\fR (#cf-kv-namespaces) — Manage KV namespaces (CRUD)
+.IP \(bu 2
+\fBcf kv list\fR (#cf-kv-list) — List keys within a namespace
+.IP \(bu 2
+\fBcf kv get\fR (#cf-kv-get) — Read the value of a key
+.IP \(bu 2
+\fBcf kv put\fR (#cf-kv-put) — Store a key-value pair
+.IP \(bu 2
+\fBcf kv delete\fR (#cf-kv-delete) — Remove a key
+.IP \(bu 2
+\fBcf kv bulk-write\fR (#cf-kv-bulk-write) — Upload up to 10,000 key-value pairs at once
+.IP \(bu 2
+\fBcf kv bulk-delete\fR (#cf-kv-bulk-delete) — Delete keys in bulk
+.PP
+.PP
+.SS "\fBcf kv namespaces\fR"
+.PP
+Manage isolated key-value namespaces.
+.PP
+.PP
+.nf
+.ft CW
+# List all namespaces
+cf kv namespaces list
+
+# Create a new namespace
+cf kv namespaces create --title "SESSION_STORE"
+
+# Rename a namespace
+cf kv namespaces rename --id <namespace-id> --title "NEW_TITLE"
+
+# Delete a namespace and all its stored keys
+cf kv namespaces delete --id <namespace-id> [--yes]
+.ft
+.fi
+.PP
+.PP
+.PP
+.SS "\fBcf kv list\fR"
+.PP
+Lists keys within a specified KV namespace.
+.PP
+.PP
+\fBSyntax\fR
+.PP
+.PP
+.nf
+.ft CW
+cf kv list --namespace-id <id> [flags]
+.ft
+.fi
+.PP
+.PP
+.PP
+\fBFlags\fR
+.PP
+.PP
+.RS 2
+.TP
+\fB--namespace-id <id>\fR
+\fIType:\fR string | \fIDescription:\fR \fIrequired\fR KV Namespace ID
+.TP
+\fB--prefix <prefix>\fR
+\fIType:\fR string | \fIDescription:\fR Filter keys starting with a prefix string
+.TP
+\fB--limit <number>\fR
+\fIType:\fR number | \fIDescription:\fR Maximum number of keys to return (default: \fB1000\fR)
+.TP
+\fB--cursor <cursor>\fR
+\fIType:\fR string | \fIDescription:\fR Cursor token for iterating through large namespaces
+.RE
+.PP
+.PP
+.PP
+\fBExample\fR
+.PP
+.PP
+.nf
+.ft CW
+# List keys matching a prefix
+cf kv list --namespace-id 0f2b3e8c9a --prefix "user:"
+.ft
+.fi
+.PP
+.PP
+.PP
+.SS "\fBcf kv get\fR"
+.PP
+Retrieves and prints the raw stored value of a key.
+.PP
+.PP
+\fBSyntax\fR
+.PP
+.PP
+.nf
+.ft CW
+cf kv get --namespace-id <id> --key <key-name>
+.ft
+.fi
+.PP
+.PP
+.PP
+\fBExample\fR
+.PP
+.PP
+.nf
+.ft CW
+cf kv get --namespace-id 0f2b3e8c9a --key "user:123:profile"
+.ft
+.fi
+.PP
+.PP
+.PP
+.SS "\fBcf kv put\fR"
+.PP
+Writes a key-value pair to the namespace, accepting either raw strings or file contents.
+.PP
+.PP
+\fBSyntax\fR
+.PP
+.PP
+.nf
+.ft CW
+cf kv put --namespace-id <id> --key <key> (--value <val> | --file <path>) [flags]
+.ft
+.fi
+.PP
+.PP
+.PP
+\fBFlags\fR
+.PP
+.PP
+.RS 2
+.TP
+\fB--namespace-id <id>\fR
+\fIType:\fR string | \fIDescription:\fR \fIrequired\fR Target Namespace ID
+.TP
+\fB--key <name>\fR
+\fIType:\fR string | \fIDescription:\fR \fIrequired\fR Key name
+.TP
+\fB--value <string>\fR
+\fIType:\fR string | \fIDescription:\fR Direct string value to store
+.TP
+\fB--file <path>\fR
+\fIType:\fR string | \fIDescription:\fR Read file contents as the value
+.TP
+\fB--ttl <seconds>\fR
+\fIType:\fR number | \fIDescription:\fR Relative expiration time in seconds (minimum: \fB60\fR)
+.TP
+\fB--metadata <json>\fR
+\fIType:\fR string | \fIDescription:\fR JSON metadata object to store alongside the key
+.RE
+.PP
+.PP
+.PP
+\fBExamples\fR
+.PP
+.PP
+.nf
+.ft CW
+# Store inline string with a 1-hour expiration
+cf kv put --namespace-id 0f2b3e8c9a --key "cache:token" --value "secret123" --ttl 3600
+
+# Store contents of a JSON file
+cf kv put --namespace-id 0f2b3e8c9a --key "config:site" --file site-config.json
+.ft
+.fi
+.PP
+.PP
+.PP
+.SS "\fBcf kv delete\fR"
+.PP
+Removes a single key from a namespace.
+.PP
+.PP
+\fBSyntax\fR
+.PP
+.PP
+.nf
+.ft CW
+cf kv delete --namespace-id <id> --key <key> [--yes]
+.ft
+.fi
+.PP
+.PP
+.PP
+\fBExample\fR
+.PP
+.PP
+.nf
+.ft CW
+cf kv delete --namespace-id 0f2b3e8c9a --key "user:123:profile" --yes
+.ft
+.fi
+.PP
+.PP
+.PP
+.SS "\fBcf kv bulk-write\fR & \fBcf kv bulk-delete\fR"
+.PP
+Execute high-volume batch operations against KV.
+.PP
+.PP
+.nf
+.ft CW
+# Bulk write up to 10,000 keys from a JSON payload
+# Payload format: [{"key": "k1", "value": "v1"}, {"key": "k2", "value": "v2", "expiration_ttl": 300}]
+cf kv bulk-write --namespace-id 0f2b3e8c9a --file batch.json
+
+# Bulk delete keys from a JSON array of strings
+# Payload format: ["k1", "k2", "k3"]
+cf kv bulk-delete --namespace-id 0f2b3e8c9a --file keys-to-delete.json --yes
+.ft
+.fi
+.PP
+.PP
+.SH SEE ALSO
+\fBcf\fR(1), \fBcf-dns\fR(1), \fBcf-zones\fR(1), \fBcf-workers\fR(1), \fBcf-kv\fR(1), \fBcf-r2\fR(1), \fBcf-d1\fR(1)
+.SH AUTHORS
+Built for Cloudflare API management by agileguy.

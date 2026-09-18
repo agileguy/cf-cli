@@ -1,0 +1,118 @@
+.TH CF-FORMATS 1 "September 2026" "cf-cli v1.1.2" "Cloudflare CLI Manual"
+.SH NAME
+cf-formats.1 \- Output formats, color support, and automation scripting for cf
+.PP
+\fBcf\fR is designed for human terminal readability and script automation alike. Every list, get, and mutation command supports structured multi-format output.
+.PP
+.PP
+.SH 1. SUPPORTED OUTPUT FORMATS
+.PP
+Pass the \fB--output <format>\fR flag (or set \fBoutput: "<format>"\fR in your default config):
+.PP
+.PP
+.nf
+.ft CW
+# Formatted ASCII table (default)
+cf dns list --zone example.com --output table
+
+# Pretty-printed JSON
+cf dns list --zone example.com --output json
+
+# Standard comma-separated values
+cf dns list --zone example.com --output csv
+
+# Clean YAML
+cf dns list --zone example.com --output yaml
+
+# Raw API JSON payload directly from Cloudflare
+cf dns list --zone example.com --raw
+.ft
+.fi
+.PP
+.PP
+.PP
+.SH 2. TERMINAL STYLING & COLOR SUPPORT
+.PP
+\fBcf\fR conforms strictly to the NO_COLOR (https://no-color.org/) standard.
+.PP
+.IP \(bu 2
+Use \fB--no-color\fR to disable ANSI colors and styling:
+.PP
+.nf
+.ft CW
+  cf zones list --no-color
+.ft
+.fi
+.PP
+.IP \(bu 2
+Setting the environment variable \fBNO_COLOR=1\fR automatically suppresses colors for all invocations:
+.PP
+.nf
+.ft CW
+  export NO_COLOR=1
+.ft
+.fi
+.PP
+.IP \(bu 2
+In non-interactive environments (e.g., cron jobs, CI loggers), colors are automatically omitted.
+.PP
+.PP
+.SH 3. QUIET MODE FOR SHELL SCRIPTS
+.PP
+When invoking \fBcf\fR from within shell scripts, use \fB--quiet\fR to suppress progress and status outputs:
+.PP
+.PP
+.nf
+.ft CW
+cf dns create --zone example.com --type A --name api --content 1.2.3.4 --quiet
+.ft
+.fi
+.PP
+.PP
+\fI(Note: Errors will still be written to \fBstderr\fR even in \fB--quiet\fR mode).\fR
+.PP
+.PP
+.SH 4. SCRIPTING RECIPES WITH \fBJQ\fR
+.PP
+Pairing \fBcf\fR's JSON output with \fBjq\fR creates powerful operational one-liners:
+.PP
+.SS "Extract All Zone IDs and Names"
+.PP
+.nf
+.ft CW
+cf zones list --output json | jq -r '.[] | "\(.id)\t\(.name)"'
+.ft
+.fi
+.PP
+.PP
+.SS "Find All Stale DNS Records"
+.PP
+.nf
+.ft CW
+cf dns list --zone example.com --output json | jq -r '.[] | select(.type=="CNAME") | .name'
+.ft
+.fi
+.PP
+.PP
+.SS "Extract Public Worker URLs"
+.PP
+.nf
+.ft CW
+cf workers domains list --output json | jq -r '.[] | "\(.service) -> https://\(.hostname)"'
+.ft
+.fi
+.PP
+.PP
+.SS "Export CSV to a Spreadsheet File"
+.PP
+.nf
+.ft CW
+cf audit-logs list --output csv > audit_report_$(date +%F).csv
+.ft
+.fi
+.PP
+.PP
+.SH SEE ALSO
+\fBcf\fR(1), \fBcf-dns\fR(1), \fBcf-zones\fR(1), \fBcf-workers\fR(1), \fBcf-kv\fR(1), \fBcf-r2\fR(1), \fBcf-d1\fR(1)
+.SH AUTHORS
+Built for Cloudflare API management by agileguy.

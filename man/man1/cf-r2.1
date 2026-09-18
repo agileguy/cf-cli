@@ -1,0 +1,194 @@
+.TH CF-R2 1 "September 2026" "cf-cli v1.1.2" "Cloudflare CLI Manual"
+.SH NAME
+cf-r2.1 \- Manage R2 object storage buckets, CORS, lifecycle, and domains
+.PP
+Manage Cloudflare R2 S3-compatible zero-egress fee object storage buckets, custom domain bindings, lifecycle rules, CORS configurations, and event notifications.
+.PP
+.PP
+.SH REQUIRED PERMISSIONS
+.PP
+.PP
+.RS 2
+.TP
+Read
+\fIScope Level:\fR Account | \fIMinimum API Token Permission:\fR \fBWorkers R2 Storage:Read\fR
+.TP
+Write
+\fIScope Level:\fR Account | \fIMinimum API Token Permission:\fR \fBWorkers R2 Storage:Edit\fR
+.RE
+.PP
+.PP
+.PP
+.SH SUBCOMMANDS OVERVIEW
+.PP
+.IP \(bu 2
+\fBcf r2 buckets\fR (#cf-r2-buckets) — Create, list, inspect, and delete R2 buckets
+.IP \(bu 2
+\fBcf r2 cors\fR (#cf-r2-cors) — Configure Cross-Origin Resource Sharing (CORS)
+.IP \(bu 2
+\fBcf r2 lifecycle\fR (#cf-r2-lifecycle) — Configure automatic object expiration and transitions
+.IP \(bu 2
+\fBcf r2 custom-domains\fR (#cf-r2-custom-domains) — Map public custom domains to buckets
+.IP \(bu 2
+\fBcf r2 event-notifications\fR (#cf-r2-event-notifications) — Send bucket mutation events to Cloudflare Queues
+.IP \(bu 2
+\fBcf r2 metrics\fR (#cf-r2-metrics) — Inspect bucket storage usage and operation counters
+.PP
+.PP
+.SS "\fBcf r2 buckets\fR"
+.PP
+Manage R2 storage buckets.
+.PP
+.PP
+.nf
+.ft CW
+# List all buckets in account
+cf r2 buckets list
+
+# Inspect bucket metadata and location hint
+cf r2 buckets get --name my-assets
+
+# Create a new bucket with optional jurisdiction/location hint
+cf r2 buckets create --name my-assets [--location wnam]
+
+# Delete an empty bucket
+cf r2 buckets delete --name my-assets [--yes]
+.ft
+.fi
+.PP
+.PP
+.PP
+.SS "\fBcf r2 cors\fR"
+.PP
+Manage HTTP CORS policies allowing browser clients to perform direct uploads/downloads.
+.PP
+.PP
+.nf
+.ft CW
+# View active CORS rules for a bucket
+cf r2 cors get --bucket my-assets
+
+# Apply CORS configuration from a JSON policy file
+cf r2 cors set --bucket my-assets --file cors-policy.json
+
+# Remove all CORS rules
+cf r2 cors delete --bucket my-assets [--yes]
+.ft
+.fi
+.PP
+.PP
+\fIExample \fBcors-policy.json\fR:\fR
+.PP
+.nf
+.ft CW
+[
+  {
+    "allowed": {
+      "origins": ["https://example.com"],
+      "methods": ["GET", "PUT"],
+      "headers": ["*"]
+    },
+    "maxAgeSeconds": 3600
+  }
+]
+.ft
+.fi
+.PP
+.PP
+.PP
+.SS "\fBcf r2 lifecycle\fR"
+.PP
+Automate object cleanup and retention by configuring lifecycle rules.
+.PP
+.PP
+.nf
+.ft CW
+# View active lifecycle rules
+cf r2 lifecycle get --bucket my-assets
+
+# Apply lifecycle rules from a configuration file
+cf r2 lifecycle set --bucket my-assets --file lifecycle.json
+.ft
+.fi
+.PP
+.PP
+\fIExample \fBlifecycle.json\fR (auto-delete objects after 30 days):\fR
+.PP
+.nf
+.ft CW
+{
+  "rules": [
+    {
+      "id": "expire-temporary-uploads",
+      "enabled": true,
+      "conditions": {
+        "prefix": "temp/"
+      },
+      "action": {
+        "type": "Delete",
+        "maxAge": 2592000
+      }
+    }
+  ]
+}
+.ft
+.fi
+.PP
+.PP
+.PP
+.SS "\fBcf r2 custom-domains\fR"
+.PP
+Expose an R2 bucket directly to public HTTP traffic through a custom domain on your Cloudflare zone.
+.PP
+.PP
+.nf
+.ft CW
+# List custom domains mapped to a bucket
+cf r2 custom-domains list --bucket my-assets
+
+# Bind a custom domain (e.g. cdn.example.com) to a bucket
+cf r2 custom-domains add --bucket my-assets --zone example.com --domain cdn.example.com
+
+# Remove custom domain binding
+cf r2 custom-domains remove --bucket my-assets --domain cdn.example.com [--yes]
+.ft
+.fi
+.PP
+.PP
+.PP
+.SS "\fBcf r2 event-notifications\fR"
+.PP
+Emit notifications to Cloudflare Queues whenever objects are uploaded, copied, or deleted.
+.PP
+.PP
+.nf
+.ft CW
+# List notification rules
+cf r2 event-notifications list --bucket my-assets
+
+# Create notification triggering on PutObject
+cf r2 event-notifications create --bucket my-assets --queue image-pipeline --rules '[{"actions":["PutObject"]}]'
+
+# Delete notification rule
+cf r2 event-notifications delete --bucket my-assets --queue image-pipeline [--yes]
+.ft
+.fi
+.PP
+.PP
+.PP
+.SS "\fBcf r2 metrics\fR"
+.PP
+Inspect bucket storage volume, object counts, and operation metrics.
+.PP
+.PP
+.nf
+.ft CW
+cf r2 metrics --bucket my-assets
+.ft
+.fi
+.PP
+.PP
+.SH SEE ALSO
+\fBcf\fR(1), \fBcf-dns\fR(1), \fBcf-zones\fR(1), \fBcf-workers\fR(1), \fBcf-kv\fR(1), \fBcf-r2\fR(1), \fBcf-d1\fR(1)
+.SH AUTHORS
+Built for Cloudflare API management by agileguy.

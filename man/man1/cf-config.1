@@ -1,0 +1,189 @@
+.TH CF-CONFIG 1 "September 2026" "cf-cli v1.1.2" "Cloudflare CLI Manual"
+.SH NAME
+cf-config.1 \- Manage persistent CLI authentication profiles and defaults
+.PP
+Manage persistent authentication profiles, default output formats, and environment switching stored in \fB~/.cf/config.json\fR.
+.PP
+.PP
+.SH SUBCOMMANDS OVERVIEW
+.PP
+.IP \(bu 2
+\fBcf config set\fR (#cf-config-set) — Create or update an authentication profile
+.IP \(bu 2
+\fBcf config get\fR (#cf-config-get) — Display stored configuration for a profile
+.IP \(bu 2
+\fBcf config list\fR (#cf-config-list) — List all saved profiles and indicate active default
+.IP \(bu 2
+\fBcf config use\fR (#cf-config-use) — Switch the active default profile
+.IP \(bu 2
+\fBcf config delete\fR (#cf-config-delete) — Remove a profile
+.PP
+.PP
+.SS "\fBcf config set\fR"
+.PP
+Creates or updates a profile in \fB~/.cf/config.json\fR.
+.PP
+.PP
+\fBSyntax\fR
+.PP
+.PP
+.nf
+.ft CW
+cf config set --name <profile-name> [credentials & defaults]
+.ft
+.fi
+.PP
+.PP
+.PP
+\fBFlags\fR
+.PP
+.PP
+.RS 2
+.TP
+\fB--name <name>\fR
+\fIType:\fR string | \fIDescription:\fR \fIrequired\fR Profile identifier (letters, digits, and hyphens)
+.TP
+\fB--token <token>\fR
+\fIType:\fR string | \fIDescription:\fR Cloudflare API token
+.TP
+\fB--api-key <key>\fR
+\fIType:\fR string | \fIDescription:\fR Cloudflare Global API Key (requires \fB--email\fR)
+.TP
+\fB--email <email>\fR
+\fIType:\fR string | \fIDescription:\fR Account email address
+.TP
+\fB--account-id <id>\fR
+\fIType:\fR string | \fIDescription:\fR Default Account ID for this profile
+.TP
+\fB--zone-id <id>\fR
+\fIType:\fR string | \fIDescription:\fR Default Zone ID for this profile
+.TP
+\fB--output <format>\fR
+\fIType:\fR string | \fIDescription:\fR Preferred output format (\fBtable\fR, \fBjson\fR, \fBcsv\fR, \fByaml\fR)
+.RE
+.PP
+.PP
+.PP
+\fBExamples\fR
+.PP
+.PP
+.nf
+.ft CW
+# Set default profile with API token
+cf config set --name default --token "cfut_MySecretToken123"
+
+# Create a staging profile with a specific Account ID
+cf config set --name staging --token "staging-token" --account-id "023e105f4ecef8ad9ca31a8372d0c353"
+
+# Create profile using legacy global API key
+cf config set --name legacy --api-key "global-key-xyz" --email "dev@example.com"
+.ft
+.fi
+.PP
+.PP
+.PP
+.SS "\fBcf config list\fR"
+.PP
+Lists all stored profiles, their authentication methods, and marks which profile is currently default.
+.PP
+.PP
+\fBSyntax\fR
+.PP
+.PP
+.nf
+.ft CW
+cf config list
+.ft
+.fi
+.PP
+.PP
+.PP
+\fBExample Output\fR
+.PP
+.PP
+.nf
+.ft CW
+┌──────────────────────┬──────────┬────────────────────────────────┬────────────────────────────────────┬─────────┐
+│ Profile              │ Auth     │ Email                          │ Account ID                         │ Default │
+├──────────────────────┼──────────┼────────────────────────────────┼────────────────────────────────────┼─────────┤
+│ default              │ token    │ -                              │ -                                  │ Yes     │
+│ staging              │ token    │ -                              │ 023e105f4ecef8ad9ca31a8372d0c353   │         │
+└──────────────────────┴──────────┴────────────────────────────────┴────────────────────────────────────┴─────────┘
+.ft
+.fi
+.PP
+.PP
+.PP
+.SS "\fBcf config use\fR"
+.PP
+Switches the active default profile.
+.PP
+.PP
+\fBSyntax\fR
+.PP
+.PP
+.nf
+.ft CW
+cf config use --name <profile-name>
+.ft
+.fi
+.PP
+.PP
+.PP
+\fBExample\fR
+.PP
+.PP
+.nf
+.ft CW
+cf config use --name staging
+.ft
+.fi
+.PP
+.PP
+.PP
+.SS "\fBcf config get\fR"
+.PP
+Inspects stored settings for a specific profile (tokens are masked for security).
+.PP
+.PP
+\fBSyntax\fR
+.PP
+.PP
+.nf
+.ft CW
+cf config get --name <profile-name>
+.ft
+.fi
+.PP
+.PP
+.PP
+.SS "\fBcf config delete\fR"
+.PP
+Removes a profile from configuration.
+.PP
+.PP
+\fBSyntax\fR
+.PP
+.PP
+.nf
+.ft CW
+cf config delete --name <profile-name> [--yes]
+.ft
+.fi
+.PP
+.PP
+.PP
+\fBExample\fR
+.PP
+.PP
+.nf
+.ft CW
+cf config delete --name staging --yes
+.ft
+.fi
+.PP
+.PP
+.SH SEE ALSO
+\fBcf\fR(1), \fBcf-dns\fR(1), \fBcf-zones\fR(1), \fBcf-workers\fR(1), \fBcf-kv\fR(1), \fBcf-r2\fR(1), \fBcf-d1\fR(1)
+.SH AUTHORS
+Built for Cloudflare API management by agileguy.

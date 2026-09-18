@@ -1,0 +1,286 @@
+.TH CF 1 "September 2026" "cf-cli v1.1.2" "Cloudflare CLI Manual"
+.SH NAME
+cf.1 \- Cloudflare CLI wrapping the entire Cloudflare REST API
+.PP
+Welcome to the comprehensive documentation for \fB\fB@agileguy/cf-cli\fR\fR (\fBcf\fR), a zero-dependency, fully featured CLI wrapping the entire Cloudflare REST API.
+.PP
+.PP
+.SH QUICK NAVIGATION
+.PP
+.SS "Getting Started"
+.IP \(bu 2
+Installation (getting-started/installation.md) - npm, bun, source build, and shell completions
+.IP \(bu 2
+Authentication (getting-started/authentication.md) - API Tokens, Global Keys, Profiles, and resolution precedence
+.IP \(bu 2
+Output Formats & Scripting (getting-started/output-formats.md) - Table, JSON, CSV, YAML, \fB--raw\fR, and \fBjq\fR automation
+.PP
+.SS "Guides & Best Practices"
+.IP \(bu 2
+Cloudflare API Token Permissions Matrix (guides/permissions-matrix.md) - Exact API token permission scopes required per command
+.IP \(bu 2
+CI/CD & Automation Guide (guides/ci-cd-automation.md) - GitHub Actions & GitLab CI workflows, automation recipes, and exit codes
+.PP
+.SS "Core Command References"
+.IP \(bu 2
+Zones & Settings (commands/zones.md) - Zone CRUD, settings management, and traffic analytics
+.IP \(bu 2
+DNS Records (commands/dns.md) - Record CRUD, BIND import/export, and proxy toggling
+.IP \(bu 2
+Workers & Serverless (commands/workers.md) - Scripts, routes, cron triggers, custom domains, versions, and live log tailing
+.IP \(bu 2
+Workers KV (commands/kv.md) - Key-value namespaces, keys, and bulk operations
+.IP \(bu 2
+R2 Object Storage (commands/r2.md) - Buckets, objects, CORS, lifecycle rules, and custom domains
+.IP \(bu 2
+D1 SQL Databases (commands/d1.md) - Databases, SQL query execution, and database import/export
+.IP \(bu 2
+Pages (commands/pages.md) - Pages projects, deployments, and domain mapping
+.IP \(bu 2
+Cloudflare Tunnels (commands/tunnels.md) - Zero Trust tunnels, route ingress, and credentials
+.IP \(bu 2
+Rulesets & WAF (commands/rulesets.md) - Phase-based rulesets, WAF rules, and custom expressions
+.IP \(bu 2
+CLI Configuration (commands/config.md) - Managing authentication profiles and global defaults
+.PP
+.PP
+.SH CLI OVERVIEW & GLOBAL FLAGS
+.PP
+The \fBcf\fR CLI follows a standard syntax:
+.PP
+.PP
+.nf
+.ft CW
+cf <resource> <action> [flags]
+.ft
+.fi
+.PP
+.PP
+.SS "Global Flags"
+.PP
+Every command supports the following global flags:
+.PP
+.PP
+.RS 2
+.TP
+\fB--profile <name>\fR
+\fIType:\fR \fBstring\fR | \fIDescription:\fR Use a specific profile configured in \fB~/.cf/config.json\fR
+.TP
+\fB--output <format>\fR
+\fIType:\fR \fBstring\fR | \fIDescription:\fR Output format: \fBtable\fR (default), \fBjson\fR, \fBcsv\fR, \fByaml\fR
+.TP
+\fB--raw\fR
+\fIType:\fR \fBboolean\fR | \fIDescription:\fR Print raw, unformatted API JSON response
+.TP
+\fB--verbose\fR
+\fIType:\fR \fBboolean\fR | \fIDescription:\fR Print HTTP request URLs, methods, headers, and timing
+.TP
+\fB--quiet\fR
+\fIType:\fR \fBboolean\fR | \fIDescription:\fR Suppress non-essential informational and progress messages
+.TP
+\fB--no-color\fR
+\fIType:\fR \fBboolean\fR | \fIDescription:\fR Disable colored terminal output (also respects \fBNO_COLOR=1\fR)
+.TP
+\fB--yes\fR
+\fIType:\fR \fBboolean\fR | \fIDescription:\fR Automatically confirm destructive actions (e.g., delete)
+.TP
+\fB--help\fR, \fB-h\fR
+\fIType:\fR \fBboolean\fR | \fIDescription:\fR Show command syntax and help
+.TP
+\fB--version\fR, \fB-v\fR
+\fIType:\fR \fBboolean\fR | \fIDescription:\fR Show current CLI version
+.RE
+.PP
+.PP
+.PP
+.SH COMPLETE RESOURCE CATALOG (60 RESOURCES)
+.PP
+.PP
+.RS 2
+.TP
+\fBZones\fR
+\fICLI Name:\fR \fBzones\fR, \fBzone\fR | \fIDescription:\fR Manage domain zones, settings, and analytics | \fICategory:\fR Networking
+.TP
+\fBDNS\fR
+\fICLI Name:\fR \fBdns\fR | \fIDescription:\fR Manage DNS records, BIND import and export | \fICategory:\fR Networking
+.TP
+\fBWorkers\fR
+\fICLI Name:\fR \fBworkers\fR, \fBworker\fR | \fIDescription:\fR Manage Workers scripts, routes, cron, domains, tail | \fICategory:\fR Compute
+.TP
+\fBKV\fR
+\fICLI Name:\fR \fBkv\fR | \fIDescription:\fR Manage Workers KV namespaces and key-value pairs | \fICategory:\fR Storage
+.TP
+\fBDurable Objects\fR
+\fICLI Name:\fR \fBdurable-objects\fR | \fIDescription:\fR Inspect namespaces and active Durable Objects | \fICategory:\fR Compute
+.TP
+\fBR2\fR
+\fICLI Name:\fR \fBr2\fR | \fIDescription:\fR S3-compatible object storage buckets and files | \fICategory:\fR Storage
+.TP
+\fBD1\fR
+\fICLI Name:\fR \fBd1\fR | \fIDescription:\fR Serverless SQL database creation, querying, import/export | \fICategory:\fR Storage
+.TP
+\fBPages\fR
+\fICLI Name:\fR \fBpages\fR | \fIDescription:\fR JAMstack projects, preview/production deployments | \fICategory:\fR Compute
+.TP
+\fBQueues\fR
+\fICLI Name:\fR \fBqueues\fR | \fIDescription:\fR Message queues, producers, and consumers | \fICategory:\fR Compute
+.TP
+\fBHyperdrive\fR
+\fICLI Name:\fR \fBhyperdrive\fR | \fIDescription:\fR Accelerated database connection pooling | \fICategory:\fR Storage
+.TP
+\fBPipelines\fR
+\fICLI Name:\fR \fBpipelines\fR | \fIDescription:\fR High-throughput data ingestion pipelines | \fICategory:\fR Storage
+.TP
+\fBSecrets Store\fR
+\fICLI Name:\fR \fBsecrets-store\fR | \fIDescription:\fR Encrypted secrets management | \fICategory:\fR Security
+.TP
+\fBRulesets\fR
+\fICLI Name:\fR \fBrulesets\fR | \fIDescription:\fR Modern WAF rules, transformation rules, HTTP phases | \fICategory:\fR Security
+.TP
+\fBFirewall\fR
+\fICLI Name:\fR \fBfirewall\fR | \fIDescription:\fR Legacy firewall rules, IP access, zone lockdowns | \fICategory:\fR Security
+.TP
+\fBPage Shield\fR
+\fICLI Name:\fR \fBpage-shield\fR | \fIDescription:\fR Client-side security, script monitoring, CSP policies | \fICategory:\fR Security
+.TP
+\fBTurnstile\fR
+\fICLI Name:\fR \fBturnstile\fR | \fIDescription:\fR CAPTCHA alternative site keys and verification widgets | \fICategory:\fR Security
+.TP
+\fBAPI Gateway\fR
+\fICLI Name:\fR \fBapi-gateway\fR | \fIDescription:\fR Schema validation, endpoint discovery, settings | \fICategory:\fR Security
+.TP
+\fBRate Limits\fR
+\fICLI Name:\fR \fBrate-limits\fR | \fIDescription:\fR Legacy rate limiting configuration | \fICategory:\fR Security
+.TP
+\fBTunnels\fR
+\fICLI Name:\fR \fBtunnels\fR | \fIDescription:\fR Cloudflare Tunnel (cloudflared) connections and routing | \fICategory:\fR Zero Trust
+.TP
+\fBDevices\fR
+\fICLI Name:\fR \fBdevices\fR | \fIDescription:\fR Zero Trust device enrollment and posture policies | \fICategory:\fR Zero Trust
+.TP
+\fBWARP\fR
+\fICLI Name:\fR \fBwarp\fR | \fIDescription:\fR Cloudflare WARP client settings and split tunnels | \fICategory:\fR Zero Trust
+.TP
+\fBAccess\fR
+\fICLI Name:\fR \fBaccess\fR | \fIDescription:\fR Zero Trust access apps, policies, IdPs, service tokens | \fICategory:\fR Zero Trust
+.TP
+\fBGateway\fR
+\fICLI Name:\fR \fBgateway\fR | \fIDescription:\fR Secure web gateway, DNS/HTTP filtering, DLP | \fICategory:\fR Zero Trust
+.TP
+\fBAccounts\fR
+\fICLI Name:\fR \fBaccounts\fR | \fIDescription:\fR Account details, members, roles, subscriptions | \fICategory:\fR Account
+.TP
+\fBUser\fR
+\fICLI Name:\fR \fBuser\fR | \fIDescription:\fR User profile, billing history, and API tokens | \fICategory:\fR Account
+.TP
+\fBSSL/TLS\fR
+\fICLI Name:\fR \fBssl\fR | \fIDescription:\fR Universal SSL, edge certificates, custom certificates | \fICategory:\fR Security
+.TP
+\fBLoad Balancers\fR
+\fICLI Name:\fR \fBlb\fR | \fIDescription:\fR Global load balancing, health monitors, pools | \fICategory:\fR Networking
+.TP
+\fBHealthchecks\fR
+\fICLI Name:\fR \fBhealthchecks\fR | \fIDescription:\fR Standalone origin healthchecks | \fICategory:\fR Networking
+.TP
+\fBCache Reserve\fR
+\fICLI Name:\fR \fBcache-reserve\fR | \fIDescription:\fR Persistent R2-backed cache settings | \fICategory:\fR Performance
+.TP
+\fBTiered Cache\fR
+\fICLI Name:\fR \fBtiered-cache\fR | \fIDescription:\fR Smart topology tiered cache settings | \fICategory:\fR Performance
+.TP
+\fBArgo\fR
+\fICLI Name:\fR \fBargo\fR | \fIDescription:\fR Smart routing and tiered caching optimization | \fICategory:\fR Performance
+.TP
+\fBWaiting Rooms\fR
+\fICLI Name:\fR \fBwaiting-rooms\fR | \fIDescription:\fR Virtual waiting rooms for high-traffic surges | \fICategory:\fR Performance
+.TP
+\fBObservatory\fR
+\fICLI Name:\fR \fBobservatory\fR | \fIDescription:\fR Speed tests, Core Web Vitals, performance audit | \fICategory:\fR Performance
+.TP
+\fBStream\fR
+\fICLI Name:\fR \fBstream\fR | \fIDescription:\fR Video upload, live streaming, watermarks, captions | \fICategory:\fR Media
+.TP
+\fBImages\fR
+\fICLI Name:\fR \fBimages\fR | \fIDescription:\fR Image optimization, variants, direct creator uploads | \fICategory:\fR Media
+.TP
+\fBCalls\fR
+\fICLI Name:\fR \fBcalls\fR | \fIDescription:\fR WebRTC audio/video infrastructure and TURN keys | \fICategory:\fR Media
+.TP
+\fBAI\fR
+\fICLI Name:\fR \fBai\fR | \fIDescription:\fR Workers AI inference, model catalog, fine-tuning | \fICategory:\fR AI
+.TP
+\fBAI Gateway\fR
+\fICLI Name:\fR \fBai-gateway\fR | \fIDescription:\fR AI caching, analytics, rate limiting, evaluations | \fICategory:\fR AI
+.TP
+\fBVectorize\fR
+\fICLI Name:\fR \fBvectorize\fR | \fIDescription:\fR Vector database for embeddings and RAG search | \fICategory:\fR AI
+.TP
+\fBMagic Transit\fR
+\fICLI Name:\fR \fBmagic-transit\fR | \fIDescription:\fR BGP, IPsec/GRE tunnels, ACLs, packet captures | \fICategory:\fR Network Ops
+.TP
+\fBMNM\fR
+\fICLI Name:\fR \fBmnm\fR | \fIDescription:\fR Magic Network Monitoring and alert rules | \fICategory:\fR Network Ops
+.TP
+\fBAddressing\fR
+\fICLI Name:\fR \fBaddressing\fR | \fIDescription:\fR Bring Your Own IP (BYOIP), prefixes, address maps | \fICategory:\fR Network Ops
+.TP
+\fBSpectrum\fR
+\fICLI Name:\fR \fBspectrum\fR | \fIDescription:\fR TCP/UDP proxying and DDoS protection | \fICategory:\fR Networking
+.TP
+\fBRadar\fR
+\fICLI Name:\fR \fBradar\fR | \fIDescription:\fR Global Internet traffic insights, BGP, attacks | \fICategory:\fR Intelligence
+.TP
+\fBIntel\fR
+\fICLI Name:\fR \fBintel\fR | \fIDescription:\fR Threat intelligence: IP, ASN, domain, WHOIS lookup | \fICategory:\fR Intelligence
+.TP
+\fBURL Scanner\fR
+\fICLI Name:\fR \fBurl-scanner\fR | \fIDescription:\fR Page scan, HAR capture, screenshot, DOM inspection | \fICategory:\fR Intelligence
+.TP
+\fBCloudforce One\fR
+\fICLI Name:\fR \fBcf1\fR | \fIDescription:\fR Threat intel requests, threat events, PIRs | \fICategory:\fR Intelligence
+.TP
+\fBLogpush\fR
+\fICLI Name:\fR \fBlogpush\fR | \fIDescription:\fR Real-time log streaming to S3, BigQuery, Datadog | \fICategory:\fR Observability
+.TP
+\fBWeb Analytics\fR
+\fICLI Name:\fR \fBweb-analytics\fR | \fIDescription:\fR Privacy-first Web Analytics (RUM) | \fICategory:\fR Observability
+.TP
+\fBZaraz\fR
+\fICLI Name:\fR \fBzaraz\fR | \fIDescription:\fR Third-party script manager and consent management | \fICategory:\fR Performance
+.TP
+\fBEmail Routing\fR
+\fICLI Name:\fR \fBemail-routing\fR | \fIDescription:\fR Custom domain email routing, addresses, rules | \fICategory:\fR Communication
+.TP
+\fBAlerts\fR
+\fICLI Name:\fR \fBalerts\fR | \fIDescription:\fR Notification policies, Webhooks, PagerDuty | \fICategory:\fR Observability
+.TP
+\fBRules Lists\fR
+\fICLI Name:\fR \fBrules-lists\fR | \fIDescription:\fR Reusable IP and hostname lists for firewall/rules | \fICategory:\fR Security
+.TP
+\fBSnippets\fR
+\fICLI Name:\fR \fBsnippets\fR | \fIDescription:\fR Lightweight JavaScript edge snippets | \fICategory:\fR Compute
+.TP
+\fBRegistrar\fR
+\fICLI Name:\fR \fBregistrar\fR | \fIDescription:\fR Domain registration, renewals, and transfer-in | \fICategory:\fR Domains
+.TP
+\fBAudit Logs\fR
+\fICLI Name:\fR \fBaudit-logs\fR | \fIDescription:\fR Account audit log history | \fICategory:\fR Observability
+.TP
+\fBPage Rules\fR
+\fICLI Name:\fR \fBpage-rules\fR | \fIDescription:\fR Legacy URL forwarding and caching rules | \fICategory:\fR Performance
+.TP
+\fBCache\fR
+\fICLI Name:\fR \fBcache\fR | \fIDescription:\fR Cache purging (everything, tags, hosts, prefixes) | \fICategory:\fR Performance
+.TP
+\fBConfig\fR
+\fICLI Name:\fR \fBconfig\fR | \fIDescription:\fR CLI profiles, tokens, default formats | \fICategory:\fR CLI
+.TP
+\fBCompletion\fR
+\fICLI Name:\fR \fBcompletion\fR | \fIDescription:\fR Shell completion scripts (Bash, Zsh, Fish) | \fICategory:\fR CLI
+.RE
+.PP
+.PP
+.SH SEE ALSO
+\fBcf\fR(1), \fBcf-dns\fR(1), \fBcf-zones\fR(1), \fBcf-workers\fR(1), \fBcf-kv\fR(1), \fBcf-r2\fR(1), \fBcf-d1\fR(1)
+.SH AUTHORS
+Built for Cloudflare API management by agileguy.

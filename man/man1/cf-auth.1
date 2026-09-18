@@ -1,0 +1,142 @@
+.TH CF-AUTH 1 "September 2026" "cf-cli v1.1.2" "Cloudflare CLI Manual"
+.SH NAME
+cf-auth.1 \- Authentication methods, API tokens, and profiles for cf
+.PP
+\fBcf\fR provides flexible authentication suited for both interactive development and headless CI/CD pipelines.
+.PP
+.PP
+.SH 1. AUTHENTICATION METHODS
+.PP
+.SS "Method A: API Token (Recommended)"
+Cloudflare API tokens provide scoped, fine-grained access with configurable expiration dates.
+.PP
+Set the token via environment variable:
+.PP
+.nf
+.ft CW
+export CF_API_TOKEN="your-cloudflare-api-token"
+.ft
+.fi
+.PP
+.PP
+\fI(Note: \fBCLOUDFLARE\fIAPI\fRTOKEN\fR is also supported as an alias)\fR.
+.PP
+.SS "Method B: Global API Key & Account Email (Legacy)"
+If you require legacy authentication using your Cloudflare account email and Global API Key:
+.PP
+.PP
+.nf
+.ft CW
+export CF_API_KEY="your-global-api-key"
+export CF_API_EMAIL="you@example.com"
+.ft
+.fi
+.PP
+.PP
+.RS 2
+\fBSecurity Warning:\fR Global API keys grant full administrative privileges across all zones and accounts. Creating an API Token with least-privilege permissions is strongly recommended.
+.RE
+.PP
+.PP
+.SH 2. CONFIG PROFILES (PERSISTENT CREDENTIALS)
+.PP
+\fBcf\fR allows storing multiple named authentication profiles in \fB~/.cf/config.json\fR. This makes switching between multiple accounts, clients, or environments seamless.
+.PP
+.SS "Creating Profiles"
+.PP
+.nf
+.ft CW
+# Add a default profile with an API Token
+cf config set --name default --token "cfut_..."
+
+# Add a staging profile with an explicit account ID
+cf config set --name staging --token "staging-token" --account-id "023e105f4ecef8ad9ca31a8372d0c353"
+
+# Add a legacy key profile
+cf config set --name legacy --key "global-key" --email "admin@example.com"
+.ft
+.fi
+.PP
+.PP
+.SS "Listing Profiles"
+.PP
+.nf
+.ft CW
+cf config list
+.ft
+.fi
+.PP
+.PP
+Example Output:
+.PP
+.nf
+.ft CW
+┌──────────────────────┬──────────┬────────────────────────────────┬────────────────────────────────────┬─────────┐
+│ Profile              │ Auth     │ Email                          │ Account ID                         │ Default │
+├──────────────────────┼──────────┼────────────────────────────────┼────────────────────────────────────┼─────────┤
+│ default              │ token    │ -                              │ -                                  │ Yes     │
+│ staging              │ token    │ -                              │ 023e105f4ecef8ad9ca31a8372d0c353   │         │
+│ legacy               │ key      │ admin@example.com              │ -                                  │         │
+└──────────────────────┴──────────┴────────────────────────────────┴────────────────────────────────────┴─────────┘
+.ft
+.fi
+.PP
+.PP
+.SS "Switching Default Profile"
+.PP
+.nf
+.ft CW
+cf config use --name staging
+.ft
+.fi
+.PP
+.PP
+.SS "Using Profiles on a Per-Command Basis"
+Override the active profile for a single invocation:
+.PP
+.nf
+.ft CW
+cf zones list --profile staging
+.ft
+.fi
+.PP
+.PP
+.PP
+.SH 3. RESOLUTION PRECEDENCE
+.PP
+When running any command, \fBcf\fR resolves credentials in this strict order:
+.PP
+.IP 1. 3
+\fB--profile <name>\fR CLI flag
+.IP 2. 3
+\fBCF_PROFILE\fR environment variable
+.IP 3. 3
+\fBCF\fIAPI\fRTOKEN\fR (or \fBCLOUDFLARE\fIAPI\fRTOKEN\fR) environment variable
+.IP 4. 3
+\fBCF\fIAPI\fRKEY\fR + \fBCF\fIAPI\fREMAIL\fR environment variables
+.IP 5. 3
+\fBdefault\fR profile from \fB~/.cf/config.json\fR
+.IP 6. 3
+If none are found, the command exits with an authentication error
+.PP
+.PP
+.SH 4. VERIFYING CREDENTIALS
+.PP
+To verify your credentials and check token validity:
+.PP
+.PP
+.nf
+.ft CW
+# Verify current API token status
+cf user tokens verify
+
+# Inspect current user identity
+cf user get
+.ft
+.fi
+.PP
+.PP
+.SH SEE ALSO
+\fBcf\fR(1), \fBcf-dns\fR(1), \fBcf-zones\fR(1), \fBcf-workers\fR(1), \fBcf-kv\fR(1), \fBcf-r2\fR(1), \fBcf-d1\fR(1)
+.SH AUTHORS
+Built for Cloudflare API management by agileguy.

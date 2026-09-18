@@ -1,0 +1,133 @@
+.TH CF-CI-CD 1 "September 2026" "cf-cli v1.1.2" "Cloudflare CLI Manual"
+.SH NAME
+cf-ci-cd.1 \- CI/CD and pipeline automation recipes with cf
+.PP
+Integrating \fBcf\fR into automated deployment pipelines (such as GitHub Actions, GitLab CI, or CircleCI) allows you to automate edge deployments, cache purging, DNS validation, and database operations.
+.PP
+.PP
+.SH 1. AUTOMATION PRINCIPLES
+.PP
+.IP \(bu 2
+\fBAlways pass \fB--yes\fR\fR: Destructive operations (such as \fBdelete\fR or \fBpurge\fR) require interactive confirmation by default. In headless environments, pass \fB--yes\fR to auto-confirm without blocking on stdin.
+.IP \(bu 2
+\fBAuthenticate via Repository Secrets\fR: Supply \fBCF\fIAPI\fRTOKEN\fR (or \fBCLOUDFLARE\fIAPI\fRTOKEN\fR) via secure environment variables. Never hardcode credentials.
+.IP \(bu 2
+\fBUse JSON Output for Pipeline Parsing\fR: Pass \fB--output json\fR and pipe directly into \fBjq\fR to extract values for subsequent workflow steps.
+.IP \(bu 2
+\fBExit Codes\fR:
+.IP \(bu 2
+\fB0\fR: Success
+.IP \(bu 2
+\fB1\fR: API error, invalid arguments, or authentication failure
+.PP
+.PP
+.SH 2. GITHUB ACTIONS WORKFLOW EXAMPLES
+.PP
+.SS "Example A: Automatic Cache Purge on Website Deploy"
+Purge edge cache whenever new assets are deployed to your origin:
+.PP
+.PP
+.nf
+.ft CW
+name: Deploy & Purge Cache
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Bun
+        uses: oven-sh/setup-bun@v2
+
+      - name: Install cf CLI
+        run: bun install -g @agileguy/cf-cli
+
+      - name: Purge Cloudflare Cache
+        env:
+          CF_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: |
+          cf cache purge --zone example.com --everything --yes
+.ft
+.fi
+.PP
+.PP
+.SS "Example B: Automated Workers Script Deployment"
+Deploy a serverless Worker bundle and configure its route:
+.PP
+.PP
+.nf
+.ft CW
+name: Deploy Worker
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  worker:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install cf CLI
+        run: npm install -g @agileguy/cf-cli
+
+      - name: Deploy Worker Bundle
+        env:
+          CF_API_TOKEN: ${{ secrets.CF_WORKER_DEPLOY_TOKEN }}
+          CF_ACCOUNT_ID: ${{ secrets.CF_ACCOUNT_ID }}
+        run: |
+          cf workers deploy --name production-api --file dist/worker.js --yes
+          cf workers routes create --zone example.com --pattern "api.example.com/*" --script production-api
+.ft
+.fi
+.PP
+.PP
+.SS "Example C: D1 Database Migration Pipeline"
+Execute schema migrations against a Cloudflare D1 SQL database:
+.PP
+.PP
+.nf
+.ft CW
+name: Database Migration
+
+on:
+  push:
+    paths:
+      - "migrations/**"
+
+jobs:
+  migrate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install cf CLI
+        run: npm install -g @agileguy/cf-cli
+
+      - name: Run SQL Migration
+        env:
+          CF_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: |
+          for file in migrations/*.sql; do
+            echo "Executing $file..."
+            cf d1 execute --database prod-db --file "$file"
+          done
+.ft
+.fi
+.PP
+.PP
+.SH SEE ALSO
+\fBcf\fR(1), \fBcf-dns\fR(1), \fBcf-zones\fR(1), \fBcf-workers\fR(1), \fBcf-kv\fR(1), \fBcf-r2\fR(1), \fBcf-d1\fR(1)
+.SH AUTHORS
+Built for Cloudflare API management by agileguy.

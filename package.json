@@ -2,19 +2,41 @@
   "name": "@agileguy/cf-cli",
   "version": "1.1.2",
   "description": "A fully-featured Cloudflare CLI wrapping the entire REST API",
+  "type": "module",
   "bin": {
     "cf": "./dist/index.js"
   },
+  "man": [
+    "./man/man1/cf.1",
+    "./man/man1/cf-installation.1",
+    "./man/man1/cf-auth.1",
+    "./man/man1/cf-formats.1",
+    "./man/man1/cf-permissions.1",
+    "./man/man1/cf-ci-cd.1",
+    "./man/man1/cf-zones.1",
+    "./man/man1/cf-dns.1",
+    "./man/man1/cf-workers.1",
+    "./man/man1/cf-kv.1",
+    "./man/man1/cf-r2.1",
+    "./man/man1/cf-d1.1",
+    "./man/man1/cf-pages.1",
+    "./man/man1/cf-tunnels.1",
+    "./man/man1/cf-rulesets.1",
+    "./man/man1/cf-config.1"
+  ],
   "scripts": {
     "build": "bun build src/index.ts --outfile dist/index.js --target node --minify",
+    "build:man": "bun scripts/generate-man.ts",
     "start": "bun run src/index.ts",
     "test": "bun test",
     "lint": "bunx tsc --noEmit",
     "typecheck": "bunx tsc --noEmit",
-    "prepublishOnly": "bun run build"
+    "prepublishOnly": "bun run build:man && bun run build"
   },
   "files": [
-    "dist/"
+    "dist/",
+    "docs/",
+    "man/"
   ],
   "engines": {
     "node": ">=18"

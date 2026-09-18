@@ -1,0 +1,125 @@
+.TH CF-RULESETS 1 "September 2026" "cf-cli v1.1.2" "Cloudflare CLI Manual"
+.SH NAME
+cf-rulesets.1 \- Manage Cloudflare Rulesets, WAF rules, and phase entry points
+.PP
+Manage Cloudflare Rulesets engine rules, modern Web Application Firewall (WAF) configurations, HTTP request/response transformations, and phase entry points at both Account and Zone levels.
+.PP
+.PP
+.SH REQUIRED PERMISSIONS
+.PP
+.PP
+.RS 2
+.TP
+Read
+\fIScope Level:\fR Account / Zone | \fIMinimum API Token Permission:\fR \fBRulesets:Read\fR
+.TP
+Write
+\fIScope Level:\fR Account / Zone | \fIMinimum API Token Permission:\fR \fBRulesets:Edit\fR
+.RE
+.PP
+.PP
+.PP
+.SH SUBCOMMANDS OVERVIEW
+.PP
+.IP \(bu 2
+\fBcf rulesets list\fR (#cf-rulesets-list) — List available rulesets at account or zone scope
+.IP \(bu 2
+\fBcf rulesets get\fR (#cf-rulesets-get) — Inspect ruleset details and its contained rules
+.IP \(bu 2
+\fBcf rulesets create\fR (#cf-rulesets-create) — Create a custom ruleset
+.IP \(bu 2
+\fBcf rulesets delete\fR (#cf-rulesets-delete) — Remove a custom ruleset
+.IP \(bu 2
+\fBcf rulesets rules\fR (#cf-rulesets-rules) — Add, modify, or remove rules inside a ruleset
+.IP \(bu 2
+\fBcf rulesets phases\fR (#cf-rulesets-phases) — Manage phase entry points (e.g. \fBhttp\fIrequest\fRfirewall_custom\fR)
+.IP \(bu 2
+\fBcf rulesets versions\fR (#cf-rulesets-versions) — List and view immutable version history
+.PP
+.PP
+.SS "\fBcf rulesets list\fR"
+.PP
+Lists all rulesets within a zone or account.
+.PP
+.PP
+.nf
+.ft CW
+# List rulesets for a zone
+cf rulesets list --zone example.com
+
+# List rulesets across account
+cf rulesets list --account-id <id>
+.ft
+.fi
+.PP
+.PP
+.PP
+.SS "\fBcf rulesets get\fR"
+.PP
+Retrieve the rules and expressions inside a ruleset.
+.PP
+.PP
+.nf
+.ft CW
+cf rulesets get --zone example.com --id <ruleset-id>
+.ft
+.fi
+.PP
+.PP
+.PP
+.SS "\fBcf rulesets rules\fR"
+.PP
+Manage individual rules with Wirefilter boolean expressions.
+.PP
+.PP
+.nf
+.ft CW
+# List all rules inside a ruleset
+cf rulesets rules list --zone example.com --ruleset-id <ruleset-id>
+
+# Add a rule from a JSON definition file
+cf rulesets rules add --zone example.com --ruleset-id <ruleset-id> --file rule.json
+
+# Update an existing rule
+cf rulesets rules update --zone example.com --ruleset-id <ruleset-id> --rule-id <rule-id> --file rule.json
+
+# Delete a rule
+cf rulesets rules delete --zone example.com --ruleset-id <ruleset-id> --rule-id <rule-id> --yes
+.ft
+.fi
+.PP
+.PP
+\fIExample \fBrule.json\fR (Block requests from high-threat countries):\fR
+.PP
+.nf
+.ft CW
+{
+  "action": "block",
+  "expression": "(ip.geoip.country in {\"CN\" \"RU\"} and not cf.client.bot)",
+  "description": "Block high risk regions"
+}
+.ft
+.fi
+.PP
+.PP
+.PP
+.SS "\fBcf rulesets phases\fR"
+.PP
+Inspect and update the root phase entry points that execute when requests arrive at the Cloudflare edge.
+.PP
+.PP
+.nf
+.ft CW
+# View active entry point ruleset for custom WAF firewall phase
+cf rulesets phases get --zone example.com --phase http_request_firewall_custom
+
+# Update phase entry point
+cf rulesets phases update --zone example.com --phase http_request_firewall_custom --file phase-entrypoint.json
+.ft
+.fi
+.PP
+.PP
+.SH SEE ALSO
+\fBcf\fR(1), \fBcf-dns\fR(1), \fBcf-zones\fR(1), \fBcf-workers\fR(1), \fBcf-kv\fR(1), \fBcf-r2\fR(1), \fBcf-d1\fR(1)
+.SH AUTHORS
+Built for Cloudflare API management by agileguy.

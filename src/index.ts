@@ -78,6 +78,7 @@ RESOURCES:
   cache          Purge cached content
   config         Manage CLI configuration and profiles
   completion     Generate shell completions (bash, zsh, fish)
+  docs           View CLI documentation and search topics (topics, search)
 
 GLOBAL FLAGS:
   --profile <name>    Use a specific auth profile
@@ -195,7 +196,10 @@ async function main(): Promise<void> {
       action === "--help" ||
       action === "-h" ||
       resource === "config" ||
-      resource === "completion";
+      resource === "completion" ||
+      resource === "docs" ||
+      resource === "doc" ||
+      resource === "man";
 
     if (isHelpOrNonAuth) {
       const config = readConfig();
@@ -516,6 +520,12 @@ async function routeCommand(
     case "page-rules":
     case "page-rule": {
       const { run } = await import("./commands/page-rules/index.js");
+      return run(subArgs, ctx);
+    }
+    case "docs":
+    case "doc":
+    case "man": {
+      const { run } = await import("./commands/docs/index.js");
       return run(subArgs, ctx);
     }
     default:
