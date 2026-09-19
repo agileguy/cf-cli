@@ -113,6 +113,38 @@ describe("CloudflareHttpClient", () => {
       expect(capturedUrl).not.toContain("name=");
       expect(capturedUrl).toContain("status=active");
     });
+
+    test("handles non-JSON text/plain responses (e.g. DNS export)", async () => {
+      const bindContent = ";; Domain: example.com\nexample.com. 300 IN A 1.2.3.4\n";
+      mockFetch(async () => {
+        return new Response(bindContent, {
+          status: 200,
+          headers: { "Content-Type": "text/plain; charset=utf-8" },
+        });
+      });
+
+      const client = new CloudflareHttpClient(tokenCreds, defaultFlags);
+      const result = await client.get<string>("/zones/123/dns_records/export");
+
+      expect(result).toBe(bindContent);
+    });
+
+    test("handles binary responses (e.g. downloads)", async () => {
+      const bytes = new Uint8Array([0xde, 0xad, 0xbe, 0xef]);
+      mockFetch(async () => {
+        return new Response(bytes.buffer, {
+          status: 200,
+          headers: { "Content-Type": "application/octet-stream" },
+        });
+      });
+
+      const client = new CloudflareHttpClient(tokenCreds, defaultFlags);
+      const result = await client.get<Uint8Array>("/accounts/123/pcap/download");
+
+      expect(result).toBeInstanceOf(Uint8Array);
+      expect(result[0]).toBe(0xde);
+      expect(result[1]).toBe(0xad);
+    });
   });
 
   describe("POST requests", () => {
