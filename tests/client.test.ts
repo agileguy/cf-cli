@@ -113,6 +113,82 @@ describe("CloudflareHttpClient", () => {
       expect(capturedUrl).not.toContain("name=");
       expect(capturedUrl).toContain("status=active");
     });
+
+    test("handles non-JSON text/plain responses (e.g. DNS export)", async () => {
+      const bindContent = ";; Domain: example.com\nexample.com. 300 IN A 1.2.3.4\n";
+      mockFetch(async () => {
+        return new Response(bindContent, {
+          status: 200,
+          headers: { "Content-Type": "text/plain; charset=utf-8" },
+        });
+      });
+
+      const client = new CloudflareHttpClient(tokenCreds, defaultFlags);
+      const result = await client.get<string>("/zones/123/dns_records/export");
+
+      expect(result).toBe(bindContent);
+    });
+
+    test("propagates a Cloudflare API error delivered as text/plain JSON with a 2xx status", async () => {
+      // A non-2xx status is already caught earlier by the "Non-JSON response
+      // handling" guard; the swallow bug lives specifically in the text-body
+      // JSON-detection branch, which only runs when response.ok is true (the
+      // CF-style "success:false in the body" error pattern).
+      const errorBody = JSON.stringify({
+        success: false,
+        errors: [{ code: 10000, message: "Authentication error" }],
+      });
+      mockFetch(async () => {
+        return new Response(errorBody, {
+          status: 200,
+          headers: { "Content-Type": "text/plain; charset=utf-8" },
+        });
+      });
+
+      const client = new CloudflareHttpClient(tokenCreds, defaultFlags);
+
+      try {
+        await client.get("/zones");
+        expect(true).toBe(false); // Should not reach here
+      } catch (err) {
+        expect(err).toBeInstanceOf(CloudflareAPIError);
+        const apiErr = err as CloudflareAPIError;
+        expect(apiErr.statusCode).toBe(200);
+        expect(apiErr.errorCode).toBe(10000);
+        expect(apiErr.errors[0]?.message).toBe("Authentication error");
+      }
+    });
+
+    test("propagates a Cloudflare API error when content-type header is missing entirely", async () => {
+      const errorBody = JSON.stringify({
+        success: false,
+        errors: [{ code: 10000, message: "Authentication error" }],
+      });
+      mockFetch(async () => {
+        return new Response(errorBody, { status: 200 });
+      });
+
+      const client = new CloudflareHttpClient(tokenCreds, defaultFlags);
+
+      expect(client.get("/zones")).rejects.toBeInstanceOf(CloudflareAPIError);
+    });
+
+    test("handles binary responses (e.g. downloads)", async () => {
+      const bytes = new Uint8Array([0xde, 0xad, 0xbe, 0xef]);
+      mockFetch(async () => {
+        return new Response(bytes.buffer, {
+          status: 200,
+          headers: { "Content-Type": "application/octet-stream" },
+        });
+      });
+
+      const client = new CloudflareHttpClient(tokenCreds, defaultFlags);
+      const result = await client.get<Uint8Array>("/accounts/123/pcap/download");
+
+      expect(result).toBeInstanceOf(Uint8Array);
+      expect(result[0]).toBe(0xde);
+      expect(result[1]).toBe(0xad);
+    });
   });
 
   describe("POST requests", () => {

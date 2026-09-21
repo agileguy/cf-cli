@@ -1,0 +1,70 @@
+.TH CF-FORMATS 1 "September 2026" "cf-cli v1.1.2" "Cloudflare CLI Manual"
+.SH NAME
+cf-formats.1 \- Output formats, color support, and automation scripting for cf
+.PP
+\fBcf\fR is designed for human terminal readability and script automation alike.
+.PP
+.PP
+.SH 1. SUPPORTED OUTPUT FORMATS
+.PP
+\fBStatus: not yet implemented for most commands.\fR A per-command \fB--output <format>\fR flag (table/json/csv/yaml), and the matching \fBoutput: "<format>"\fR default-config setting, are planned but today only \fBd1 query\fR reads an \fB--output\fR flag (and only for \fBjson\fR or \fBcsv\fR; anything else falls back to its table) — every other command always prints its default formatted table, regardless of \fB--output\fR.
+.PP
+.PP
+.nf
+.ft CW
+# Works everywhere today: prints the unmodified Cloudflare API envelope as JSON.
+# Note it is printed IN ADDITION TO the command's usual table, not instead of it,
+# so this is not yet a clean source for `jq`.
+cf dns list --zone example.com --raw
+
+# The only command with an --output flag today (json or csv; default is table)
+cf d1 query --database mydb "SELECT * FROM users" --output json
+.ft
+.fi
+.PP
+.PP
+.PP
+.SH 2. TERMINAL STYLING & COLOR SUPPORT
+.PP
+\fBcf\fR conforms strictly to the NO_COLOR (https://no-color.org/) standard.
+.PP
+.IP \(bu 2
+Use \fB--no-color\fR to disable ANSI colors and styling:
+.PP
+.nf
+.ft CW
+  cf zones list --no-color
+.ft
+.fi
+.PP
+.IP \(bu 2
+Setting the environment variable \fBNO_COLOR=1\fR automatically suppresses colors for all invocations:
+.PP
+.nf
+.ft CW
+  export NO_COLOR=1
+.ft
+.fi
+.PP
+.IP \(bu 2
+In non-interactive environments (e.g., cron jobs, CI loggers), colors are automatically omitted.
+.PP
+.PP
+.SH 3. QUIET MODE FOR SHELL SCRIPTS
+.PP
+When invoking \fBcf\fR from within shell scripts, use \fB--quiet\fR to suppress progress and status outputs:
+.PP
+.PP
+.nf
+.ft CW
+cf dns create --zone example.com --type A --name api --content 1.2.3.4 --quiet
+.ft
+.fi
+.PP
+.PP
+\fI(Note: Errors will still be written to \fBstderr\fR even in \fB--quiet\fR mode).\fR
+.PP
+.SH SEE ALSO
+\fBcf\fR(1), \fBcf-dns\fR(1), \fBcf-zones\fR(1), \fBcf-workers\fR(1), \fBcf-kv\fR(1), \fBcf-r2\fR(1), \fBcf-d1\fR(1)
+.SH AUTHORS
+Built for Cloudflare API management by agileguy.

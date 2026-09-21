@@ -1,0 +1,274 @@
+.TH CF-ZONES 1 "September 2026" "cf-cli v1.1.2" "Cloudflare CLI Manual"
+.SH NAME
+cf-zones.1 \- Manage Cloudflare domain zones, settings, and analytics
+.PP
+Manage Cloudflare domain zones, inspect zone details, configure zone settings, and retrieve analytics dashboards.
+.PP
+.PP
+.SH REQUIRED PERMISSIONS
+.PP
+.PP
+.RS 2
+.TP
+Read
+\fIMinimum Cloudflare API Token Scope:\fR \fBZone.Zone:Read\fR
+.TP
+Edit
+\fIMinimum Cloudflare API Token Scope:\fR \fBZone.Zone:Edit\fR
+.TP
+Settings Edit
+\fIMinimum Cloudflare API Token Scope:\fR \fBZone.Zone Settings:Edit\fR
+.TP
+Analytics
+\fIMinimum Cloudflare API Token Scope:\fR \fBZone.Analytics:Read\fR
+.RE
+.PP
+.PP
+.PP
+.SH SUBCOMMANDS OVERVIEW
+.PP
+.IP \(bu 2
+\fBcf zones list\fR (#cf-zones-list) — List all zones in account
+.IP \(bu 2
+\fBcf zones get\fR (#cf-zones-get) — Get detailed zone metadata
+.IP \(bu 2
+\fBcf zones create\fR (#cf-zones-create) — Register a new zone
+.IP \(bu 2
+\fBcf zones delete\fR (#cf-zones-delete) — Delete a zone
+.IP \(bu 2
+\fBcf zones settings\fR (#cf-zones-settings) — Inspect and update zone settings
+.IP \(bu 2
+\fBcf zones analytics\fR (#cf-zones-analytics) — View dashboard, colocation, and DNS traffic analytics
+.PP
+.PP
+.SS "\fBcf zones list\fR"
+.PP
+Lists all domain zones accessible by the active profile.
+.PP
+.PP
+\fBSyntax\fR
+.PP
+.PP
+.nf
+.ft CW
+cf zones list [flags]
+.ft
+.fi
+.PP
+.PP
+.PP
+\fBFlags\fR
+.PP
+.PP
+.RS 2
+.TP
+\fB--account-id <id>\fR
+\fIType:\fR string | \fIDefault:\fR auto-detected | \fIDescription:\fR Filter zones by Account ID
+.TP
+\fB--name <domain>\fR
+\fIType:\fR string | \fIDefault:\fR  | \fIDescription:\fR Filter zones matching domain name
+.TP
+\fB--status <status>\fR
+\fIType:\fR string | \fIDefault:\fR  | \fIDescription:\fR Filter by status (\fBactive\fR, \fBpending\fR, \fBinitializing\fR, \fBmoved\fR, \fBdeleted\fR)
+.TP
+\fB--page <num>\fR
+\fIType:\fR number | \fIDefault:\fR \fB1\fR | \fIDescription:\fR Page number for pagination
+.TP
+\fB--per-page <num>\fR
+\fIType:\fR number | \fIDefault:\fR \fB20\fR | \fIDescription:\fR Number of results per page
+.TP
+\fB--all\fR
+\fIType:\fR boolean | \fIDefault:\fR \fBfalse\fR | \fIDescription:\fR Fetch all zones across all pages automatically
+.RE
+.PP
+.PP
+.PP
+\fBExamples\fR
+.PP
+.PP
+.nf
+.ft CW
+# List all zones in table format
+cf zones list
+
+# Find active zones matching a domain prefix
+cf zones list --name example.com --status active
+
+# Fetch every zone across all pages
+cf zones list --all
+.ft
+.fi
+.PP
+.PP
+.PP
+.SS "\fBcf zones get\fR"
+.PP
+Displays comprehensive details for a specific zone.
+.PP
+.PP
+\fBSyntax\fR
+.PP
+.PP
+.nf
+.ft CW
+cf zones get --zone <zone-id-or-name>
+.ft
+.fi
+.PP
+.PP
+.PP
+\fBFlags\fR
+.PP
+.PP
+.RS 2
+.TP
+\fB--zone <id-or-name>\fR
+\fIType:\fR string | \fIRequired:\fR Yes | \fIDescription:\fR Zone ID or domain name (e.g. \fBexample.com\fR)
+.RE
+.PP
+.PP
+.PP
+\fBExamples\fR
+.PP
+.PP
+.nf
+.ft CW
+cf zones get --zone example.com
+cf zones get --zone 023e105f4ecef8ad9ca31a8372d0c353
+.ft
+.fi
+.PP
+.PP
+.PP
+.SS "\fBcf zones create\fR"
+.PP
+Creates a new domain zone within an account.
+.PP
+.PP
+\fBSyntax\fR
+.PP
+.PP
+.nf
+.ft CW
+cf zones create --name <domain> [--account-id <id>] [--type <type>] [--jump-start]
+.ft
+.fi
+.PP
+.PP
+.PP
+\fBFlags\fR
+.PP
+.PP
+.RS 2
+.TP
+\fB--name <domain>\fR
+\fIType:\fR string | \fIDefault:\fR \fIrequired\fR | \fIDescription:\fR Apex domain name (e.g., \fBexample.com\fR)
+.TP
+\fB--account-id <id>\fR
+\fIType:\fR string | \fIDefault:\fR auto-detected | \fIDescription:\fR Account ID where the zone will reside
+.TP
+\fB--type <type>\fR
+\fIType:\fR string | \fIDefault:\fR \fBfull\fR | \fIDescription:\fR Zone setup type: \fBfull\fR (Cloudflare NS) or \fBpartial\fR (CNAME setup)
+.TP
+\fB--jump-start\fR
+\fIType:\fR boolean | \fIDefault:\fR \fBfalse\fR | \fIDescription:\fR Automatically scan and import existing DNS records
+.RE
+.PP
+.PP
+.PP
+\fBExample\fR
+.PP
+.PP
+.nf
+.ft CW
+cf zones create --name example.com --jump-start
+.ft
+.fi
+.PP
+.PP
+.PP
+.SS "\fBcf zones delete\fR"
+.PP
+Deletes a zone from your Cloudflare account.
+.PP
+.PP
+\fBSyntax\fR
+.PP
+.PP
+.nf
+.ft CW
+cf zones delete --zone <zone-id-or-name> [--yes]
+.ft
+.fi
+.PP
+.PP
+.PP
+\fBFlags\fR
+.PP
+.PP
+.RS 2
+.TP
+\fB--zone <id-or-name>\fR
+\fIType:\fR string | \fIDescription:\fR Zone ID or domain name to delete
+.TP
+\fB--yes\fR
+\fIType:\fR boolean | \fIDescription:\fR Bypass interactive deletion confirmation prompt
+.RE
+.PP
+.PP
+.PP
+\fBExample\fR
+.PP
+.PP
+.nf
+.ft CW
+cf zones delete --zone example.com --yes
+.ft
+.fi
+.PP
+.PP
+.PP
+.SS "\fBcf zones settings\fR"
+.PP
+Manage TLS, security, and caching settings for a zone.
+.PP
+.PP
+.nf
+.ft CW
+# List all settings and their current status
+cf zones settings list --zone example.com
+
+# Inspect a single setting (e.g., ssl, always_use_https, min_tls_version)
+cf zones settings get --zone example.com --setting ssl
+
+# Update a setting value
+cf zones settings update --zone example.com --setting always_use_https --value on
+cf zones settings update --zone example.com --setting min_tls_version --value "1.3"
+.ft
+.fi
+.PP
+.PP
+.PP
+.SS "\fBcf zones analytics\fR"
+.PP
+Retrieve traffic, performance, and threat metrics.
+.PP
+.PP
+.nf
+.ft CW
+# General traffic and request dashboard
+cf zones analytics dashboard --zone example.com --from 2024-01-01 --to 2024-01-31
+
+# Edge colocation datacenter analytics
+cf zones analytics colo --zone example.com
+
+# DNS query traffic metrics
+cf zones analytics dns --zone example.com
+.ft
+.fi
+.PP
+.PP
+.SH SEE ALSO
+\fBcf\fR(1), \fBcf-dns\fR(1), \fBcf-zones\fR(1), \fBcf-workers\fR(1), \fBcf-kv\fR(1), \fBcf-r2\fR(1), \fBcf-d1\fR(1)
+.SH AUTHORS
+Built for Cloudflare API management by agileguy.

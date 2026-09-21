@@ -1,0 +1,233 @@
+.TH CF-WORKERS 1 "September 2026" "cf-cli v1.1.2" "Cloudflare CLI Manual"
+.SH NAME
+cf-workers.1 \- Manage serverless Workers scripts, routes, cron triggers, and tail logs
+.PP
+Manage Cloudflare Workers scripts, deploy edge functions, configure routing patterns, schedule cron triggers, attach custom domains, inspect deployment versions, and tail live execution logs.
+.PP
+.PP
+.SH REQUIRED PERMISSIONS
+.PP
+.PP
+.RS 2
+.TP
+Scripts CRUD
+\fIScope Level:\fR Account | \fIMinimum API Token Permission:\fR \fBWorkers Scripts:Edit\fR (or \fBRead\fR)
+.TP
+Routes CRUD
+\fIScope Level:\fR Zone | \fIMinimum API Token Permission:\fR \fBWorkers Routes:Edit\fR (or \fBRead\fR)
+.TP
+Tail Logs
+\fIScope Level:\fR Account | \fIMinimum API Token Permission:\fR \fBWorkers Tail:Read\fR
+.TP
+Custom Domains
+\fIScope Level:\fR Account | \fIMinimum API Token Permission:\fR \fBWorkers Custom Domains:Edit\fR
+.RE
+.PP
+.PP
+.PP
+.SH SUBCOMMANDS OVERVIEW
+.PP
+.IP \(bu 2
+\fBcf workers list\fR (#cf-workers-list) — List all worker scripts in an account
+.IP \(bu 2
+\fBcf workers get\fR (#cf-workers-get) — Get worker details, bindings, and metadata
+.IP \(bu 2
+\fBcf workers deploy\fR (#cf-workers-deploy) — Upload and deploy a JavaScript/Wasm script
+.IP \(bu 2
+\fBcf workers delete\fR (#cf-workers-delete) — Delete a worker script
+.IP \(bu 2
+\fBcf workers tail\fR (#cf-workers-tail) — Stream live console and execution logs in real-time
+.IP \(bu 2
+\fBcf workers routes\fR (#cf-workers-routes) — Map workers to URL route patterns on zones
+.IP \(bu 2
+\fBcf workers cron\fR (#cf-workers-cron) — Manage scheduled cron triggers
+.IP \(bu 2
+\fBcf workers domains\fR (#cf-workers-domains) — Attach custom domains directly to workers
+.IP \(bu 2
+\fBcf workers versions\fR (#cf-workers-versions) — Inspect immutable script deployment versions
+.IP \(bu 2
+\fBcf workers platforms\fR (#cf-workers-platforms) — Manage Workers for Platforms dispatch namespaces
+.PP
+.PP
+.SS "\fBcf workers list\fR"
+.PP
+Lists all Worker scripts in your account.
+.PP
+.PP
+\fBSyntax\fR
+.PP
+.PP
+.nf
+.ft CW
+cf workers list [--account-id <id>]
+.ft
+.fi
+.PP
+.PP
+.PP
+\fBExample\fR
+.PP
+.PP
+.nf
+.ft CW
+cf workers list
+.ft
+.fi
+.PP
+.PP
+.PP
+.SS "\fBcf workers deploy\fR"
+.PP
+Uploads and deploys a script bundle to the Cloudflare edge.
+.PP
+.PP
+\fBSyntax\fR
+.PP
+.PP
+.nf
+.ft CW
+cf workers deploy --name <script-name> --file <path-to-bundle> [flags]
+.ft
+.fi
+.PP
+.PP
+.PP
+\fBFlags\fR
+.PP
+.PP
+.RS 2
+.TP
+\fB--name <name>\fR
+\fIType:\fR string | \fIDefault:\fR \fIrequired\fR | \fIDescription:\fR Unique name for the Worker service
+.TP
+\fB--file <path>\fR
+\fIType:\fR string | \fIDefault:\fR \fIrequired\fR | \fIDescription:\fR Path to JavaScript or bundle file (\fB.js\fR, \fB.mjs\fR)
+.TP
+\fB--compatibility-date <date>\fR
+\fIType:\fR string | \fIDefault:\fR current | \fIDescription:\fR Compatibility date (\fBYYYY-MM-DD\fR)
+.TP
+\fB--account-id <id>\fR
+\fIType:\fR string | \fIDefault:\fR auto-detected | \fIDescription:\fR Target Account ID
+.RE
+.PP
+.PP
+.PP
+\fBExample\fR
+.PP
+.PP
+.nf
+.ft CW
+cf workers deploy --name auth-edge --file dist/worker.js --compatibility-date 2024-01-01
+.ft
+.fi
+.PP
+.PP
+.PP
+.SS "\fBcf workers tail\fR"
+.PP
+Opens a persistent WebSocket stream to tail worker invocation logs, \fBconsole.log\fR statements, and unhandled exceptions in real-time.
+.PP
+.PP
+\fBSyntax\fR
+.PP
+.PP
+.nf
+.ft CW
+cf workers tail --name <script-name> [flags]
+.ft
+.fi
+.PP
+.PP
+.PP
+\fBFlags\fR
+.PP
+.PP
+.RS 2
+.TP
+\fB--name <name>\fR
+\fIType:\fR string | \fIDescription:\fR \fIrequired\fR Name of the worker script
+.TP
+\fB--status <status>\fR
+\fIType:\fR string | \fIDescription:\fR Filter logs by execution status (\fBok\fR, \fBerror\fR, \fBcanceled\fR)
+.TP
+\fB--method <method>\fR
+\fIType:\fR string | \fIDescription:\fR Filter logs by HTTP method (\fBGET\fR, \fBPOST\fR, etc.)
+.TP
+\fB--sampling-rate <num>\fR
+\fIType:\fR number | \fIDescription:\fR Float between \fB0\fR and \fB1\fR (e.g. \fB0.1\fR for 10% sampling)
+.RE
+.PP
+.PP
+.PP
+\fBExample\fR
+.PP
+.PP
+.nf
+.ft CW
+# Stream all error logs in real-time
+cf workers tail --name auth-edge --status error
+.ft
+.fi
+.PP
+.PP
+.PP
+.SS "\fBcf workers routes\fR"
+.PP
+Binds a worker script to execute on specific HTTP request paths on a zone.
+.PP
+.PP
+.nf
+.ft CW
+# List all route bindings for a zone
+cf workers routes list --zone example.com
+
+# Create a route pattern binding
+cf workers routes create --zone example.com --pattern "api.example.com/*" --script auth-edge
+
+# Delete a route binding
+cf workers routes delete --zone example.com --id <route-id> --yes
+.ft
+.fi
+.PP
+.PP
+.PP
+.SS "\fBcf workers cron\fR"
+.PP
+Configure scheduled cron triggers without modifying script code.
+.PP
+.PP
+.nf
+.ft CW
+# View active cron schedule
+cf workers cron get --name auth-edge
+
+# Set scheduled execution (e.g. every 5 minutes)
+cf workers cron update --name auth-edge --cron "*/5 * * * *"
+.ft
+.fi
+.PP
+.PP
+.PP
+.SS "\fBcf workers domains\fR"
+.PP
+Attach custom hostnames directly to a Worker without needing manual DNS records or route bindings.
+.PP
+.PP
+.nf
+.ft CW
+# List custom domains
+cf workers domains list
+
+# Attach a domain to a worker
+cf workers domains create --name auth-edge --zone example.com --hostname auth.example.com
+
+# Detach a custom domain
+cf workers domains delete --id <domain-id> --yes
+.ft
+.fi
+.PP
+.PP
+.SH SEE ALSO
+\fBcf\fR(1), \fBcf-dns\fR(1), \fBcf-zones\fR(1), \fBcf-workers\fR(1), \fBcf-kv\fR(1), \fBcf-r2\fR(1), \fBcf-d1\fR(1)
+.SH AUTHORS
+Built for Cloudflare API management by agileguy.

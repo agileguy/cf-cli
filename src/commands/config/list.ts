@@ -2,7 +2,7 @@ import type { Context, ColumnDef } from "../../types/index.js";
 import { readConfig } from "../../config.js";
 
 export async function run(_args: string[], ctx: Context): Promise<void> {
-  const config = readConfig();
+  const config = ctx.config ?? readConfig();
 
   const profiles = Object.entries(config.profiles).map(([name, profile]) => ({
     name,

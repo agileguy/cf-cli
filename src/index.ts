@@ -9,7 +9,7 @@ import { setNoColor } from "./utils/colors.js";
 import { CloudflareAPIError, UsageError, AuthError } from "./utils/errors.js";
 import { parseArgs, getBoolFlag, getStringFlag } from "./utils/args.js";
 
-const VERSION = "0.1.0";
+const VERSION = "1.1.2";
 
 const HELP_TEXT = `
 cf-cli v${VERSION} — Cloudflare CLI
@@ -78,6 +78,7 @@ RESOURCES:
   cache          Purge cached content
   config         Manage CLI configuration and profiles
   completion     Generate shell completions (bash, zsh, fish)
+  docs           View CLI documentation and search topics (topics, search)
 
 GLOBAL FLAGS:
   --profile <name>    Use a specific auth profile
@@ -163,17 +164,25 @@ function buildContext(flags: GlobalFlags): Context {
 }
 
 async function main(): Promise<void> {
-  const { flags, resource, action, rest: _rest } = parseGlobalFlags();
+  let { flags, resource, action, rest: _rest } = parseGlobalFlags();
 
-  // Handle --help or no args
-  if (resource === "" || resource === "help" || process.argv.includes("--help")) {
-    process.stdout.write(HELP_TEXT + "\n");
+  // Handle --version. Checked against the first raw argument only (its
+  // pre-subcommand position) so a subcommand's own --version flag (e.g.
+  // "rulesets versions get --version 3") isn't mistaken for the global one.
+  if (process.argv[2] === "--version" || process.argv[2] === "-v" || resource === "version") {
+    process.stdout.write(`cf-cli v${VERSION}\n`);
     return;
   }
 
-  // Handle --version
-  if (resource === "version" || resource === "--version") {
-    process.stdout.write(`cf-cli v${VERSION}\n`);
+  // Handle "cf help <resource>" -> rewrite as "cf <resource> --help"
+  if (resource === "help" && action) {
+    resource = action;
+    action = "--help";
+  }
+
+  // Handle --help or no args at root level
+  if (resource === "" || (resource === "help" && !action)) {
+    process.stdout.write(HELP_TEXT + "\n");
     return;
   }
 
@@ -182,8 +191,19 @@ async function main(): Promise<void> {
   try {
     ctx = buildContext(flags);
   } catch (err: unknown) {
-    // Config command doesn't need auth
-    if (resource === "config") {
+    const isHelpOrNonAuth =
+      process.argv.includes("--help") ||
+      process.argv.includes("-h") ||
+      action === "" ||
+      action === "--help" ||
+      action === "-h" ||
+      resource === "config" ||
+      resource === "completion" ||
+      resource === "docs" ||
+      resource === "doc" ||
+      resource === "man";
+
+    if (isHelpOrNonAuth) {
       const config = readConfig();
       const output = new OutputFormatterImpl(flags);
       if (flags.noColor) setNoColor(true);
@@ -232,7 +252,13 @@ async function routeCommand(
   // We need everything after the resource name from the original argv.
   const rawArgs = process.argv.slice(2);
   const resourceIdx = rawArgs.indexOf(resource);
-  const subArgs = resourceIdx >= 0 ? rawArgs.slice(resourceIdx + 1) : [];
+  const rest = resourceIdx >= 0 ? rawArgs.slice(resourceIdx + 1) : [];
+
+  // A --help/-h anywhere in the command must never reach a leaf command's
+  // real implementation, which has no concept of --help and would just run
+  // for real. Route it to the resource's own "--help" case instead, which
+  // every resource router already handles.
+  const subArgs = rest.includes("--help") || rest.includes("-h") ? ["--help"] : rest;
 
   switch (resource) {
     case "zones":
@@ -502,6 +528,12 @@ async function routeCommand(
     case "page-rules":
     case "page-rule": {
       const { run } = await import("./commands/page-rules/index.js");
+      return run(subArgs, ctx);
+    }
+    case "docs":
+    case "doc":
+    case "man": {
+      const { run } = await import("./commands/docs/index.js");
       return run(subArgs, ctx);
     }
     default:

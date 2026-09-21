@@ -1,0 +1,194 @@
+.TH CF-D1 1 "September 2026" "cf-cli v1.1.2" "Cloudflare CLI Manual"
+.SH NAME
+cf-d1.1 \- Manage D1 SQL databases, execute queries, and import/export dumps
+.PP
+Manage Cloudflare D1 distributed SQLite-based serverless SQL databases, execute queries, run batch migrations, and import/export SQL dumps.
+.PP
+.PP
+.SH REQUIRED PERMISSIONS
+.PP
+.PP
+.RS 2
+.TP
+Read
+\fIScope Level:\fR Account | \fIMinimum API Token Permission:\fR \fBD1:Read\fR
+.TP
+Write
+\fIScope Level:\fR Account | \fIMinimum API Token Permission:\fR \fBD1:Edit\fR
+.RE
+.PP
+.PP
+.PP
+.SH SUBCOMMANDS OVERVIEW
+.PP
+.IP \(bu 2
+\fBcf d1 list\fR (#cf-d1-list) — List all D1 databases in your account
+.IP \(bu 2
+\fBcf d1 get\fR (#cf-d1-get) — Inspect database metadata, UUID, and table counts
+.IP \(bu 2
+\fBcf d1 create\fR (#cf-d1-create) — Provision a new serverless database
+.IP \(bu 2
+\fBcf d1 delete\fR (#cf-d1-delete) — Delete a database
+.IP \(bu 2
+\fBcf d1 query\fR (#cf-d1-query) — Execute SQL statements (SELECT, INSERT, UPDATE)
+.IP \(bu 2
+\fBcf d1 export\fR (#cf-d1-export) — Export database schema and table rows as SQL dump
+.IP \(bu 2
+\fBcf d1 import\fR (#cf-d1-import) — Execute SQL commands from a \fB.sql\fR file
+.PP
+.PP
+.SS "\fBcf d1 list\fR"
+.PP
+Lists all D1 databases in your account.
+.PP
+.PP
+\fBSyntax\fR
+.PP
+.PP
+.nf
+.ft CW
+cf d1 list [--name <filter>] [--page <num>] [--per-page <num>]
+.ft
+.fi
+.PP
+.PP
+.PP
+\fBExample\fR
+.PP
+.PP
+.nf
+.ft CW
+cf d1 list
+.ft
+.fi
+.PP
+.PP
+.PP
+.SS "\fBcf d1 create\fR"
+.PP
+Provisions a new serverless D1 database.
+.PP
+.PP
+\fBSyntax\fR
+.PP
+.PP
+.nf
+.ft CW
+cf d1 create --name <database-name> [--location-hint <region>]
+.ft
+.fi
+.PP
+.PP
+.PP
+\fBExample\fR
+.PP
+.PP
+.nf
+.ft CW
+cf d1 create --name production-db
+.ft
+.fi
+.PP
+.PP
+.PP
+.SS "\fBcf d1 query\fR / \fBcf d1 execute\fR"
+.PP
+Executes SQL statements directly against your D1 database with parameterized query support.
+.PP
+.PP
+\fBSyntax\fR
+.PP
+.PP
+.nf
+.ft CW
+cf d1 query "<sql-statement>" --database <name-or-id> [flags]
+.ft
+.fi
+.PP
+.PP
+.PP
+\fBFlags\fR
+.PP
+.PP
+.RS 2
+.TP
+\fB--database <name-or-id>\fR
+\fIType:\fR string | \fIDescription:\fR \fIrequired\fR Database name or UUID
+.TP
+\fB--sql <statement>\fR
+\fIType:\fR string | \fIDescription:\fR Alternative to positional SQL argument
+.TP
+\fB--params <json-array>\fR
+\fIType:\fR string | \fIDescription:\fR JSON array of bind parameters for prepared statements
+.TP
+\fB--output <format>\fR
+\fIType:\fR string | \fIDescription:\fR \fBjson\fR or \fBcsv\fR; anything else, including \fByaml\fR, falls back to the table. This is currently the only command that acts on \fB--output\fR
+.RE
+.PP
+.PP
+.PP
+\fBExamples\fR
+.PP
+.PP
+.nf
+.ft CW
+# Query table and format as an ASCII table
+cf d1 query "SELECT id, email, created_at FROM users LIMIT 10;" --database production-db
+
+# Run parameterized INSERT
+cf d1 query "INSERT INTO users (email, role) VALUES (?, ?);" --database production-db --params '["dev@example.com", "admin"]'
+
+# Extract query results directly as JSON
+cf d1 query "SELECT * FROM orders WHERE status='pending';" --database production-db --output json | jq '.'
+.ft
+.fi
+.PP
+.PP
+.PP
+.SS "\fBcf d1 export\fR & \fBcf d1 import\fR"
+.PP
+Perform database backups, migrations, and seed scripts.
+.PP
+.PP
+.nf
+.ft CW
+# Export full database schema and data to SQL dump file
+cf d1 export --database production-db --output-file backup.sql
+
+# Import and execute SQL statements from a file
+cf d1 import --database production-db --file schema.sql
+.ft
+.fi
+.PP
+.PP
+.PP
+.SS "\fBcf d1 delete\fR"
+.PP
+Destroys a D1 database and all stored data.
+.PP
+.PP
+\fBSyntax\fR
+.PP
+.PP
+.nf
+.ft CW
+cf d1 delete --database <name-or-id> [--yes]
+.ft
+.fi
+.PP
+.PP
+.PP
+\fBExample\fR
+.PP
+.PP
+.nf
+.ft CW
+cf d1 delete --database test-db --yes
+.ft
+.fi
+.PP
+.PP
+.SH SEE ALSO
+\fBcf\fR(1), \fBcf-dns\fR(1), \fBcf-zones\fR(1), \fBcf-workers\fR(1), \fBcf-kv\fR(1), \fBcf-r2\fR(1), \fBcf-d1\fR(1)
+.SH AUTHORS
+Built for Cloudflare API management by agileguy.

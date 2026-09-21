@@ -1,0 +1,126 @@
+.TH CF-PAGES 1 "September 2026" "cf-cli v1.1.2" "Cloudflare CLI Manual"
+.SH NAME
+cf-pages.1 \- Manage Cloudflare Pages projects, deployments, and custom domains
+.PP
+Manage Cloudflare Pages projects, deployments, build configurations, and custom domains.
+.PP
+.PP
+.SH REQUIRED PERMISSIONS
+.PP
+.PP
+.RS 2
+.TP
+Read
+\fIScope Level:\fR Account | \fIMinimum API Token Permission:\fR \fBCloudflare Pages:Read\fR
+.TP
+Write
+\fIScope Level:\fR Account | \fIMinimum API Token Permission:\fR \fBCloudflare Pages:Edit\fR
+.RE
+.PP
+.PP
+.PP
+.SH SUBCOMMANDS OVERVIEW
+.PP
+.IP \(bu 2
+\fBcf pages list\fR (#cf-pages-list) — List all Pages projects in an account
+.IP \(bu 2
+\fBcf pages get\fR (#cf-pages-get) — Get project details, production branch, and latest deployment
+.IP \(bu 2
+\fBcf pages create\fR (#cf-pages-create) — Create a new Pages project
+.IP \(bu 2
+\fBcf pages delete\fR (#cf-pages-delete) — Remove a Pages project
+.IP \(bu 2
+\fBcf pages deployments\fR (#cf-pages-deployments) — Inspect and trigger preview or production deployments
+.IP \(bu 2
+\fBcf pages domains\fR (#cf-pages-domains) — Manage custom domains associated with a project
+.PP
+.PP
+.SS "\fBcf pages list\fR"
+.PP
+Lists all Pages projects in your account.
+.PP
+.PP
+\fBSyntax\fR
+.PP
+.PP
+.nf
+.ft CW
+cf pages list
+.ft
+.fi
+.PP
+.PP
+.PP
+.SS "\fBcf pages create\fR"
+.PP
+Creates a new Pages project.
+.PP
+.PP
+\fBSyntax\fR
+.PP
+.PP
+.nf
+.ft CW
+cf pages create --name <project-name> [--production-branch <branch>]
+.ft
+.fi
+.PP
+.PP
+.PP
+\fBExample\fR
+.PP
+.PP
+.nf
+.ft CW
+cf pages create --name my-marketing-site --production-branch main
+.ft
+.fi
+.PP
+.PP
+.PP
+.SS "\fBcf pages deployments\fR"
+.PP
+Manage deployments for preview branches and production.
+.PP
+.PP
+.nf
+.ft CW
+# List recent deployments for a project
+cf pages deployments list --project my-marketing-site
+
+# Get status, logs, and preview URL of a specific deployment
+cf pages deployments get --project my-marketing-site --id <deployment-id>
+
+# Trigger a direct upload deployment from a local build directory
+cf pages deployments create --project my-marketing-site --directory ./dist [--branch preview]
+
+# Rollback project to a previous deployment
+cf pages deployments rollback --project my-marketing-site --id <deployment-id> --yes
+.ft
+.fi
+.PP
+.PP
+.PP
+.SS "\fBcf pages domains\fR"
+.PP
+Map apex domains and subdomains to your Pages application.
+.PP
+.PP
+.nf
+.ft CW
+# List all custom domains mapped to the project
+cf pages domains list --project my-marketing-site
+
+# Add a custom domain (auto-configures SSL and DNS verification)
+cf pages domains add --project my-marketing-site --domain blog.example.com
+
+# Delete a custom domain binding
+cf pages domains delete --project my-marketing-site --domain blog.example.com --yes
+.ft
+.fi
+.PP
+.PP
+.SH SEE ALSO
+\fBcf\fR(1), \fBcf-dns\fR(1), \fBcf-zones\fR(1), \fBcf-workers\fR(1), \fBcf-kv\fR(1), \fBcf-r2\fR(1), \fBcf-d1\fR(1)
+.SH AUTHORS
+Built for Cloudflare API management by agileguy.

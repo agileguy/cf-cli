@@ -133,7 +133,11 @@ export class OutputFormatterImpl implements IOutputFormatter {
 
   raw(data: unknown): void {
     if (this.flags.quiet) return;
-    process.stdout.write(JSON.stringify(data, null, 2) + "\n");
+    if (typeof data === "string") {
+      process.stdout.write(data.endsWith("\n") ? data : data + "\n");
+    } else {
+      process.stdout.write(JSON.stringify(data, null, 2) + "\n");
+    }
   }
 
   success(message: string): void {

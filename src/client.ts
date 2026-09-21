@@ -135,21 +135,90 @@ export class CloudflareHttpClient implements ICloudflareClient {
           continue;
         }
 
-        const responseBody = (await response.json()) as CloudflareResponse<T>;
+        const contentType = response.headers.get("content-type") ?? "";
 
-        // --raw mode: print full response JSON
-        if (this.flags.raw) {
-          process.stdout.write(JSON.stringify(responseBody, null, 2) + "\n");
+        // Check if response is JSON
+        if (contentType.includes("application/json")) {
+          let responseBody: CloudflareResponse<T>;
+          try {
+            responseBody = (await response.json()) as CloudflareResponse<T>;
+          } catch (jsonErr) {
+            if (!response.ok) {
+              const text = await response.text().catch(() => "");
+              throw new CloudflareAPIError(response.status, 0, [
+                { code: 0, message: text || response.statusText },
+              ]);
+            }
+            throw jsonErr;
+          }
+
+          // --raw mode: print full response JSON
+          if (this.flags.raw) {
+            process.stdout.write(JSON.stringify(responseBody, null, 2) + "\n");
+          }
+
+          // Error handling for non-success responses
+          if (!response.ok || !responseBody.success) {
+            const errors = responseBody.errors ?? [];
+            const firstCode = errors.length > 0 ? (errors[0]?.code ?? 0) : 0;
+            throw new CloudflareAPIError(response.status, firstCode, errors);
+          }
+
+          return responseBody;
         }
 
-        // Error handling for non-success responses
-        if (!response.ok || !responseBody.success) {
-          const errors = responseBody.errors ?? [];
-          const firstCode = errors.length > 0 ? (errors[0]?.code ?? 0) : 0;
-          throw new CloudflareAPIError(response.status, firstCode, errors);
+        // Non-JSON response handling
+        if (!response.ok) {
+          const text = await response.text().catch(() => "");
+          throw new CloudflareAPIError(response.status, 0, [
+            { code: 0, message: text || response.statusText },
+          ]);
         }
 
-        return responseBody;
+        const isText =
+          contentType.startsWith("text/") ||
+          contentType.includes("charset") ||
+          contentType === "";
+
+        if (isText) {
+          const text = await response.text();
+          // In case an endpoint returns JSON with text/plain or missing content-type header
+          let parsed: unknown;
+          try {
+            parsed = JSON.parse(text);
+          } catch {
+            // Not JSON, treat as raw text
+            parsed = undefined;
+          }
+
+          if (parsed && typeof parsed === "object" && "success" in parsed) {
+            const responseBody = parsed as CloudflareResponse<T>;
+            if (this.flags.raw) {
+              process.stdout.write(JSON.stringify(responseBody, null, 2) + "\n");
+            }
+            if (!responseBody.success) {
+              const errors = responseBody.errors ?? [];
+              const firstCode = errors.length > 0 ? (errors[0]?.code ?? 0) : 0;
+              throw new CloudflareAPIError(response.status, firstCode, errors);
+            }
+            return responseBody;
+          }
+
+          return {
+            success: true,
+            errors: [],
+            messages: [],
+            result: text as unknown as T,
+          };
+        }
+
+        const buffer = await response.arrayBuffer();
+        return {
+          success: true,
+          errors: [],
+          messages: [],
+          result: new Uint8Array(buffer) as unknown as T,
+        };
       } catch (error: unknown) {
         clearTimeout(timeoutId);
 

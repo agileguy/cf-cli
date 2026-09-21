@@ -384,5 +384,14 @@ describe("OutputFormatterImpl", () => {
       expect(output).toContain('"success": true');
       expect(output).toContain('"id": "123"');
     });
+
+    test("outputs string directly without JSON quotes", () => {
+      const out = new OutputFormatterImpl(defaultFlags);
+      const output = captureStdout(() => {
+        out.raw("Usage: cf dns <command>");
+      });
+
+      expect(output).toBe("Usage: cf dns <command>\n");
+    });
   });
 });

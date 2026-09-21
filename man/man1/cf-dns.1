@@ -1,0 +1,301 @@
+.TH CF-DNS 1 "September 2026" "cf-cli v1.1.2" "Cloudflare CLI Manual"
+.SH NAME
+cf-dns.1 \- Manage DNS records, BIND import, and export
+.PP
+Manage DNS records for your Cloudflare zones, including record creation, bulk queries, proxy toggling, and BIND zone file import/export.
+.PP
+.PP
+.SH REQUIRED PERMISSIONS
+.PP
+.PP
+.RS 2
+.TP
+Read
+\fIMinimum Cloudflare API Token Scope:\fR \fBZone.DNS:Read\fR
+.TP
+Write
+\fIMinimum Cloudflare API Token Scope:\fR \fBZone.DNS:Edit\fR
+.RE
+.PP
+.PP
+.PP
+.SH SUBCOMMANDS OVERVIEW
+.PP
+.IP \(bu 2
+\fBcf dns list\fR (#cf-dns-list) — List DNS records with optional filtering
+.IP \(bu 2
+\fBcf dns get\fR (#cf-dns-get) — Retrieve specific DNS record details
+.IP \(bu 2
+\fBcf dns create\fR (#cf-dns-create) — Add a new DNS record
+.IP \(bu 2
+\fBcf dns update\fR (#cf-dns-update) — Full update of an existing record (PUT)
+.IP \(bu 2
+\fBcf dns patch\fR (#cf-dns-patch) — Partial update of specific fields (PATCH)
+.IP \(bu 2
+\fBcf dns delete\fR (#cf-dns-delete) — Remove a DNS record
+.IP \(bu 2
+\fBcf dns import\fR (#cf-dns-import) — Import records from a standard BIND zone file
+.IP \(bu 2
+\fBcf dns export\fR (#cf-dns-export) — Export zone records in BIND zone file format
+.PP
+.PP
+.SS "\fBcf dns list\fR"
+.PP
+Lists all DNS records for a given zone.
+.PP
+.PP
+\fBSyntax\fR
+.PP
+.PP
+.nf
+.ft CW
+cf dns list --zone <zone-id-or-name> [flags]
+.ft
+.fi
+.PP
+.PP
+.PP
+\fBFlags\fR
+.PP
+.PP
+.RS 2
+.TP
+\fB--zone <id-or-name>\fR
+\fIType:\fR string | \fIDefault:\fR \fIrequired\fR | \fIDescription:\fR Target Zone ID or domain name
+.TP
+\fB--type <type>\fR
+\fIType:\fR string | \fIDefault:\fR  | \fIDescription:\fR Filter by DNS type (\fBA\fR, \fBAAAA\fR, \fBCNAME\fR, \fBTXT\fR, \fBMX\fR, etc.)
+.TP
+\fB--name <name>\fR
+\fIType:\fR string | \fIDefault:\fR  | \fIDescription:\fR Filter by exact record hostname
+.TP
+\fB--content <content>\fR
+\fIType:\fR string | \fIDefault:\fR  | \fIDescription:\fR Filter by IP address or record content
+.TP
+\fB--page <num>\fR
+\fIType:\fR number | \fIDefault:\fR \fB1\fR | \fIDescription:\fR Page number
+.TP
+\fB--per-page <num>\fR
+\fIType:\fR number | \fIDefault:\fR \fB20\fR | \fIDescription:\fR Results per page
+.TP
+\fB--all\fR
+\fIType:\fR boolean | \fIDefault:\fR \fBfalse\fR | \fIDescription:\fR Fetch all records across all pages
+.RE
+.PP
+.PP
+.PP
+\fBExamples\fR
+.PP
+.PP
+.nf
+.ft CW
+# List all records for a zone
+cf dns list --zone example.com
+
+# Filter to show only MX records
+cf dns list --zone example.com --type MX
+
+# Find all records pointing to a specific origin server IP
+cf dns list --zone example.com --content 198.51.100.1
+.ft
+.fi
+.PP
+.PP
+.PP
+.SS "\fBcf dns get\fR"
+.PP
+Retrieve full details for a single DNS record by its ID.
+.PP
+.PP
+\fBSyntax\fR
+.PP
+.PP
+.nf
+.ft CW
+cf dns get --zone <zone-id-or-name> --id <record-id>
+.ft
+.fi
+.PP
+.PP
+.PP
+\fBExample\fR
+.PP
+.PP
+.nf
+.ft CW
+cf dns get --zone example.com --id 372e67954025e0ba6aaa6d586b9e0b59
+.ft
+.fi
+.PP
+.PP
+.PP
+.SS "\fBcf dns create\fR"
+.PP
+Creates a new DNS record in your zone.
+.PP
+.PP
+\fBSyntax\fR
+.PP
+.PP
+.nf
+.ft CW
+cf dns create --zone <zone> --type <type> --name <name> --content <content> [flags]
+.ft
+.fi
+.PP
+.PP
+.PP
+\fBFlags\fR
+.PP
+.PP
+.RS 2
+.TP
+\fB--zone <id-or-name>\fR
+\fIType:\fR string | \fIDefault:\fR \fIrequired\fR | \fIDescription:\fR Zone ID or domain name
+.TP
+\fB--type <type>\fR
+\fIType:\fR string | \fIDefault:\fR \fIrequired\fR | \fIDescription:\fR Record type (\fBA\fR, \fBAAAA\fR, \fBCNAME\fR, \fBTXT\fR, \fBMX\fR, \fBSRV\fR, etc.)
+.TP
+\fB--name <name>\fR
+\fIType:\fR string | \fIDefault:\fR \fIrequired\fR | \fIDescription:\fR Subdomain or \fB@\fR for root domain
+.TP
+\fB--content <content>\fR
+\fIType:\fR string | \fIDefault:\fR \fIrequired\fR | \fIDescription:\fR Target IP, hostname, or text value
+.TP
+\fB--ttl <seconds>\fR
+\fIType:\fR number | \fIDefault:\fR \fB1\fR | \fIDescription:\fR Time To Live in seconds (\fB1\fR for Automatic)
+.TP
+\fB--proxied\fR
+\fIType:\fR boolean | \fIDefault:\fR \fBfalse\fR | \fIDescription:\fR Enable Cloudflare proxy (CDN, DDoS protection, WAF)
+.TP
+\fB--priority <num>\fR
+\fIType:\fR number | \fIDefault:\fR  | \fIDescription:\fR Priority for \fBMX\fR and \fBSRV\fR records
+.TP
+\fB--comment <text>\fR
+\fIType:\fR string | \fIDefault:\fR  | \fIDescription:\fR Optional administrative comment
+.RE
+.PP
+.PP
+.PP
+\fBExamples\fR
+.PP
+.PP
+.nf
+.ft CW
+# Create a proxied root A record
+cf dns create --zone example.com --type A --name @ --content 203.0.113.195 --proxied
+
+# Create an unproxied CNAME with 300s TTL
+cf dns create --zone example.com --type CNAME --name mail --content mail.provider.net --ttl 300
+
+# Create an MX record with priority 10
+cf dns create --zone example.com --type MX --name @ --content mail.example.com --priority 10
+.ft
+.fi
+.PP
+.PP
+.PP
+.SS "\fBcf dns patch\fR"
+.PP
+Partially updates an existing DNS record without needing to re-specify all original fields.
+.PP
+.PP
+\fBSyntax\fR
+.PP
+.PP
+.nf
+.ft CW
+cf dns patch --zone <zone> --id <record-id> [fields...]
+.ft
+.fi
+.PP
+.PP
+.PP
+\fBFlags\fR
+.PP
+.PP
+.RS 2
+.TP
+\fB--zone <id-or-name>\fR
+\fIType:\fR string | \fIDescription:\fR \fIrequired\fR Zone ID or domain name
+.TP
+\fB--id <record-id>\fR
+\fIType:\fR string | \fIDescription:\fR \fIrequired\fR Target record ID
+.TP
+\fB--content <content>\fR
+\fIType:\fR string | \fIDescription:\fR New record target IP or value
+.TP
+\fB--proxied\fR
+\fIType:\fR boolean | \fIDescription:\fR Update proxy status (\fB--proxied\fR or \fB--no-proxied\fR)
+.TP
+\fB--ttl <seconds>\fR
+\fIType:\fR number | \fIDescription:\fR Update TTL in seconds
+.TP
+\fB--comment <text>\fR
+\fIType:\fR string | \fIDescription:\fR Update comment
+.RE
+.PP
+.PP
+.PP
+\fBExample\fR
+.PP
+.PP
+.nf
+.ft CW
+# Toggle proxy status without changing the IP
+cf dns patch --zone example.com --id <record-id> --proxied
+
+# Update the target IP only
+cf dns patch --zone example.com --id <record-id> --content 198.51.100.20
+.ft
+.fi
+.PP
+.PP
+.PP
+.SS "\fBcf dns delete\fR"
+.PP
+Removes a DNS record.
+.PP
+.PP
+\fBSyntax\fR
+.PP
+.PP
+.nf
+.ft CW
+cf dns delete --zone <zone> --id <record-id> [--yes]
+.ft
+.fi
+.PP
+.PP
+.PP
+\fBExample\fR
+.PP
+.PP
+.nf
+.ft CW
+cf dns delete --zone example.com --id 372e67954025e0ba6aaa6d586b9e0b59 --yes
+.ft
+.fi
+.PP
+.PP
+.PP
+.SS "\fBcf dns import\fR & \fBcf dns export\fR"
+.PP
+Backup and migrate DNS configurations using standard BIND format files.
+.PP
+.PP
+.nf
+.ft CW
+# Export all records to standard BIND zone file format
+cf dns export --zone example.com > example.com.zone
+
+# Import records from a BIND zone file (with optional proxy toggle)
+cf dns import --zone example.com --file example.com.zone [--proxied]
+.ft
+.fi
+.PP
+.PP
+.SH SEE ALSO
+\fBcf\fR(1), \fBcf-dns\fR(1), \fBcf-zones\fR(1), \fBcf-workers\fR(1), \fBcf-kv\fR(1), \fBcf-r2\fR(1), \fBcf-d1\fR(1)
+.SH AUTHORS
+Built for Cloudflare API management by agileguy.

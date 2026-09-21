@@ -7,6 +7,7 @@ import { run as createRun } from "../../src/commands/dns/create.js";
 import { run as updateRun } from "../../src/commands/dns/update.js";
 import { run as patchRun } from "../../src/commands/dns/patch.js";
 import { run as deleteRun } from "../../src/commands/dns/delete.js";
+import { run as exportRun } from "../../src/commands/dns/export.js";
 import { run as routerRun } from "../../src/commands/dns/index.js";
 
 describe("dns list", () => {
@@ -264,6 +265,62 @@ describe("dns delete", () => {
     ], ctx);
 
     expect(output.captured.infos[0]).toContain("Aborted");
+  });
+});
+
+describe("dns export", () => {
+  test("exports DNS records as BIND format to stdout", async () => {
+    let capturedPath = "";
+    const stdoutWrites: string[] = [];
+    const origStdoutWrite = process.stdout.write;
+    process.stdout.write = ((chunk: unknown) => {
+      stdoutWrites.push(String(chunk));
+      return true;
+    }) as typeof process.stdout.write;
+
+    try {
+      const { ctx } = createTestContext({
+        get: async (path: string) => {
+          capturedPath = path;
+          return ";; Domain: example.com\nexample.com. 300 IN A 1.2.3.4\n";
+        },
+      });
+
+      await exportRun(["--zone", "023e105f4ecef8ad9ca31a8372d0c353"], ctx);
+
+      expect(capturedPath).toBe("/zones/023e105f4ecef8ad9ca31a8372d0c353/dns_records/export");
+      expect(stdoutWrites.join("")).toContain("Domain: example.com");
+      expect(stdoutWrites.join("")).toContain("example.com. 300 IN A 1.2.3.4");
+    } finally {
+      process.stdout.write = origStdoutWrite;
+    }
+  });
+
+  test("resolves zone name to ID for export", async () => {
+    let capturedPath = "";
+    const origStdoutWrite = process.stdout.write;
+    process.stdout.write = (() => true) as typeof process.stdout.write;
+
+    try {
+      const { ctx } = createTestContext({
+        get: async (path: string) => {
+          if (path === "/zones") return [{ id: "023e105f4ecef8ad9ca31a8372d0c353" }];
+          capturedPath = path;
+          return ";; BIND format";
+        },
+      });
+
+      await exportRun(["--zone", "example.com"], ctx);
+
+      expect(capturedPath).toBe("/zones/023e105f4ecef8ad9ca31a8372d0c353/dns_records/export");
+    } finally {
+      process.stdout.write = origStdoutWrite;
+    }
+  });
+
+  test("throws when --zone is missing", async () => {
+    const { ctx } = createTestContext();
+    expect(exportRun([], ctx)).rejects.toThrow("--zone");
   });
 });
 

@@ -1,0 +1,112 @@
+.TH CF-INSTALLATION 1 "September 2026" "cf-cli v1.1.2" "Cloudflare CLI Manual"
+.SH NAME
+cf-installation.1 \- Installation and shell completion guide for cf
+.PP
+\fBcf\fR is built to be fast, self-contained, and zero-dependency. You can install it using \fBnpm\fR, \fBbun\fR, or build from source.
+.PP
+.PP
+.SH 1. GLOBAL INSTALLATION
+.PP
+.SS "Using npm"
+.PP
+.nf
+.ft CW
+npm install -g @agileguy/cf-cli
+.ft
+.fi
+.PP
+.PP
+.SS "Using bun"
+.PP
+.nf
+.ft CW
+bun install -g @agileguy/cf-cli
+.ft
+.fi
+.PP
+.PP
+.PP
+.SH 2. VERIFY INSTALLATION
+.PP
+Verify the CLI binary is available on your \fB$PATH\fR:
+.PP
+.PP
+.nf
+.ft CW
+cf --version
+# Output: cf-cli v1.1.2
+
+cf --help
+.ft
+.fi
+.PP
+.PP
+.PP
+.SH 3. SHELL AUTOCOMPLETIONS
+.PP
+\fBcf\fR includes native shell completion generators for Bash, Zsh, and Fish.
+.PP
+.SS "Bash"
+Add completion to your \fB.bashrc\fR or \fB.bash_profile\fR:
+.PP
+.nf
+.ft CW
+cf completion bash >> ~/.bashrc
+source ~/.bashrc
+.ft
+.fi
+.PP
+.PP
+.SS "Zsh"
+Add completion to your \fB.zshrc\fR:
+.PP
+.nf
+.ft CW
+cf completion zsh >> ~/.zshrc
+source ~/.zshrc
+.ft
+.fi
+.PP
+.PP
+.SS "Fish"
+Save completion script to fish's completion directory:
+.PP
+.nf
+.ft CW
+mkdir -p ~/.config/fish/completions
+cf completion fish > ~/.config/fish/completions/cf.fish
+.ft
+.fi
+.PP
+.PP
+.PP
+.SH 4. BUILDING FROM SOURCE
+.PP
+If you want to contribute or build the latest unreleased changes:
+.PP
+.PP
+.nf
+.ft CW
+# Clone the repository
+git clone https://github.com/agileguy/cf-cli.git
+cd cf-cli
+
+# Install dependencies (requires Bun)
+bun install
+
+# Run the test suite
+bun test
+
+# Build the bundled executable
+bun run build
+
+# Link globally for development
+bun link
+.ft
+.fi
+.PP
+.PP
+.SH SEE ALSO
+\fBcf\fR(1), \fBcf-dns\fR(1), \fBcf-zones\fR(1), \fBcf-workers\fR(1), \fBcf-kv\fR(1), \fBcf-r2\fR(1), \fBcf-d1\fR(1)
+.SH AUTHORS
+Built for Cloudflare API management by agileguy.

@@ -1,0 +1,169 @@
+.TH CF-PERMISSIONS 1 "September 2026" "cf-cli v1.1.2" "Cloudflare CLI Manual"
+.SH NAME
+cf-permissions.1 \- Cloudflare API token permissions required per resource
+.PP
+Cloudflare API tokens require explicit permission scopes. If a token lacks a required scope, Cloudflare will reject the request with HTTP 403 or Error \fB10000: Authentication error\fR.
+.PP
+Use this matrix to configure minimum least-privilege tokens at dash.cloudflare.com/profile/api-tokens (https://dash.cloudflare.com/profile/api-tokens).
+.PP
+.PP
+.SH PERMISSION SCOPE MAPPING
+.PP
+.SS "Networking & Domains"
+.PP
+.RS 2
+.TP
+\fBcf zones\fR
+\fIResource Level:\fR Zone | \fIRequired Scope (Read):\fR \fBZone:Read\fR | \fIRequired Scope (Write):\fR \fBZone:Edit\fR
+.TP
+\fBcf dns\fR
+\fIResource Level:\fR Zone | \fIRequired Scope (Read):\fR \fBDNS:Read\fR | \fIRequired Scope (Write):\fR \fBDNS:Edit\fR
+.TP
+\fBcf lb\fR
+\fIResource Level:\fR Account | \fIRequired Scope (Read):\fR \fBLoad Balancing:Read\fR | \fIRequired Scope (Write):\fR \fBLoad Balancing:Edit\fR
+.TP
+\fBcf healthchecks\fR
+\fIResource Level:\fR Account | \fIRequired Scope (Read):\fR \fBHealth Checks:Read\fR | \fIRequired Scope (Write):\fR \fBHealth Checks:Edit\fR
+.TP
+\fBcf spectrum\fR
+\fIResource Level:\fR Zone | \fIRequired Scope (Read):\fR \fBSpectrum:Read\fR | \fIRequired Scope (Write):\fR \fBSpectrum:Edit\fR
+.TP
+\fBcf tunnels\fR
+\fIResource Level:\fR Account | \fIRequired Scope (Read):\fR \fBCloudflare Tunnel:Read\fR | \fIRequired Scope (Write):\fR \fBCloudflare Tunnel:Edit\fR
+.TP
+\fBcf registrar\fR
+\fIResource Level:\fR Account | \fIRequired Scope (Read):\fR \fBRegistrar:Read\fR | \fIRequired Scope (Write):\fR \fBRegistrar:Edit\fR
+.RE
+.PP
+.PP
+.SS "Serverless & Compute"
+.PP
+.RS 2
+.TP
+\fBcf workers\fR
+\fIResource Level:\fR Account | \fIRequired Scope (Read):\fR \fBWorkers Scripts:Read\fR | \fIRequired Scope (Write):\fR \fBWorkers Scripts:Edit\fR
+.TP
+\fBcf workers routes\fR
+\fIResource Level:\fR Zone | \fIRequired Scope (Read):\fR \fBWorkers Routes:Read\fR | \fIRequired Scope (Write):\fR \fBWorkers Routes:Edit\fR
+.TP
+\fBcf pages\fR
+\fIResource Level:\fR Account | \fIRequired Scope (Read):\fR \fBCloudflare Pages:Read\fR | \fIRequired Scope (Write):\fR \fBCloudflare Pages:Edit\fR
+.TP
+\fBcf queues\fR
+\fIResource Level:\fR Account | \fIRequired Scope (Read):\fR \fBQueues:Read\fR | \fIRequired Scope (Write):\fR \fBQueues:Edit\fR
+.TP
+\fBcf snippets\fR
+\fIResource Level:\fR Zone | \fIRequired Scope (Read):\fR \fBZone WAF:Read\fR | \fIRequired Scope (Write):\fR \fBZone WAF:Edit\fR
+.RE
+.PP
+.PP
+.SS "Storage & Databases"
+.PP
+.RS 2
+.TP
+\fBcf kv\fR
+\fIResource Level:\fR Account | \fIRequired Scope (Read):\fR \fBWorkers KV Storage:Read\fR | \fIRequired Scope (Write):\fR \fBWorkers KV Storage:Edit\fR
+.TP
+\fBcf r2\fR
+\fIResource Level:\fR Account | \fIRequired Scope (Read):\fR \fBWorkers R2 Storage:Read\fR | \fIRequired Scope (Write):\fR \fBWorkers R2 Storage:Edit\fR
+.TP
+\fBcf d1\fR
+\fIResource Level:\fR Account | \fIRequired Scope (Read):\fR \fBD1:Read\fR | \fIRequired Scope (Write):\fR \fBD1:Edit\fR
+.TP
+\fBcf hyperdrive\fR
+\fIResource Level:\fR Account | \fIRequired Scope (Read):\fR \fBHyperdrive:Read\fR | \fIRequired Scope (Write):\fR \fBHyperdrive:Edit\fR
+.TP
+\fBcf vectorize\fR
+\fIResource Level:\fR Account | \fIRequired Scope (Read):\fR \fBVectorize:Read\fR | \fIRequired Scope (Write):\fR \fBVectorize:Edit\fR
+.TP
+\fBcf secrets-store\fR
+\fIResource Level:\fR Account | \fIRequired Scope (Read):\fR \fBSecrets Store:Read\fR | \fIRequired Scope (Write):\fR \fBSecrets Store:Edit\fR
+.RE
+.PP
+.PP
+.SS "Security & Zero Trust"
+.PP
+.RS 2
+.TP
+\fBcf access\fR
+\fIResource Level:\fR Account | \fIRequired Scope (Read):\fR \fBAccess: Apps and Policies:Read\fR | \fIRequired Scope (Write):\fR \fBAccess: Apps and Policies:Edit\fR
+.TP
+\fBcf gateway\fR
+\fIResource Level:\fR Account | \fIRequired Scope (Read):\fR \fBZero Trust:Read\fR | \fIRequired Scope (Write):\fR \fBZero Trust:Edit\fR
+.TP
+\fBcf firewall\fR
+\fIResource Level:\fR Zone | \fIRequired Scope (Read):\fR \fBZone Settings:Read\fR | \fIRequired Scope (Write):\fR \fBZone Settings:Edit\fR
+.TP
+\fBcf rulesets\fR
+\fIResource Level:\fR Account / Zone | \fIRequired Scope (Read):\fR \fBRulesets:Read\fR | \fIRequired Scope (Write):\fR \fBRulesets:Edit\fR
+.TP
+\fBcf turnstile\fR
+\fIResource Level:\fR Account | \fIRequired Scope (Read):\fR \fBTurnstile:Read\fR | \fIRequired Scope (Write):\fR \fBTurnstile:Edit\fR
+.TP
+\fBcf ssl\fR
+\fIResource Level:\fR Zone | \fIRequired Scope (Read):\fR \fBSSL and Certificates:Read\fR | \fIRequired Scope (Write):\fR \fBSSL and Certificates:Edit\fR
+.TP
+\fBcf page-shield\fR
+\fIResource Level:\fR Zone | \fIRequired Scope (Read):\fR \fBPage Shield:Read\fR | \fIRequired Scope (Write):\fR \fBPage Shield:Edit\fR
+.RE
+.PP
+.PP
+.SS "Performance & Cache"
+.PP
+.RS 2
+.TP
+\fBcf cache\fR
+\fIResource Level:\fR Zone | \fIRequired Scope (Read):\fR N/A | \fIRequired Scope (Write):\fR \fBZone:Purge\fR (or \fBZone:Edit\fR)
+.TP
+\fBcf argo\fR
+\fIResource Level:\fR Zone | \fIRequired Scope (Read):\fR \fBZone Settings:Read\fR | \fIRequired Scope (Write):\fR \fBZone Settings:Edit\fR
+.TP
+\fBcf observatory\fR
+\fIResource Level:\fR Zone | \fIRequired Scope (Read):\fR \fBAnalytics:Read\fR | \fIRequired Scope (Write):\fR \fBAnalytics:Edit\fR
+.TP
+\fBcf waiting-rooms\fR
+\fIResource Level:\fR Zone | \fIRequired Scope (Read):\fR \fBWaiting Room:Read\fR | \fIRequired Scope (Write):\fR \fBWaiting Room:Edit\fR
+.RE
+.PP
+.PP
+.PP
+.SH RECOMMENDED TOKEN PRESETS
+.PP
+.SS "1. "CI/CD Deployment" Token"
+.IP \(bu 2
+\fBPermissions:\fR
+.IP \(bu 2
+\fBAccount: Workers Scripts:Edit\fR
+.IP \(bu 2
+\fBAccount: Cloudflare Pages:Edit\fR
+.IP \(bu 2
+\fBZone: Purge:Purge\fR
+.IP \(bu 2
+\fBResource:\fR Specific Zone & Account
+.PP
+.SS "2. "DNS Automation" Token"
+.IP \(bu 2
+\fBPermissions:\fR
+.IP \(bu 2
+\fBZone: DNS:Edit\fR
+.IP \(bu 2
+\fBZone: Zone:Read\fR
+.IP \(bu 2
+\fBResource:\fR Specific Zone
+.PP
+.SS "3. "Auditor / Read-Only" Token"
+.IP \(bu 2
+\fBPermissions:\fR
+.IP \(bu 2
+\fBZone: Zone:Read\fR
+.IP \(bu 2
+\fBAccount: Audit Logs:Read\fR
+.IP \(bu 2
+\fBAccount: Account Settings:Read\fR
+.IP \(bu 2
+\fBResource:\fR All Accounts and Zones
+.PP
+.SH SEE ALSO
+\fBcf\fR(1), \fBcf-dns\fR(1), \fBcf-zones\fR(1), \fBcf-workers\fR(1), \fBcf-kv\fR(1), \fBcf-r2\fR(1), \fBcf-d1\fR(1)
+.SH AUTHORS
+Built for Cloudflare API management by agileguy.
