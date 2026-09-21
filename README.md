@@ -76,8 +76,8 @@ cf zones list --profile staging
 | Flag | Description |
 |------|-------------|
 | `--profile <name>` | Use a specific auth profile |
-| `--output <format>` | Output format: `table`, `json`, `csv`, `yaml` (default: `table`) |
-| `--raw` | Show raw API response JSON |
+| `--output <format>` | Accepted and validated (`table`, `json`, `csv`, `yaml`), but currently only acted on by `cf d1 query`, and there only for `json` and `csv`. Every other command prints its table regardless |
+| `--raw` | Print the unmodified API JSON envelope, *in addition to* the command's normal output rather than instead of it |
 | `--verbose` | Show debug output (HTTP requests, timing) |
 | `--quiet` | Suppress non-essential output |
 | `--no-color` | Disable colored output (also respects `NO_COLOR` env) |
@@ -1077,15 +1077,19 @@ cf completion fish > ~/.config/fish/completions/cf.fish
 
 ## Output Formats
 
-All list and detail commands support multiple output formats:
+Per-command `--output` is not yet implemented. The flag is accepted and
+validated everywhere, but only `cf d1 query` acts on it, and there only for
+`json` and `csv`. Every other command prints its formatted table regardless.
 
 ```bash
-cf zones list                      # Table (default)
-cf zones list --output json        # JSON
-cf zones list --output csv         # CSV
-cf zones list --output yaml        # YAML
-cf zones list --raw                # Raw API response
+cf zones list                                   # Table (the only format today)
+cf d1 query --database mydb "SELECT 1" --output json   # The one command with a working --output
+
+# Prints the API envelope as JSON, followed by the usual table
+cf zones list --raw
 ```
+
+See [docs/getting-started/output-formats.md](docs/getting-started/output-formats.md) for details.
 
 ## Features
 
