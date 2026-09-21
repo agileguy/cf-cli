@@ -166,8 +166,10 @@ function buildContext(flags: GlobalFlags): Context {
 async function main(): Promise<void> {
   let { flags, resource, action, rest: _rest } = parseGlobalFlags();
 
-  // Handle --version
-  if (process.argv.includes("--version") || process.argv.includes("-v") || resource === "version") {
+  // Handle --version. Checked against the first raw argument only (its
+  // pre-subcommand position) so a subcommand's own --version flag (e.g.
+  // "rulesets versions get --version 3") isn't mistaken for the global one.
+  if (process.argv[2] === "--version" || process.argv[2] === "-v" || resource === "version") {
     process.stdout.write(`cf-cli v${VERSION}\n`);
     return;
   }
