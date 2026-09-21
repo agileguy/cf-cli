@@ -194,26 +194,58 @@ export function formatMarkdownForTerminal(content: string): string {
     .join("\n");
 }
 
+/** Decide whether the pager should be disabled for this invocation. */
+export function shouldDisablePager(flags: Record<string, string | boolean>, quiet: boolean | undefined): boolean {
+  return getBoolFlag(flags, "noPager") || flags["pager"] === false || Boolean(quiet);
+}
+
+/** Split a $PAGER value into its command and arguments (e.g. "less -R"). */
+export function splitPagerCommand(pagerCmd: string): { bin: string; args: string[] } {
+  const [bin, ...args] = pagerCmd.trim().split(/\s+/);
+  return { bin: bin || "less", args };
+}
+
 /** Output with $PAGER or direct stdout */
-function displayOutput(text: string, noPager: boolean): void {
+export function displayOutput(text: string, noPager: boolean): Promise<void> {
   if (noPager || !process.stdout.isTTY) {
     process.stdout.write(text + "\n");
-    return;
+    return Promise.resolve();
   }
 
-  const pager = process.env["PAGER"] || "less";
-  const pagerArgs = pager.includes("less") ? ["-R"] : [];
+  const { bin, args: pagerCmdArgs } = splitPagerCommand(process.env["PAGER"] || "less");
+  const pagerArgs = bin.includes("less") && !pagerCmdArgs.includes("-R") ? [...pagerCmdArgs, "-R"] : pagerCmdArgs;
 
-  try {
-    const child = spawn(pager, pagerArgs, {
-      stdio: ["pipe", "inherit", "inherit"],
-    });
+  return new Promise((resolve) => {
+    let settled = false;
+    const fallback = (): void => {
+      if (settled) return;
+      settled = true;
+      process.stdout.write(text + "\n");
+      resolve();
+    };
 
-    child.stdin.write(text + "\n");
-    child.stdin.end();
-  } catch {
-    process.stdout.write(text + "\n");
-  }
+    try {
+      const child = spawn(bin, pagerArgs, {
+        stdio: ["pipe", "inherit", "inherit"],
+      });
+
+      // spawn() reports a missing binary asynchronously via 'error', not a
+      // synchronous throw, so this is what the try/catch below can't catch.
+      child.on("error", fallback);
+      child.on("exit", () => {
+        if (settled) return;
+        settled = true;
+        resolve();
+      });
+      // Quitting the pager before all output is written closes its end of
+      // the pipe; without this, that surfaces as an unhandled EPIPE.
+      child.stdin.on("error", () => {});
+      child.stdin.write(text + "\n");
+      child.stdin.end();
+    } catch {
+      fallback();
+    }
+  });
 }
 
 /** Search across all docs files */
@@ -260,12 +292,7 @@ function searchDocs(query: string, docsDir: string, ctx: Context): void {
 
 export async function run(args: string[], ctx: Context): Promise<void> {
   const { positional, flags } = parseArgs(args);
-  const noPager =
-    getBoolFlag(flags, "noPager") ||
-    getBoolFlag(flags, "pager") === false ||
-    flags["pager"] === false ||
-    ctx.flags.quiet ||
-    false;
+  const noPager = shouldDisablePager(flags, ctx.flags.quiet);
   const docsDir = findDocsDir();
 
   const command = positional[0]?.toLowerCase();
@@ -306,7 +333,7 @@ export async function run(args: string[], ctx: Context): Promise<void> {
 
     const content = readFileSync(filePath, "utf8");
     const formatted = formatMarkdownForTerminal(content);
-    displayOutput(formatted, noPager);
+    await displayOutput(formatted, noPager);
     return;
   }
 
