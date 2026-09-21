@@ -8,7 +8,7 @@ Integrating `cf` into automated deployment pipelines (such as GitHub Actions, Gi
 
 * **Always pass `--yes`**: Destructive operations (such as `delete` or `purge`) require interactive confirmation by default. In headless environments, pass `--yes` to auto-confirm without blocking on stdin.
 * **Authenticate via Repository Secrets**: Supply `CF_API_TOKEN` (or `CLOUDFLARE_API_TOKEN`) via secure environment variables. Never hardcode credentials.
-* **Use JSON Output for Pipeline Parsing**: Pass `--output json` and pipe directly into `jq` to extract values for subsequent workflow steps.
+* **Parse Exit Codes, Not Output**: Most commands print a formatted table and have no machine-readable mode yet — `--output json` is accepted but currently only acted on by `cf d1 query`. Branch on the exit code, and where you genuinely need the API payload, see the note on `--raw` in [Output Formats](../getting-started/output-formats.md).
 * **Exit Codes**:
   * `0`: Success
   * `1`: API error, invalid arguments, or authentication failure

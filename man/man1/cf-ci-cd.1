@@ -12,7 +12,7 @@ Integrating \fBcf\fR into automated deployment pipelines (such as GitHub Actions
 .IP \(bu 2
 \fBAuthenticate via Repository Secrets\fR: Supply \fBCF\fIAPI\fRTOKEN\fR (or \fBCLOUDFLARE\fIAPI\fRTOKEN\fR) via secure environment variables. Never hardcode credentials.
 .IP \(bu 2
-\fBUse JSON Output for Pipeline Parsing\fR: Pass \fB--output json\fR and pipe directly into \fBjq\fR to extract values for subsequent workflow steps.
+\fBParse Exit Codes, Not Output\fR: Most commands print a formatted table and have no machine-readable mode yet — \fB--output json\fR is accepted but currently only acted on by \fBcf d1 query\fR. Branch on the exit code, and where you genuinely need the API payload, see the note on \fB--raw\fR in Output Formats (../getting-started/output-formats.md).
 .IP \(bu 2
 \fBExit Codes\fR:
 .IP \(bu 2

@@ -53,8 +53,8 @@ cf zones list
 # Find active zones matching a domain prefix
 cf zones list --name example.com --status active
 
-# Fetch all zones and export to CSV
-cf zones list --all --output csv > zones.csv
+# Fetch every zone across all pages
+cf zones list --all
 ```
 
 ---

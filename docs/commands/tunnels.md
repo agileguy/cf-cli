@@ -64,7 +64,8 @@ cf tunnels token --id <tunnel-id>
 #### Example
 ```bash
 # Run tunnel immediately using Docker
-TOKEN=$(cf tunnels token --id 7b29a1b0-2345-4b3e-9087-123456abcdef --output raw)
+# This command already prints the bare token on stdout; no format flag is needed
+TOKEN=$(cf tunnels token --id 7b29a1b0-2345-4b3e-9087-123456abcdef)
 docker run -d cloudflare/cloudflared:latest tunnel --no-autoupdate run --token "$TOKEN"
 ```
 

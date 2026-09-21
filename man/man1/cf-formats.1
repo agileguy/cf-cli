@@ -2,30 +2,23 @@
 .SH NAME
 cf-formats.1 \- Output formats, color support, and automation scripting for cf
 .PP
-\fBcf\fR is designed for human terminal readability and script automation alike. Every list, get, and mutation command supports structured multi-format output.
+\fBcf\fR is designed for human terminal readability and script automation alike.
 .PP
 .PP
 .SH 1. SUPPORTED OUTPUT FORMATS
 .PP
-Pass the \fB--output <format>\fR flag (or set \fBoutput: "<format>"\fR in your default config):
+\fBStatus: not yet implemented for most commands.\fR A per-command \fB--output <format>\fR flag (table/json/csv/yaml), and the matching \fBoutput: "<format>"\fR default-config setting, are planned but today only \fBd1 query\fR reads an \fB--output\fR flag (and only for \fBjson\fR or \fBcsv\fR; anything else falls back to its table) — every other command always prints its default formatted table, regardless of \fB--output\fR.
 .PP
 .PP
 .nf
 .ft CW
-# Formatted ASCII table (default)
-cf dns list --zone example.com --output table
-
-# Pretty-printed JSON
-cf dns list --zone example.com --output json
-
-# Standard comma-separated values
-cf dns list --zone example.com --output csv
-
-# Clean YAML
-cf dns list --zone example.com --output yaml
-
-# Raw API JSON payload directly from Cloudflare
+# Works everywhere today: prints the unmodified Cloudflare API envelope as JSON.
+# Note it is printed IN ADDITION TO the command's usual table, not instead of it,
+# so this is not yet a clean source for `jq`.
 cf dns list --zone example.com --raw
+
+# The only command with an --output flag today (json or csv; default is table)
+cf d1 query --database mydb "SELECT * FROM users" --output json
 .ft
 .fi
 .PP
@@ -70,47 +63,6 @@ cf dns create --zone example.com --type A --name api --content 1.2.3.4 --quiet
 .PP
 .PP
 \fI(Note: Errors will still be written to \fBstderr\fR even in \fB--quiet\fR mode).\fR
-.PP
-.PP
-.SH 4. SCRIPTING RECIPES WITH \fBJQ\fR
-.PP
-Pairing \fBcf\fR's JSON output with \fBjq\fR creates powerful operational one-liners:
-.PP
-.SS "Extract All Zone IDs and Names"
-.PP
-.nf
-.ft CW
-cf zones list --output json | jq -r '.[] | "\(.id)\t\(.name)"'
-.ft
-.fi
-.PP
-.PP
-.SS "Find All Stale DNS Records"
-.PP
-.nf
-.ft CW
-cf dns list --zone example.com --output json | jq -r '.[] | select(.type=="CNAME") | .name'
-.ft
-.fi
-.PP
-.PP
-.SS "Extract Public Worker URLs"
-.PP
-.nf
-.ft CW
-cf workers domains list --output json | jq -r '.[] | "\(.service) -> https://\(.hostname)"'
-.ft
-.fi
-.PP
-.PP
-.SS "Export CSV to a Spreadsheet File"
-.PP
-.nf
-.ft CW
-cf audit-logs list --output csv > audit_report_$(date +%F).csv
-.ft
-.fi
-.PP
 .PP
 .SH SEE ALSO
 \fBcf\fR(1), \fBcf-dns\fR(1), \fBcf-zones\fR(1), \fBcf-workers\fR(1), \fBcf-kv\fR(1), \fBcf-r2\fR(1), \fBcf-d1\fR(1)

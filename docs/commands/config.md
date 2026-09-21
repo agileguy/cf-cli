@@ -32,7 +32,7 @@ cf config set --name <profile-name> [credentials & defaults]
 | `--email <email>` | string | Account email address |
 | `--account-id <id>` | string | Default Account ID for this profile |
 | `--zone-id <id>` | string | Default Zone ID for this profile |
-| `--output <format>` | string | Preferred output format (`table`, `json`, `csv`, `yaml`) |
+| `--output <format>` | string | Preferred output format (`table`, `json`, `csv`, `yaml`). Stored and validated, but currently only acted on by `cf d1 query` — see [Output Formats](../getting-started/output-formats.md) |
 
 #### Examples
 ```bash

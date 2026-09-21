@@ -122,7 +122,7 @@ cf d1 query "<sql-statement>" --database <name-or-id> [flags]
 \fIType:\fR string | \fIDescription:\fR JSON array of bind parameters for prepared statements
 .TP
 \fB--output <format>\fR
-\fIType:\fR string | \fIDescription:\fR \fBtable\fR (default), \fBjson\fR, or \fBcsv\fR
+\fIType:\fR string | \fIDescription:\fR \fBjson\fR or \fBcsv\fR; anything else, including \fByaml\fR, falls back to the table. This is currently the only command that acts on \fB--output\fR
 .RE
 .PP
 .PP

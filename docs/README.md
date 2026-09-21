@@ -9,7 +9,7 @@ Welcome to the comprehensive documentation for **`@agileguy/cf-cli`** (`cf`), a 
 ### Getting Started
 * [Installation](getting-started/installation.md) - npm, bun, source build, and shell completions
 * [Authentication](getting-started/authentication.md) - API Tokens, Global Keys, Profiles, and resolution precedence
-* [Output Formats & Scripting](getting-started/output-formats.md) - Table, JSON, CSV, YAML, `--raw`, and `jq` automation
+* [Output Formats & Scripting](getting-started/output-formats.md) - What `--raw`, `--no-color` and `--quiet` actually do today, and the current state of `--output`
 
 ### Guides & Best Practices
 * [Cloudflare API Token Permissions Matrix](guides/permissions-matrix.md) - Exact API token permission scopes required per command
@@ -44,8 +44,8 @@ Every command supports the following global flags:
 | Flag | Type | Description |
 |------|------|-------------|
 | `--profile <name>` | `string` | Use a specific profile configured in `~/.cf/config.json` |
-| `--output <format>` | `string` | Output format: `table` (default), `json`, `csv`, `yaml` |
-| `--raw` | `boolean` | Print raw, unformatted API JSON response |
+| `--output <format>` | `string` | Accepted and validated (`table`, `json`, `csv`, `yaml`), but currently only acted on by `cf d1 query`, and there only for `json` and `csv`. Every other command prints its table regardless. See [Output Formats](getting-started/output-formats.md) |
+| `--raw` | `boolean` | Print the unmodified API JSON envelope. Note it is printed *in addition to* the command's normal output, not instead of it |
 | `--verbose` | `boolean` | Print HTTP request URLs, methods, headers, and timing |
 | `--quiet` | `boolean` | Suppress non-essential informational and progress messages |
 | `--no-color` | `boolean` | Disable colored terminal output (also respects `NO_COLOR=1`) |

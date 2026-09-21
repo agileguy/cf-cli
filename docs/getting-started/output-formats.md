@@ -9,7 +9,9 @@
 **Status: not yet implemented for most commands.** A per-command `--output <format>` flag (table/json/csv/yaml), and the matching `output: "<format>"` default-config setting, are planned but today only `d1 query` reads an `--output` flag (and only for `json` or `csv`; anything else falls back to its table) — every other command always prints its default formatted table, regardless of `--output`.
 
 ```bash
-# Works everywhere today: prints the unmodified Cloudflare API response as JSON
+# Works everywhere today: prints the unmodified Cloudflare API envelope as JSON.
+# Note it is printed IN ADDITION TO the command's usual table, not instead of it,
+# so this is not yet a clean source for `jq`.
 cf dns list --zone example.com --raw
 
 # The only command with an --output flag today (json or csv; default is table)

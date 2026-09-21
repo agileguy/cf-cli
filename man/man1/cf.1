@@ -13,7 +13,7 @@ Installation (getting-started/installation.md) - npm, bun, source build, and she
 .IP \(bu 2
 Authentication (getting-started/authentication.md) - API Tokens, Global Keys, Profiles, and resolution precedence
 .IP \(bu 2
-Output Formats & Scripting (getting-started/output-formats.md) - Table, JSON, CSV, YAML, \fB--raw\fR, and \fBjq\fR automation
+Output Formats & Scripting (getting-started/output-formats.md) - What \fB--raw\fR, \fB--no-color\fR and \fB--quiet\fR actually do today, and the current state of \fB--output\fR
 .PP
 .SS "Guides & Best Practices"
 .IP \(bu 2
@@ -67,10 +67,10 @@ Every command supports the following global flags:
 \fIType:\fR \fBstring\fR | \fIDescription:\fR Use a specific profile configured in \fB~/.cf/config.json\fR
 .TP
 \fB--output <format>\fR
-\fIType:\fR \fBstring\fR | \fIDescription:\fR Output format: \fBtable\fR (default), \fBjson\fR, \fBcsv\fR, \fByaml\fR
+\fIType:\fR \fBstring\fR | \fIDescription:\fR Accepted and validated (\fBtable\fR, \fBjson\fR, \fBcsv\fR, \fByaml\fR), but currently only acted on by \fBcf d1 query\fR, and there only for \fBjson\fR and \fBcsv\fR. Every other command prints its table regardless. See Output Formats (getting-started/output-formats.md)
 .TP
 \fB--raw\fR
-\fIType:\fR \fBboolean\fR | \fIDescription:\fR Print raw, unformatted API JSON response
+\fIType:\fR \fBboolean\fR | \fIDescription:\fR Print the unmodified API JSON envelope. Note it is printed \fIin addition to\fR the command's normal output, not instead of it
 .TP
 \fB--verbose\fR
 \fIType:\fR \fBboolean\fR | \fIDescription:\fR Print HTTP request URLs, methods, headers, and timing
