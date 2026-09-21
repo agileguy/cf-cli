@@ -42,7 +42,7 @@ export const TOPICS: DocTopic[] = [
     aliases: ["output", "json", "csv", "yaml", "scripting"],
     file: "getting-started/output-formats.md",
     title: "Output Formats & Scripting",
-    description: "Table, JSON, CSV, YAML, --raw, and jq automation recipes",
+    description: "--raw JSON, NO_COLOR, --quiet, and current --output support",
   },
   {
     id: "permissions",
@@ -143,17 +143,25 @@ function findDocsDir(): string | null {
 
   const execDir = process.argv[1] ? dirname(resolve(process.argv[1])) : "";
 
+  // Innermost (closest to this file / the running script) first: an
+  // installed layout resolves "../../../docs" from dist/ straight into
+  // node_modules, and there's a real npm package named "docs" that can
+  // shadow the package's own docs/ directory if outer candidates win.
   const candidates = [
-    metaDir ? resolve(metaDir, "../../../docs") : "",
-    metaDir ? resolve(metaDir, "../../docs") : "",
     metaDir ? resolve(metaDir, "../docs") : "",
-    execDir ? resolve(execDir, "../docs") : "",
+    metaDir ? resolve(metaDir, "../../docs") : "",
+    metaDir ? resolve(metaDir, "../../../docs") : "",
     execDir ? resolve(execDir, "docs") : "",
+    execDir ? resolve(execDir, "../docs") : "",
     resolve(process.cwd(), "docs"),
   ].filter((p): p is string => Boolean(p));
 
+  // Gate on a file that only this package's docs/ actually contains, not
+  // mere directory existence — ordering alone still matches any stray
+  // docs/ directory (like the node_modules/docs package) that happens to
+  // sit closer than the real one.
   for (const c of candidates) {
-    if (existsSync(c)) return c;
+    if (existsSync(join(c, "commands/dns.md"))) return c;
   }
   return null;
 }
