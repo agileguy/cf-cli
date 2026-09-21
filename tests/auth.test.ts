@@ -1,4 +1,6 @@
 import { describe, test, expect, beforeEach, afterEach } from "bun:test";
+import { readFileSync } from "fs";
+import { join } from "path";
 import { loadCredentials } from "../src/auth.js";
 import { AuthError } from "../src/utils/errors.js";
 import type { Config } from "../src/types/index.js";
@@ -14,9 +16,22 @@ function makeConfig(overrides?: Partial<Config>): Config {
 }
 
 describe("loadCredentials", () => {
-  // Save and restore env vars
+  // Save and restore env vars.
+  //
+  // This must cover EVERY variable src/auth.ts reads, not just the CF_-prefixed
+  // ones. CLOUDFLARE_API_TOKEN is a documented alias and was missing here, so on
+  // any machine with it exported — which is most machines that actually use the
+  // CLI — five of these tests picked up the developer's real token and failed.
+  // CI never caught it because CI has no credentials. The guard test at the
+  // bottom of this file keeps the list honest if auth.ts grows another one.
   const savedEnv: Record<string, string | undefined> = {};
-  const envKeys = ["CF_PROFILE", "CF_API_TOKEN", "CF_API_KEY", "CF_API_EMAIL"];
+  const envKeys = [
+    "CF_PROFILE",
+    "CF_API_TOKEN",
+    "CLOUDFLARE_API_TOKEN",
+    "CF_API_KEY",
+    "CF_API_EMAIL",
+  ];
 
   beforeEach(() => {
     for (const key of envKeys) {
@@ -194,6 +209,25 @@ describe("loadCredentials", () => {
         apiKey: "my-key",
         email: "me@example.com",
       });
+    });
+  });
+
+  // These tests are only meaningful if the ambient environment is fully
+  // neutralised first. A variable auth.ts reads but this file forgets to clear
+  // is invisible in CI and fails only on a developer's configured machine, so
+  // assert the two lists agree rather than trusting them to stay in step.
+  describe("environment isolation", () => {
+    test("every variable src/auth.ts reads is cleared before each test", () => {
+      const source = readFileSync(
+        join(import.meta.dir, "..", "src", "auth.ts"),
+        "utf8",
+      );
+      const read = new Set(
+        [...source.matchAll(/process\.env\[["']([^"']+)["']\]/g)].map((m) => m[1]!),
+      );
+
+      expect(read.size).toBeGreaterThan(0);
+      expect([...read].filter((k) => !envKeys.includes(k))).toEqual([]);
     });
   });
 });
