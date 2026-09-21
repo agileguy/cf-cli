@@ -349,6 +349,23 @@ export async function run(args: string[], ctx: Context): Promise<void> {
   printTopicList(ctx);
 }
 
+/**
+ * Clip a cell to its column width.
+ *
+ * The table renderer treats `width` as a cap on the computed column width, but
+ * pads rows without ever cutting them, so a value longer than its column runs
+ * past the border and misaligns the row. Fifteen of the sixteen topic
+ * descriptions are longer than 50 characters, so every row broke. Clipping here
+ * keeps the fix to this call site rather than changing padding behaviour shared
+ * by 150-odd other commands.
+ */
+function clip(max: number): (value: unknown) => string {
+  return (value: unknown): string => {
+    const s = String(value ?? "");
+    return s.length > max ? s.slice(0, max - 1) + "…" : s;
+  };
+}
+
 function printTopicList(ctx: Context): void {
   process.stdout.write(`\n${bold(cyan("Cloudflare CLI (`cf`) Documentation"))}\n\n`);
   process.stdout.write(`USAGE:\n  cf docs <topic>\n  cf docs search <query>\n\nTOPICS:\n`);
@@ -360,9 +377,9 @@ function printTopicList(ctx: Context): void {
   }));
 
   const columns: ColumnDef[] = [
-    { key: "topic", header: "Topic", width: 14 },
-    { key: "title", header: "Title", width: 28 },
-    { key: "description", header: "Description", width: 50 },
+    { key: "topic", header: "Topic", width: 14, transform: clip(14) },
+    { key: "title", header: "Title", width: 30, transform: clip(30) },
+    { key: "description", header: "Description", width: 50, transform: clip(50) },
   ];
 
   ctx.output.table(rows, columns);
