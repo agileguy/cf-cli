@@ -1,28 +1,19 @@
 # Output Formats & Automation Scripting
 
-`cf` is designed for human terminal readability and script automation alike. Every list, get, and mutation command supports structured multi-format output.
+`cf` is designed for human terminal readability and script automation alike.
 
 ---
 
 ## 1. Supported Output Formats
 
-Pass the `--output <format>` flag (or set `output: "<format>"` in your default config):
+**Status: not yet implemented for most commands.** A per-command `--output <format>` flag (table/json/csv/yaml), and the matching `output: "<format>"` default-config setting, are planned but today only `d1 query` reads an `--output` flag (and only for `json` or `csv`; anything else falls back to its table) — every other command always prints its default formatted table, regardless of `--output`.
 
 ```bash
-# Formatted ASCII table (default)
-cf dns list --zone example.com --output table
-
-# Pretty-printed JSON
-cf dns list --zone example.com --output json
-
-# Standard comma-separated values
-cf dns list --zone example.com --output csv
-
-# Clean YAML
-cf dns list --zone example.com --output yaml
-
-# Raw API JSON payload directly from Cloudflare
+# Works everywhere today: prints the unmodified Cloudflare API response as JSON
 cf dns list --zone example.com --raw
+
+# The only command with an --output flag today (json or csv; default is table)
+cf d1 query --database mydb "SELECT * FROM users" --output json
 ```
 
 ---
@@ -52,29 +43,3 @@ cf dns create --zone example.com --type A --name api --content 1.2.3.4 --quiet
 ```
 
 *(Note: Errors will still be written to `stderr` even in `--quiet` mode).*
-
----
-
-## 4. Scripting Recipes with `jq`
-
-Pairing `cf`'s JSON output with `jq` creates powerful operational one-liners:
-
-### Extract All Zone IDs and Names
-```bash
-cf zones list --output json | jq -r '.[] | "\(.id)\t\(.name)"'
-```
-
-### Find All Stale DNS Records
-```bash
-cf dns list --zone example.com --output json | jq -r '.[] | select(.type=="CNAME") | .name'
-```
-
-### Extract Public Worker URLs
-```bash
-cf workers domains list --output json | jq -r '.[] | "\(.service) -> https://\(.hostname)"'
-```
-
-### Export CSV to a Spreadsheet File
-```bash
-cf audit-logs list --output csv > audit_report_$(date +%F).csv
-```
