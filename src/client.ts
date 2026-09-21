@@ -183,22 +183,25 @@ export class CloudflareHttpClient implements ICloudflareClient {
         if (isText) {
           const text = await response.text();
           // In case an endpoint returns JSON with text/plain or missing content-type header
+          let parsed: unknown;
           try {
-            const parsed = JSON.parse(text);
-            if (parsed && typeof parsed === "object" && "success" in parsed) {
-              const responseBody = parsed as CloudflareResponse<T>;
-              if (this.flags.raw) {
-                process.stdout.write(JSON.stringify(responseBody, null, 2) + "\n");
-              }
-              if (!responseBody.success) {
-                const errors = responseBody.errors ?? [];
-                const firstCode = errors.length > 0 ? (errors[0]?.code ?? 0) : 0;
-                throw new CloudflareAPIError(response.status, firstCode, errors);
-              }
-              return responseBody;
-            }
+            parsed = JSON.parse(text);
           } catch {
             // Not JSON, treat as raw text
+            parsed = undefined;
+          }
+
+          if (parsed && typeof parsed === "object" && "success" in parsed) {
+            const responseBody = parsed as CloudflareResponse<T>;
+            if (this.flags.raw) {
+              process.stdout.write(JSON.stringify(responseBody, null, 2) + "\n");
+            }
+            if (!responseBody.success) {
+              const errors = responseBody.errors ?? [];
+              const firstCode = errors.length > 0 ? (errors[0]?.code ?? 0) : 0;
+              throw new CloudflareAPIError(response.status, firstCode, errors);
+            }
+            return responseBody;
           }
 
           return {

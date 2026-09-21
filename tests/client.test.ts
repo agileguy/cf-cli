@@ -129,6 +129,50 @@ describe("CloudflareHttpClient", () => {
       expect(result).toBe(bindContent);
     });
 
+    test("propagates a Cloudflare API error delivered as text/plain JSON with a 2xx status", async () => {
+      // A non-2xx status is already caught earlier by the "Non-JSON response
+      // handling" guard; the swallow bug lives specifically in the text-body
+      // JSON-detection branch, which only runs when response.ok is true (the
+      // CF-style "success:false in the body" error pattern).
+      const errorBody = JSON.stringify({
+        success: false,
+        errors: [{ code: 10000, message: "Authentication error" }],
+      });
+      mockFetch(async () => {
+        return new Response(errorBody, {
+          status: 200,
+          headers: { "Content-Type": "text/plain; charset=utf-8" },
+        });
+      });
+
+      const client = new CloudflareHttpClient(tokenCreds, defaultFlags);
+
+      try {
+        await client.get("/zones");
+        expect(true).toBe(false); // Should not reach here
+      } catch (err) {
+        expect(err).toBeInstanceOf(CloudflareAPIError);
+        const apiErr = err as CloudflareAPIError;
+        expect(apiErr.statusCode).toBe(200);
+        expect(apiErr.errorCode).toBe(10000);
+        expect(apiErr.errors[0]?.message).toBe("Authentication error");
+      }
+    });
+
+    test("propagates a Cloudflare API error when content-type header is missing entirely", async () => {
+      const errorBody = JSON.stringify({
+        success: false,
+        errors: [{ code: 10000, message: "Authentication error" }],
+      });
+      mockFetch(async () => {
+        return new Response(errorBody, { status: 200 });
+      });
+
+      const client = new CloudflareHttpClient(tokenCreds, defaultFlags);
+
+      expect(client.get("/zones")).rejects.toBeInstanceOf(CloudflareAPIError);
+    });
+
     test("handles binary responses (e.g. downloads)", async () => {
       const bytes = new Uint8Array([0xde, 0xad, 0xbe, 0xef]);
       mockFetch(async () => {
