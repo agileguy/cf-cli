@@ -252,7 +252,13 @@ async function routeCommand(
   // We need everything after the resource name from the original argv.
   const rawArgs = process.argv.slice(2);
   const resourceIdx = rawArgs.indexOf(resource);
-  const subArgs = resourceIdx >= 0 ? rawArgs.slice(resourceIdx + 1) : [];
+  const rest = resourceIdx >= 0 ? rawArgs.slice(resourceIdx + 1) : [];
+
+  // A --help/-h anywhere in the command must never reach a leaf command's
+  // real implementation, which has no concept of --help and would just run
+  // for real. Route it to the resource's own "--help" case instead, which
+  // every resource router already handles.
+  const subArgs = rest.includes("--help") || rest.includes("-h") ? ["--help"] : rest;
 
   switch (resource) {
     case "zones":

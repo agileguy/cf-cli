@@ -76,3 +76,36 @@ describe("global --version routing", () => {
     expect(stderr).toContain("No authentication credentials found");
   });
 });
+
+describe("--help never reaches a leaf command's real implementation", () => {
+  test("group-level --help still shows usage (must keep working)", () => {
+    const { stdout, exitCode } = runCli(["kv", "--help"]);
+    expect(stdout).toContain("Usage: cf kv <command>");
+    expect(exitCode).toBe(0);
+  });
+
+  test("a trailing --help on a leaf command shows usage instead of running it", () => {
+    // No credentials are configured (see runCli), so if this reached the
+    // real "zones list" implementation it would crash trying to call
+    // ctx.client.get() on the null client used for the help/no-auth bypass
+    // — or, with real credentials configured, it would make a live API call.
+    const { stdout, stderr, exitCode } = runCli(["zones", "list", "--help"]);
+    expect(stdout).toContain("Usage: cf zones <command>");
+    expect(stderr).toBe("");
+    expect(exitCode).toBe(0);
+  });
+
+  test("--help after a leaf command's own flags still shows usage instead of running it", () => {
+    const { stdout, stderr, exitCode } = runCli(["dns", "list", "--zone", "example.com", "--help"]);
+    expect(stdout).toContain("Usage: cf dns <command>");
+    expect(stderr).toBe("");
+    expect(exitCode).toBe(0);
+  });
+
+  test("-h behaves the same as --help on a leaf command", () => {
+    const { stdout, stderr, exitCode } = runCli(["zones", "get", "-h"]);
+    expect(stdout).toContain("Usage: cf zones <command>");
+    expect(stderr).toBe("");
+    expect(exitCode).toBe(0);
+  });
+});
